@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Frontend SDE2 Prep Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #08080e;
+  --s1: #0f0f1a;
+  --s2: #141422;
+  --s3: #1a1a2e;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0eeff;
+  --muted: #6b6b8a;
+  --dim: #9898b8;
+  --react: #61dafb;
+  --mc: #a78bfa;
+  --sd: #34d399;
+  --mock: #fb923c;
+  --danger: #f87171;
+  --warn: #fbbf24;
+  --success: #4ade80;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Outfit', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(97,218,251,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 80%, rgba(167,139,250,0.05) 0%, transparent 60%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* LAYOUT */
+.app { display:flex; min-height:100vh; position:relative; z-index:1; }
+.sidebar {
+  width:260px;
+  flex-shrink:0;
+  background: var(--s1);
+  border-right: 1px solid var(--border);
+  position:sticky;
+  top:0;
+  height:100vh;
+  overflow-y:auto;
+  padding:1.5rem 0 2rem;
+}
+.main { flex:1; max-width:860px; padding:2rem 2.5rem; overflow-x:hidden; }
+
+/* SIDEBAR */
+.sidebar-logo {
+  padding:0 1.2rem 1.2rem;
+  border-bottom:1px solid var(--border);
+  margin-bottom:1rem;
+}
+.sidebar-logo .logo-label {
+  font-family: var(--mono);
+  font-size:0.6rem;
+  letter-spacing:0.15em;
+  color: var(--muted);
+  text-transform:uppercase;
+  margin-bottom:0.3rem;
+}
+.sidebar-logo .logo-title {
+  font-size:0.95rem;
+  font-weight:700;
+  color: var(--text);
+}
+
+.sidebar-section {
+  padding:0.3rem 0.8rem;
+  font-family:var(--mono);
+  font-size:0.55rem;
+  letter-spacing:0.13em;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin:1rem 0 0.3rem;
+}
+
+.nav-item {
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+  padding:0.5rem 1.2rem;
+  cursor:pointer;
+  border-left:2px solid transparent;
+  transition:all 0.15s;
+  font-size:0.8rem;
+  color:var(--dim);
+  text-decoration:none;
+  position:relative;
+}
+.nav-item:hover { background:rgba(255,255,255,0.03); color:var(--text); }
+.nav-item.active { border-left-color:var(--mc); color:var(--text); background:rgba(167,139,250,0.07); }
+.nav-dot {
+  width:6px; height:6px; border-radius:50%; flex-shrink:0;
+  background:var(--border2);
+}
+.nav-item.active .nav-dot { background:var(--mc); }
+.nav-item .nav-check {
+  margin-left:auto;
+  font-size:0.65rem;
+  color:var(--success);
+  opacity:0;
+}
+.nav-item.completed .nav-check { opacity:1; }
+.nav-item .nav-day-tag {
+  font-family:var(--mono);
+  font-size:0.6rem;
+  color:var(--muted);
+  background: var(--s3);
+  padding:1px 5px;
+  border-radius:3px;
+}
+
+.sidebar-progress {
+  padding:1rem 1.2rem 0;
+  margin-top:1rem;
+  border-top:1px solid var(--border);
+}
+.sp-label {
+  font-family:var(--mono);
+  font-size:0.58rem;
+  color:var(--muted);
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:0.5rem;
+}
+.sp-bar {
+  height:3px;
+  background:var(--border2);
+  border-radius:2px;
+  overflow:hidden;
+}
+.sp-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--mc),var(--react));
+  border-radius:2px;
+  transition:width 0.4s ease;
+  width:0%;
+}
+
+/* MAIN CONTENT */
+.page { display:none; }
+.page.active { display:block; }
+
+/* HEADER */
+.page-header { margin-bottom:2rem; }
+.phase-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:0.4rem;
+  font-family:var(--mono);
+  font-size:0.6rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  padding:0.3rem 0.8rem;
+  border-radius:3px;
+  margin-bottom:0.8rem;
+}
+.phase-badge.react { background:rgba(97,218,251,0.1); color:var(--react); border:1px solid rgba(97,218,251,0.2); }
+.phase-badge.mc    { background:rgba(167,139,250,0.1); color:var(--mc);    border:1px solid rgba(167,139,250,0.2); }
+.phase-badge.sd    { background:rgba(52,211,153,0.1);  color:var(--sd);    border:1px solid rgba(52,211,153,0.2); }
+.phase-badge.mock  { background:rgba(251,146,60,0.1);  color:var(--mock);  border:1px solid rgba(251,146,60,0.2); }
+
+.page-title { font-size:1.8rem; font-weight:800; line-height:1.2; margin-bottom:0.5rem; }
+.page-subtitle { color:var(--dim); font-size:0.9rem; line-height:1.6; }
+
+/* TIME BLOCKS */
+.day-meta {
+  display:flex;
+  gap:0.5rem;
+  flex-wrap:wrap;
+  margin-bottom:1.5rem;
+  align-items:center;
+}
+.day-tag {
+  font-family:var(--mono);
+  font-size:0.65rem;
+  padding:0.25rem 0.6rem;
+  border-radius:3px;
+  border:1px solid var(--border2);
+  color:var(--dim);
+  letter-spacing:0.05em;
+}
+.day-tag.highlight { border-color:rgba(97,218,251,0.3); color:var(--react); background:rgba(97,218,251,0.06); }
+
+/* TIME BLOCK */
+.block {
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-bottom:0.75rem;
+  overflow:hidden;
+  transition:border-color 0.2s;
+}
+.block:hover { border-color:var(--border2); }
+.block-header {
+  display:flex;
+  align-items:center;
+  gap:0.8rem;
+  padding:0.9rem 1.1rem;
+  cursor:pointer;
+  user-select:none;
+}
+.block-time {
+  font-family:var(--mono);
+  font-size:0.7rem;
+  color:var(--muted);
+  flex-shrink:0;
+  min-width:110px;
+}
+.block-title {
+  font-weight:600;
+  font-size:0.88rem;
+  flex:1;
+}
+.block-type {
+  font-family:var(--mono);
+  font-size:0.58rem;
+  padding:0.2rem 0.5rem;
+  border-radius:2px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  flex-shrink:0;
+}
+.bt-react { background:rgba(97,218,251,0.1); color:var(--react); }
+.bt-mc    { background:rgba(167,139,250,0.1); color:var(--mc); }
+.bt-sd    { background:rgba(52,211,153,0.1);  color:var(--sd); }
+.bt-rev   { background:rgba(251,191,36,0.1);  color:var(--warn); }
+.bt-mock  { background:rgba(251,146,60,0.1);  color:var(--mock); }
+.bt-sleep { background:rgba(107,107,138,0.15); color:var(--muted); }
+
+.block-chevron { color:var(--muted); font-size:0.7rem; transition:transform 0.2s; flex-shrink:0; }
+.block.open .block-chevron { transform:rotate(180deg); }
+.block-body {
+  display:none;
+  padding:0 1.1rem 1.1rem;
+  border-top:1px solid var(--border);
+}
+.block.open .block-body { display:block; }
+
+/* CONTENT INSIDE BLOCKS */
+.concept-section { margin:0.9rem 0 0; }
+.cs-label {
+  font-family:var(--mono);
+  font-size:0.58rem;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:0.5rem;
+}
+.concept-list { list-style:none; }
+.concept-list li {
+  display:flex;
+  align-items:flex-start;
+  gap:0.5rem;
+  font-size:0.8rem;
+  color:var(--dim);
+  padding:0.22rem 0;
+  line-height:1.5;
+}
+.concept-list li::before {
+  content:'→';
+  color:var(--mc);
+  font-family:var(--mono);
+  font-size:0.7rem;
+  flex-shrink:0;
+  margin-top:0.05rem;
+}
+.concept-list.react li::before { color:var(--react); }
+.concept-list.sd li::before { color:var(--sd); }
+.concept-list.warn li::before { content:'⚠'; color:var(--warn); }
+.concept-list.check li::before { content:'✓'; color:var(--success); }
+
+.build-box {
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--mc);
+  border-radius:0 6px 6px 0;
+  padding:0.7rem 0.9rem;
+  margin-top:0.8rem;
+}
+.build-box.react { border-left-color:var(--react); }
+.build-box.sd { border-left-color:var(--sd); }
+.build-box.warn { border-left-color:var(--warn); }
+.build-box .bb-label {
+  font-family:var(--mono);
+  font-size:0.57rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  margin-bottom:0.45rem;
+  color:var(--mc);
+}
+.build-box.react .bb-label { color:var(--react); }
+.build-box.sd .bb-label { color:var(--sd); }
+.build-box.warn .bb-label { color:var(--warn); }
+.build-box ul { list-style:none; }
+.build-box li {
+  font-size:0.78rem;
+  color:var(--dim);
+  padding:0.15rem 0 0.15rem 1rem;
+  position:relative;
+  line-height:1.5;
+}
+.build-box li::before {
+  content:'⚡';
+  position:absolute;
+  left:0;
+  font-size:0.6rem;
+  top:0.2rem;
+}
+
+/* CHECKLIST */
+.checklist { margin-top:0.8rem; }
+.check-item {
+  display:flex;
+  align-items:flex-start;
+  gap:0.6rem;
+  padding:0.4rem 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+  cursor:pointer;
+}
+.check-item:last-child { border-bottom:none; }
+.check-item input[type=checkbox] {
+  accent-color:var(--mc);
+  width:14px; height:14px;
+  flex-shrink:0;
+  cursor:pointer;
+  margin-top:0.15rem;
+}
+.check-item label {
+  font-size:0.78rem;
+  color:var(--dim);
+  cursor:pointer;
+  line-height:1.5;
+  transition:color 0.2s;
+}
+.check-item input:checked + label {
+  color:var(--success);
+  text-decoration:line-through;
+  opacity:0.65;
+}
+
+/* RULE BOX */
+.rule-box {
+  background:linear-gradient(135deg, rgba(167,139,250,0.07), rgba(97,218,251,0.07));
+  border:1px solid rgba(167,139,250,0.2);
+  border-radius:8px;
+  padding:1rem 1.2rem;
+  margin:1.2rem 0;
+}
+.rule-box h4 { font-size:0.85rem; font-weight:600; margin-bottom:0.6rem; color:var(--react); }
+.rule-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:0.6rem; }
+.rule-item {
+  display:flex;
+  gap:0.5rem;
+  align-items:flex-start;
+  font-size:0.75rem;
+  color:var(--dim);
+  line-height:1.5;
+}
+.rule-icon { flex-shrink:0; font-size:0.9rem; }
+
+/* PHASE OVERVIEW */
+.phase-overview {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:0.75rem;
+  margin-bottom:2rem;
+}
+.po-card {
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:1rem;
+  position:relative;
+  overflow:hidden;
+}
+.po-card::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+}
+.po-card.c-react::before { background:var(--react); }
+.po-card.c-mc::before { background:var(--mc); }
+.po-card.c-sd::before { background:var(--sd); }
+.po-card.c-mock::before { background:var(--mock); }
+.po-days { font-family:var(--mono); font-size:0.6rem; color:var(--muted); margin-bottom:0.3rem; letter-spacing:0.08em; }
+.po-name { font-size:0.9rem; font-weight:700; margin-bottom:0.2rem; }
+.po-desc { font-size:0.72rem; color:var(--muted); line-height:1.4; }
+.po-hours { font-family:var(--mono); font-size:0.65rem; margin-top:0.6rem; }
+
+/* WEEKEND BADGE */
+.weekend-banner {
+  background:linear-gradient(135deg, rgba(52,211,153,0.08), rgba(97,218,251,0.08));
+  border:1px solid rgba(52,211,153,0.2);
+  border-radius:8px;
+  padding:0.7rem 1rem;
+  margin-bottom:1.2rem;
+  font-size:0.78rem;
+  color:var(--sd);
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+}
+
+.wfh-banner {
+  background:rgba(97,218,251,0.07);
+  border:1px solid rgba(97,218,251,0.2);
+  border-radius:8px;
+  padding:0.7rem 1rem;
+  margin-bottom:1.2rem;
+  font-size:0.78rem;
+  color:var(--react);
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+}
+
+.timer-badge {
+  display:inline-block;
+  font-family:var(--mono);
+  font-size:0.62rem;
+  padding:0.15rem 0.45rem;
+  border-radius:3px;
+  background:rgba(251,146,60,0.1);
+  color:var(--mock);
+  border:1px solid rgba(251,146,60,0.2);
+  margin-left:0.4rem;
+}
+
+/* RADIO FRAMEWORK */
+.radio-grid {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:0.4rem;
+  margin:0.8rem 0;
+}
+.radio-card {
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:0.7rem 0.6rem;
+  text-align:center;
+}
+.radio-letter {
+  font-family:var(--mono);
+  font-size:1.2rem;
+  font-weight:700;
+  color:var(--sd);
+  display:block;
+  margin-bottom:0.3rem;
+}
+.radio-word { font-size:0.65rem; font-weight:600; display:block; margin-bottom:0.2rem; }
+.radio-desc { font-size:0.58rem; color:var(--muted); line-height:1.3; }
+
+/* A11Y CHECKLIST BOX */
+.a11y-box {
+  background:var(--s2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--sd);
+  border-radius:0 6px 6px 0;
+  padding:0.7rem 0.9rem;
+  margin-top:0.8rem;
+}
+.a11y-box .bb-label { font-family:var(--mono); font-size:0.57rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.45rem; color:var(--sd); }
+.a11y-box ul { list-style:none; }
+.a11y-box li { font-size:0.75rem; color:var(--dim); padding:0.12rem 0 0.12rem 1rem; position:relative; }
+.a11y-box li::before { content:'♿'; position:absolute; left:0; font-size:0.6rem; }
+
+/* MASTER LIST */
+.master-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:0.5rem;
+  margin:0.8rem 0;
+}
+.mc-item {
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:0.6rem 0.8rem;
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+  cursor:pointer;
+  transition:border-color 0.15s;
+}
+.mc-item:hover { border-color:var(--mc); }
+.mc-item input[type=checkbox] { accent-color:var(--mc); flex-shrink:0; }
+.mc-item label { font-size:0.78rem; color:var(--dim); cursor:pointer; flex:1; }
+.mc-item .diff {
+  font-family:var(--mono);
+  font-size:0.55rem;
+  padding:1px 4px;
+  border-radius:2px;
+}
+.diff-e { background:rgba(74,222,128,0.1); color:var(--success); }
+.diff-m { background:rgba(251,191,36,0.1);  color:var(--warn); }
+.diff-h { background:rgba(248,113,113,0.1); color:var(--danger); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+@media (max-width:700px) {
+  .sidebar { display:none; }
+  .main { padding:1.5rem 1rem; }
+  .radio-grid { grid-template-columns:repeat(3,1fr); }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-label">Frontend SDE2 Plan</div>
+    <div class="logo-title">15-Day Mastery Sprint</div>
+  </div>
+
+  <div class="sidebar-section">Overview</div>
+  <a class="nav-item active" onclick="showPage('overview')">
+    <div class="nav-dot"></div> Overview & Rules
+  </a>
+  <a class="nav-item" onclick="showPage('masterlist')">
+    <div class="nav-dot"></div> Master Problem List
+  </a>
+
+  <div class="sidebar-section">Week 1 — React</div>
+  <a class="nav-item" onclick="showPage('d1')"><div class="nav-dot"></div>Day 1 <span class="nav-day-tag">Sat</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d2')"><div class="nav-dot"></div>Day 2 <span class="nav-day-tag">Sun</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d3')"><div class="nav-dot"></div>Day 3 <span class="nav-day-tag">Mon</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d4')"><div class="nav-dot"></div>Day 4 <span class="nav-day-tag">Tue</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d5')"><div class="nav-dot"></div>Day 5 <span class="nav-day-tag">Wed</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d6')"><div class="nav-dot"></div>Day 6 <span class="nav-day-tag">Thu</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d7')"><div class="nav-dot"></div>Day 7 <span class="nav-day-tag">Fri WFH</span><span class="nav-check">✓</span></a>
+
+  <div class="sidebar-section">Week 2 — SD + MC</div>
+  <a class="nav-item" onclick="showPage('d8')"><div class="nav-dot"></div>Day 8 <span class="nav-day-tag">Sat</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d9')"><div class="nav-dot"></div>Day 9 <span class="nav-day-tag">Sun</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d10')"><div class="nav-dot"></div>Day 10 <span class="nav-day-tag">Mon</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d11')"><div class="nav-dot"></div>Day 11 <span class="nav-day-tag">Tue</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d12')"><div class="nav-dot"></div>Day 12 <span class="nav-day-tag">Wed</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d13')"><div class="nav-dot"></div>Day 13 <span class="nav-day-tag">Thu</span><span class="nav-check">✓</span></a>
+  <a class="nav-item" onclick="showPage('d14')"><div class="nav-dot"></div>Day 14 <span class="nav-day-tag">Fri WFH</span><span class="nav-check">✓</span></a>
+
+  <div class="sidebar-section">Final</div>
+  <a class="nav-item" onclick="showPage('d15')"><div class="nav-dot"></div>Day 15 <span class="nav-day-tag">Sat</span><span class="nav-check">✓</span></a>
+
+  <div class="sidebar-progress">
+    <div class="sp-label"><span>PROGRESS</span><span id="sb-pct">0%</span></div>
+    <div class="sp-bar"><div class="sp-fill" id="sb-fill"></div></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ===== OVERVIEW ===== -->
+<div class="page active" id="page-overview">
+  <div class="page-header">
+    <div class="phase-badge react">⚡ 15-Day Sprint · March 14 – March 28</div>
+    <div class="page-title">The 10/10 Frontend SDE2 Plan</div>
+    <div class="page-subtitle">Built around your exact schedule: 10AM–6PM job, Friday WFH, Sat–Sun off. React + Machine Coding + Frontend System Design only. No JS basics — you already know it.</div>
+  </div>
+
+  <div class="phase-overview">
+    <div class="po-card c-react">
+      <div class="po-days">Days 1–6 · Mar 14–19</div>
+      <div class="po-name">React Deep Dive</div>
+      <div class="po-desc">Internals, all hooks, patterns, custom hooks, React 18</div>
+      <div class="po-hours" style="color:var(--react)">~22 hrs</div>
+    </div>
+    <div class="po-card c-mc">
+      <div class="po-days">Days 7, 14 · WFH Fridays</div>
+      <div class="po-name">Machine Coding Days</div>
+      <div class="po-desc">Timed builds, 4–5 components per session, no help</div>
+      <div class="po-hours" style="color:var(--mc)">~9 hrs</div>
+    </div>
+    <div class="po-card c-sd">
+      <div class="po-days">Days 8–13 · Mar 22–27</div>
+      <div class="po-name">System Design + Advanced MC</div>
+      <div class="po-desc">RADIO framework, architecture, real-time, perf, a11y</div>
+      <div class="po-hours" style="color:var(--sd)">~22 hrs</div>
+    </div>
+    <div class="po-card c-mock">
+      <div class="po-days">Day 15 · Mar 29</div>
+      <div class="po-name">Full Mock Day</div>
+      <div class="po-desc">System design + 2 timed machine coding rounds. No new learning.</div>
+      <div class="po-hours" style="color:var(--mock)">~6 hrs</div>
+    </div>
+  </div>
+
+  <div class="rule-box">
+    <h4>📋 The 5 Non-Negotiable Rules</h4>
+    <div class="rule-grid">
+      <div class="rule-item"><span class="rule-icon">🚫</span><div>No morning study on work days. Sleep at 2AM means morning is recovery, not learning.</div></div>
+      <div class="rule-item"><span class="rule-icon">⏱️</span><div>Every machine coding build gets a timer. No open-ended practice. Aim for ≤40 min medium, ≤60 min hard.</div></div>
+      <div class="rule-item"><span class="rule-icon">♿</span><div>After every component: keyboard nav, ARIA roles, focus management — every single time.</div></div>
+      <div class="rule-item"><span class="rule-icon">🗣️</span><div>System design practice must be spoken aloud. Typing answers is not interview prep.</div></div>
+      <div class="rule-item"><span class="rule-icon">🔄</span><div>Mock on Day 7, Day 11, Day 15. Not just Day 15. Early mocks find gaps while there's still time to fix them.</div></div>
+    </div>
+  </div>
+
+  <div class="concept-section">
+    <div class="cs-label">Daily schedule by day type</div>
+    <div class="block open" id="sched-work">
+      <div class="block-header" onclick="toggleBlock('sched-work')">
+        <div class="block-time">Mon – Thu</div>
+        <div class="block-title">Work Day (3h total)</div>
+        <div class="block-type bt-rev">3 hours</div>
+        <div class="block-chevron">▼</div>
+      </div>
+      <div class="block-body">
+        <ul class="concept-list">
+          <li><strong>7:30 – 9:00 PM</strong> — 1.5h: Learn one React concept deeply OR one system design pattern. Read, watch, build tiny example.</li>
+          <li><strong>9:30 – 11:00 PM</strong> — 1.5h: Build ONE component from scratch. Medium difficulty. No shortcuts.</li>
+          <li><strong>No morning session.</strong> Sleeping at 2AM and studying at 8:30AM gives you 6.5h sleep. That destroys night session quality.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="block" id="sched-wfh">
+      <div class="block-header" onclick="toggleBlock('sched-wfh')">
+        <div class="block-time">WFH Fridays</div>
+        <div class="block-title">Machine Coding Day (5h total)</div>
+        <div class="block-type bt-mc">5 hours</div>
+        <div class="block-chevron">▼</div>
+      </div>
+      <div class="block-body">
+        <ul class="concept-list">
+          <li><strong>7:00 – 9:00 AM</strong> — 2h: System design / React concept before work</li>
+          <li><strong>7:00 – 10:00 PM</strong> — 3h: Timed machine coding — 3 components back to back with timers</li>
+        </ul>
+      </div>
+    </div>
+    <div class="block" id="sched-wknd">
+      <div class="block-header" onclick="toggleBlock('sched-wknd')">
+        <div class="block-time">Sat / Sun</div>
+        <div class="block-title">Full Day (6h focused)</div>
+        <div class="block-type bt-sd">6 hours</div>
+        <div class="block-chevron">▼</div>
+      </div>
+      <div class="block-body">
+        <ul class="concept-list">
+          <li><strong>10:00 AM – 1:00 PM</strong> — 3h: Deep learning / machine coding builds</li>
+          <li><strong>3:00 – 6:00 PM</strong> — 3h: System design practice or advanced component builds</li>
+          <li>Take a genuine break 1–3 PM. Rested brain learns 40% better in the evening session.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MASTER LIST ===== -->
+<div class="page" id="page-masterlist">
+  <div class="page-header">
+    <div class="phase-badge mc">🛠 Machine Coding</div>
+    <div class="page-title">Master Problem Checklist</div>
+    <div class="page-subtitle">Every component you must be able to build in ≤40 min (medium) or ≤60 min (hard) without any help. Track your completion here.</div>
+  </div>
+  <div class="concept-section">
+    <div class="cs-label">Easy — Target: ≤25 min</div>
+    <div class="master-grid" id="easy-grid"></div>
+    <div class="cs-label" style="margin-top:1rem">Medium — Target: ≤40 min</div>
+    <div class="master-grid" id="med-grid"></div>
+    <div class="cs-label" style="margin-top:1rem">Hard — Target: ≤60 min</div>
+    <div class="master-grid" id="hard-grid"></div>
+  </div>
+  <div class="concept-section" style="margin-top:1.5rem">
+    <div class="cs-label">Custom Hooks — Must write from memory</div>
+    <div class="master-grid" id="hooks-grid"></div>
+  </div>
+</div>
+
+<!-- ===== DAY 1 ===== -->
+<div class="page" id="page-d1">
+  <div class="page-header">
+    <div class="phase-badge react">⚛ Phase 1 · React Mastery</div>
+    <div class="page-title">Day 1 — Saturday, 14 March</div>
+    <div class="page-subtitle">Your first full day. React internals from scratch — the WHY behind everything. Start at 10AM.</div>
+  </div>
+  <div class="weekend-banner">🟢 Weekend — 6 full hours available. Split 10AM–1PM and 3PM–6PM.</div>
+
+  <div class="block open" id="d1b1">
+    <div class="block-header" onclick="toggleBlock('d1b1')">
+      <div class="block-time">10:00 – 12:00</div>
+      <div class="block-title">React Rendering Internals</div>
+      <div class="block-type bt-react">React Core</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="concept-section">
+        <div class="cs-label">What you must deeply understand today</div>
+        <ul class="concept-list react">
+          <li><strong>React Fiber:</strong> Why it replaced the stack reconciler. Fiber = unit of work. React can pause, prioritize, resume work — this is WHY concurrent mode exists.</li>
+          <li><strong>Reconciliation:</strong> React diffs the new VDOM against old. Same type = update props. Different type = unmount + remount. Key prop tells React "same element, different position" — why key=index breaks animations/forms.</li>
+          <li><strong>Render vs Commit phase:</strong> Render is pure (calculate changes). Commit is where DOM mutations happen. Effects run AFTER commit.</li>
+          <li><strong>When does a component re-render?</strong> State change, prop change, parent re-render, context value change. React.memo only prevents prop-change re-renders.</li>
+          <li><strong>React 18 — Automatic batching:</strong> Before React 18, state updates in setTimeout/promises were NOT batched. Now they are. This changes behavior — know it.</li>
+        </ul>
+      </div>
+      <div class="build-box react">
+        <div class="bb-label">🔬 Verify your understanding</div>
+        <ul>
+          <li>Can you predict which components re-render in a nested tree when parent state changes?</li>
+          <li>Can you explain why key=index breaks a list with deletions?</li>
+          <li>Can you describe what happens between clicking a button and seeing a DOM update?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" id="d1b2">
+    <div class="block-header" onclick="toggleBlock('d1b2')">
+      <div class="block-time">12:00 – 1:00</div>
+      <div class="block-title">Build: Accordion Component <span class="timer-badge">⏱ 45 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Requirements</div>
+        <ul>
+          <li>Single open mode (only one panel open at a time)</li>
+          <li>Multi open mode as a prop option</li>
+          <li>Smooth CSS animation on open/close</li>
+          <li>Keyboard: Enter/Space to toggle, Arrow keys to navigate</li>
+        </ul>
+      </div>
+      <div class="a11y-box">
+        <div class="bb-label">A11y checklist — run this after EVERY build</div>
+        <ul>
+          <li>aria-expanded on trigger button</li>
+          <li>aria-controls linking button to panel</li>
+          <li>role="region" on panel with aria-labelledby</li>
+          <li>Keyboard navigable without mouse</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" id="d1b3">
+    <div class="block-header" onclick="toggleBlock('d1b3')">
+      <div class="block-time">3:00 – 5:00</div>
+      <div class="block-title">useState + useEffect Deep Internals</div>
+      <div class="block-type bt-react">React Hooks</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list react">
+        <li><strong>useState closure trap:</strong> Event handlers capture state at the time they were created. setState with stale state is the #1 React bug. Fix: functional updates <code>setState(prev => prev + 1)</code>.</li>
+        <li><strong>useEffect dependency array:</strong> Empty [] = run once after mount. [dep] = run when dep changes. No array = run after every render. Return function = cleanup before next run OR unmount.</li>
+        <li><strong>useEffect vs useLayoutEffect:</strong> useEffect fires after paint (async). useLayoutEffect fires before paint (sync). Use layout effect when you need to measure DOM before user sees it (no flicker).</li>
+        <li><strong>React 18 — useEffect fires twice in Strict Mode (dev only):</strong> React unmounts and remounts to find cleanup bugs. Your cleanup MUST be correct or you get double API calls, double subscriptions.</li>
+      </ul>
+      <div class="build-box react">
+        <div class="bb-label">⚡ Implement these from scratch</div>
+        <ul>
+          <li>Demonstrate the stale closure bug, then fix it with functional update</li>
+          <li>Build a timer that correctly cleans up on unmount</li>
+          <li>Show useLayoutEffect preventing a visible flicker (measure + reposition)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" id="d1b4">
+    <div class="block-header" onclick="toggleBlock('d1b4')">
+      <div class="block-time">5:00 – 6:00</div>
+      <div class="block-title">Build: Tabs Component <span class="timer-badge">⏱ 40 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Requirements</div>
+        <ul>
+          <li>Controlled + uncontrolled mode (via props)</li>
+          <li>Lazy load tab content (only render when first visited)</li>
+          <li>ARIA: role="tablist", role="tab", role="tabpanel", aria-selected</li>
+          <li>Keyboard: Left/Right arrows navigate tabs, Tab key moves to panel</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-section">
+    <div class="cs-label">Day 1 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d1c1" onchange="updateProgress()"><label for="d1c1">Can explain Fiber + reconciliation to a colleague</label></div>
+      <div class="check-item"><input type="checkbox" id="d1c2" onchange="updateProgress()"><label for="d1c2">Understand why React 18 automatic batching matters</label></div>
+      <div class="check-item"><input type="checkbox" id="d1c3" onchange="updateProgress()"><label for="d1c3">Built Accordion with full keyboard accessibility</label></div>
+      <div class="check-item"><input type="checkbox" id="d1c4" onchange="updateProgress()"><label for="d1c4">Understand stale closure + functional update pattern</label></div>
+      <div class="check-item"><input type="checkbox" id="d1c5" onchange="updateProgress()"><label for="d1c5">Built Tabs with ARIA roles + keyboard navigation</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAY 2 ===== -->
+<div class="page" id="page-d2">
+  <div class="page-header">
+    <div class="phase-badge react">⚛ Phase 1 · React Mastery</div>
+    <div class="page-title">Day 2 — Sunday, 15 March</div>
+    <div class="page-subtitle">Performance hooks + advanced patterns. The most asked React topics at SDE2 level.</div>
+  </div>
+  <div class="weekend-banner">🟢 Weekend — 6 full hours. 10AM–1PM + 3PM–6PM.</div>
+
+  <div class="block open" id="d2b1">
+    <div class="block-header" onclick="toggleBlock('d2b1')">
+      <div class="block-time">10:00 – 12:00</div>
+      <div class="block-title">useMemo, useCallback, React.memo — When They Actually Help</div>
+      <div class="block-type bt-react">Performance</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list react">
+        <li><strong>React.memo:</strong> Wraps a component. Skips re-render if props are shallowly equal. PROBLEM: objects/arrays/functions are new references every render. memo does nothing if parent passes <code>{}</code> or <code>[]</code> inline.</li>
+        <li><strong>useCallback:</strong> Returns the same function reference between renders. Useful ONLY when that function is passed as a prop to a memo'd child. Otherwise it's just overhead.</li>
+        <li><strong>useMemo:</strong> Memoizes an expensive computation. Only worth it if calculation takes measurable time. Don't wrap simple math — you pay the memo cost for nothing.</li>
+        <li><strong>The golden rule:</strong> Profile first. Add memoization only when React DevTools Profiler shows unnecessary re-renders causing jank. Premature memo = worse performance, harder-to-read code.</li>
+        <li><strong>useRef:</strong> Persists a value across renders WITHOUT causing re-render. Ideal for: previous value tracking, DOM references, storing interval/timeout IDs, tracking if component is mounted.</li>
+      </ul>
+      <div class="build-box react">
+        <div class="bb-label">⚡ Prove your understanding</div>
+        <ul>
+          <li>Build a child that logs when it renders. Show it still renders even with React.memo when parent passes inline function — then fix with useCallback.</li>
+          <li>Build a usePrevious hook using useRef</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" id="d2b2">
+    <div class="block-header" onclick="toggleBlock('d2b2')">
+      <div class="block-time">12:00 – 1:00</div>
+      <div class="block-title">Build: Modal with Focus Trap <span class="timer-badge">⏱ 35 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Requirements</div>
+        <ul>
+          <li>Focus trap: Tab cycles only within modal, Shift+Tab goes backwards</li>
+          <li>Escape key closes. Overlay click closes.</li>
+          <li>Rendered via React.createPortal to document.body</li>
+          <li>Focus returns to trigger element on close</li>
+          <li>aria-modal="true", role="dialog", aria-labelledby</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" id="d2b3">
+    <div class="block-header" onclick="toggleBlock('d2b3')">
+      <div class="block-time">3:00 – 5:00</div>
+      <div class="block-title">useContext + useReducer + React 18 Features</div>
+      <div class="block-type bt-react">React Advanced</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list react">
+        <li><strong>useContext performance trap:</strong> Every consumer re-renders when context value changes — even if the consuming component only uses part of the value. Fix: split contexts, or wrap value in useMemo.</li>
+        <li><strong>useReducer:</strong> For complex state with multiple sub-values or when next state depends on previous. Think Redux-style but local. Action pattern makes state transitions explicit and testable.</li>
+        <li><strong>startTransition (React 18):</strong> Marks an update as non-urgent. React can interrupt it to handle user input. Use for: search filtering, tab switching, anything where immediate feedback matters more than the update completing.</li>
+        <li><strong>useDeferredValue (React 18):</strong> Like a debounce but smarter — defers a value update until React is idle. Use for expensive derived renders (filtered lists, search results).</li>
+        <li><strong>Suspense for data fetching:</strong> Component can "suspend" while waiting for data. Works natively with React Query, SWR, and Next.js. Know the concept even if you don't use it daily.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block" id="d2b4">
+    <div class="block-header" onclick="toggleBlock('d2b4')">
+      <div class="block-time">5:00 – 6:00</div>
+      <div class="block-title">Build: Dropdown + useOnClickOutside hook <span class="timer-badge">⏱ 35 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Requirements</div>
+        <ul>
+          <li>Build useOnClickOutside custom hook first (takes ref + callback)</li>
+          <li>Dropdown uses the hook to close on outside click</li>
+          <li>Keyboard: Escape closes, Arrow keys navigate options</li>
+          <li>aria-haspopup, aria-expanded, aria-activedescendant on trigger</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-section">
+    <div class="cs-label">Day 2 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d2c1" onchange="updateProgress()"><label for="d2c1">Can explain React.memo + useCallback referential equality problem</label></div>
+      <div class="check-item"><input type="checkbox" id="d2c2" onchange="updateProgress()"><label for="d2c2">Built Modal with focus trap + portal + correct ARIA</label></div>
+      <div class="check-item"><input type="checkbox" id="d2c3" onchange="updateProgress()"><label for="d2c3">Understand startTransition vs useDeferredValue difference</label></div>
+      <div class="check-item"><input type="checkbox" id="d2c4" onchange="updateProgress()"><label for="d2c4">Built useOnClickOutside + Dropdown with keyboard nav</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAY 3 ===== -->
+<div class="page" id="page-d3">
+  <div class="page-header">
+    <div class="phase-badge react">⚛ Phase 1 · React Mastery</div>
+    <div class="page-title">Day 3 — Monday, 16 March</div>
+    <div class="page-subtitle">First work day. 3 hours only. React patterns + one medium component.</div>
+  </div>
+
+  <div class="block open" id="d3b1">
+    <div class="block-header" onclick="toggleBlock('d3b1')">
+      <div class="block-time">7:30 – 9:00 PM</div>
+      <div class="block-title">React Patterns: Compound Components + HOC + Render Props</div>
+      <div class="block-type bt-react">Patterns</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list react">
+        <li><strong>Compound Components:</strong> Parent + children that implicitly share state via Context. Example: &lt;Select&gt; + &lt;Option&gt;. The component API is declarative and flexible. This is what all great UI libraries do.</li>
+        <li><strong>HOC (Higher Order Component):</strong> Function that takes a component and returns enhanced component. withAuth, withLogger. Problem: prop collision, wrapper hell. Largely replaced by hooks but STILL asked in interviews.</li>
+        <li><strong>Render Props:</strong> Component accepts a function as children or prop. Flexible inversion of control. Also largely replaced by hooks but know it for interviews and understanding libraries like react-table.</li>
+        <li><strong>When to use what:</strong> Hooks for logic reuse. Compound components for flexible UI API. HOC for cross-cutting concerns that must wrap (auth, analytics). Know the tradeoffs cold.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block" id="d3b2">
+    <div class="block-header" onclick="toggleBlock('d3b2')">
+      <div class="block-time">9:30 – 11:00 PM</div>
+      <div class="block-title">Build: Autocomplete Search <span class="timer-badge">⏱ 50 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Requirements — this is a common SDE2 question</div>
+        <ul>
+          <li>useDebounce hook — implement it yourself, do not use a library</li>
+          <li>AbortController: cancel the previous API request when user types again (race condition fix)</li>
+          <li>Keyboard: Arrow Up/Down navigate suggestions, Enter selects, Escape closes</li>
+          <li>Highlight the matched portion of each suggestion</li>
+          <li>aria-autocomplete, aria-activedescendant on input</li>
+        </ul>
+      </div>
+      <div class="build-box react">
+        <div class="bb-label">⚡ The SDE2 follow-up interviewers always ask</div>
+        <ul>
+          <li>"What if two requests finish out of order?" — AbortController or check if request is still latest</li>
+          <li>"How would you cache results?" — useRef to store a Map of query → results</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-section">
+    <div class="cs-label">Day 3 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d3c1" onchange="updateProgress()"><label for="d3c1">Can explain compound components + when to use them</label></div>
+      <div class="check-item"><input type="checkbox" id="d3c2" onchange="updateProgress()"><label for="d3c2">Built Autocomplete with debounce + AbortController + keyboard nav</label></div>
+      <div class="check-item"><input type="checkbox" id="d3c3" onchange="updateProgress()"><label for="d3c3">Can answer the race condition and caching follow-ups</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAYS 4-6 ===== -->
+<div class="page" id="page-d4">
+  <div class="page-header">
+    <div class="phase-badge react">⚛ Phase 1 · React Mastery</div>
+    <div class="page-title">Day 4 — Tuesday, 17 March</div>
+    <div class="page-subtitle">Custom hooks mastery. The hooks interviewers ask you to build from scratch.</div>
+  </div>
+  <div class="block open" id="d4b1">
+    <div class="block-header" onclick="toggleBlock('d4b1')">
+      <div class="block-time">7:30 – 9:00 PM</div>
+      <div class="block-title">Custom Hooks Deep Dive</div>
+      <div class="block-type bt-react">Custom Hooks</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list react">
+        <li><strong>useFetch:</strong> loading/error/data states. AbortController on cleanup. Generic enough for any URL. This is the most asked custom hook.</li>
+        <li><strong>useLocalStorage:</strong> SSR-safe (check typeof window). JSON parse/stringify. Listen for storage events (cross-tab sync).</li>
+        <li><strong>useDebounce:</strong> Returns a debounced value (not function). Uses useEffect + setTimeout internally.</li>
+        <li><strong>useIntersectionObserver:</strong> Used for infinite scroll, lazy loading. Returns a ref to attach + boolean isIntersecting.</li>
+        <li><strong>useEventListener:</strong> Attach event listeners safely. Cleanup on unmount. Supports window, document, or any element ref.</li>
+      </ul>
+      <div class="build-box react">
+        <div class="bb-label">⚡ Build ALL 5 from memory tonight</div>
+        <ul>
+          <li>useFetch — with loading, error, data, refetch function</li>
+          <li>useLocalStorage — with SSR safety + cross-tab sync</li>
+          <li>useDebounce — debounced value hook</li>
+          <li>useIntersectionObserver — returns [ref, isIntersecting]</li>
+          <li>useEventListener — safe addEventListener with cleanup</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="block" id="d4b2">
+    <div class="block-header" onclick="toggleBlock('d4b2')">
+      <div class="block-time">9:30 – 11:00 PM</div>
+      <div class="block-title">Build: Infinite Scroll Feed <span class="timer-badge">⏱ 50 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Use your useIntersectionObserver hook</div>
+        <ul>
+          <li>Sentinel div at bottom — when visible, load next page</li>
+          <li>Loading skeleton while fetching (not a spinner — skeleton)</li>
+          <li>Error state with retry button</li>
+          <li>End-of-list message when no more data</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="concept-section">
+    <div class="cs-label">Day 4 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d4c1" onchange="updateProgress()"><label for="d4c1">Wrote all 5 custom hooks from memory</label></div>
+      <div class="check-item"><input type="checkbox" id="d4c2" onchange="updateProgress()"><label for="d4c2">Built Infinite Scroll using useIntersectionObserver hook</label></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-d5">
+  <div class="page-header">
+    <div class="phase-badge react">⚛ Phase 1 · React Mastery</div>
+    <div class="page-title">Day 5 — Wednesday, 18 March</div>
+    <div class="page-subtitle">Error boundaries + Code splitting + State management patterns.</div>
+  </div>
+  <div class="block open" id="d5b1">
+    <div class="block-header" onclick="toggleBlock('d5b1')">
+      <div class="block-time">7:30 – 9:00 PM</div>
+      <div class="block-title">Error Boundaries + Code Splitting + State Architecture</div>
+      <div class="block-type bt-react">React Advanced</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list react">
+        <li><strong>Error Boundaries:</strong> Class component with componentDidCatch + getDerivedStateFromError. Catches render errors below them. Doesn't catch: async errors, event handlers, server errors. Place strategically — feature-level, not component-level.</li>
+        <li><strong>React.lazy + Suspense:</strong> Dynamic import wraps a component. Suspense shows fallback while loading. Use for route-level splitting. Heavy components (rich text editor, charts).</li>
+        <li><strong>State colocation:</strong> Keep state as close to where it's used as possible. Don't lift state to global if only one subtree needs it. This prevents unnecessary re-renders across the app.</li>
+        <li><strong>Zustand vs Redux Toolkit vs Context:</strong> Context = simple sharing, no actions. Zustand = simple global state with minimal boilerplate. Redux Toolkit = complex state, time-travel debugging, large teams. Know the tradeoffs, not just the APIs.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="block" id="d5b2">
+    <div class="block-header" onclick="toggleBlock('d5b2')">
+      <div class="block-time">9:30 – 11:00 PM</div>
+      <div class="block-title">Build: Toast Notification System <span class="timer-badge">⏱ 45 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ This tests state management + portal + animations</div>
+        <ul>
+          <li>Global toast manager — call toast.success("...") from anywhere</li>
+          <li>Multiple toasts stacked, auto-dismiss after 3s</li>
+          <li>Rendered via portal at document body</li>
+          <li>Smooth enter/exit animations with CSS transitions</li>
+          <li>Different types: success, error, warning, info</li>
+          <li>aria-live="polite" region so screen readers announce toasts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="concept-section">
+    <div class="cs-label">Day 5 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d5c1" onchange="updateProgress()"><label for="d5c1">Know exactly what Error Boundaries do and don't catch</label></div>
+      <div class="check-item"><input type="checkbox" id="d5c2" onchange="updateProgress()"><label for="d5c2">Can explain Zustand vs Context vs Redux tradeoffs</label></div>
+      <div class="check-item"><input type="checkbox" id="d5c3" onchange="updateProgress()"><label for="d5c3">Built Toast system with global manager + portal + a11y</label></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-d6">
+  <div class="page-header">
+    <div class="phase-badge react">⚛ Phase 1 · React Mastery</div>
+    <div class="page-title">Day 6 — Thursday, 19 March</div>
+    <div class="page-subtitle">React Router, Testing mindset, and compound components in practice.</div>
+  </div>
+  <div class="block open" id="d6b1">
+    <div class="block-header" onclick="toggleBlock('d6b1')">
+      <div class="block-time">7:30 – 9:00 PM</div>
+      <div class="block-title">React Router v6 + Testing Mindset + Compound Components in Practice</div>
+      <div class="block-type bt-react">React Ecosystem</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list react">
+        <li><strong>React Router v6:</strong> Nested routes with &lt;Outlet&gt;, useNavigate, useParams, useSearchParams, lazy-loaded routes with React.lazy + Suspense, protected route pattern.</li>
+        <li><strong>Testing Library philosophy:</strong> Test user behavior, not implementation. Query by role/label/text. Don't test internal state. This framing helps in interviews — "I'd test that the modal opens when button is clicked, not that state is true."</li>
+        <li><strong>Build compound Select:</strong> Context-based, &lt;Select&gt; + &lt;Select.Option&gt; + &lt;Select.Trigger&gt; + &lt;Select.List&gt;. This is the actual pattern used by Radix UI, Headless UI.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="block" id="d6b2">
+    <div class="block-header" onclick="toggleBlock('d6b2')">
+      <div class="block-time">9:30 – 11:00 PM</div>
+      <div class="block-title">Build: Compound Select Component <span class="timer-badge">⏱ 50 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Compound pattern — interview gold</div>
+        <ul>
+          <li>Select.Root / Select.Trigger / Select.List / Select.Option</li>
+          <li>Context shares open state + selected value between sub-components</li>
+          <li>Fully keyboard navigable (Arrow keys, Enter, Escape)</li>
+          <li>Controlled + uncontrolled mode</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="concept-section">
+    <div class="cs-label">Day 6 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d6c1" onchange="updateProgress()"><label for="d6c1">Know React Router v6 nested routes + protected route pattern</label></div>
+      <div class="check-item"><input type="checkbox" id="d6c2" onchange="updateProgress()"><label for="d6c2">Built compound Select with Context + keyboard nav</label></div>
+      <div class="check-item"><input type="checkbox" id="d6c3" onchange="updateProgress()"><label for="d6c3">Can explain testing philosophy (behavior not implementation)</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAY 7 WFH ===== -->
+<div class="page" id="page-d7">
+  <div class="page-header">
+    <div class="phase-badge mc">🛠 WFH Machine Coding Day 1</div>
+    <div class="page-title">Day 7 — Friday WFH, 20 March</div>
+    <div class="page-subtitle">First real timed machine coding day + mini mock. Find out your weak spots with 8 days still left to fix them.</div>
+  </div>
+  <div class="wfh-banner">⚡ WFH Friday — 5 hours available. 7AM–9AM pre-work learning + 7PM–10PM timed builds.</div>
+
+  <div class="block open" id="d7b1">
+    <div class="block-header" onclick="toggleBlock('d7b1')">
+      <div class="block-time">7:00 – 9:00 AM</div>
+      <div class="block-title">React 18 + Performance Patterns Revision</div>
+      <div class="block-type bt-rev">Revision</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list">
+        <li>Walk through all custom hooks from memory — can you write useFetch without looking?</li>
+        <li>Review React 18: startTransition, useDeferredValue, automatic batching — explain each out loud</li>
+        <li>Compound components: can you explain the Context-based pattern without looking at code?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block" id="d7b2">
+    <div class="block-header" onclick="toggleBlock('d7b2')">
+      <div class="block-time">7:00 – 10:00 PM</div>
+      <div class="block-title">Timed Machine Coding — 3 Rounds Back to Back</div>
+      <div class="block-type bt-mc">Timed Practice</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Round 1 — 35 min timer: Tooltip component</div>
+        <ul>
+          <li>Positioning (top/bottom/left/right), auto-flip when near viewport edge</li>
+          <li>Show on hover + focus. Hide on blur + mouse leave.</li>
+          <li>role="tooltip", aria-describedby on the trigger</li>
+        </ul>
+      </div>
+      <div class="build-box">
+        <div class="bb-label">⚡ Round 2 — 45 min timer: Pagination component</div>
+        <ul>
+          <li>First/Last/Prev/Next buttons. Page number buttons.</li>
+          <li>Ellipsis for large page counts</li>
+          <li>Controlled component (page + onPageChange props)</li>
+          <li>Keyboard navigable, aria-current="page" on current page</li>
+        </ul>
+      </div>
+      <div class="build-box">
+        <div class="bb-label">⚡ Round 3 — Mini Mock: explain one component you built</div>
+        <ul>
+          <li>Pick any component from week 1. Explain it as if in an interview — out loud.</li>
+          <li>Cover: state design, accessibility, edge cases, what you'd add with more time</li>
+          <li>This is your Day 7 mini mock. Note what felt weak.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-section">
+    <div class="cs-label">Day 7 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d7c1" onchange="updateProgress()"><label for="d7c1">Built Tooltip in ≤35 min with positioning + a11y</label></div>
+      <div class="check-item"><input type="checkbox" id="d7c2" onchange="updateProgress()"><label for="d7c2">Built Pagination in ≤45 min with keyboard support</label></div>
+      <div class="check-item"><input type="checkbox" id="d7c3" onchange="updateProgress()"><label for="d7c3">Completed mini mock — identified 2 weak areas</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAY 8 ===== -->
+<div class="page" id="page-d8">
+  <div class="page-header">
+    <div class="phase-badge sd">🏗 Phase 2 · System Design</div>
+    <div class="page-title">Day 8 — Saturday, 22 March</div>
+    <div class="page-subtitle">RADIO framework + first system design deep dives. Learn the framework, then use it immediately.</div>
+  </div>
+  <div class="weekend-banner">🟢 Weekend — 6 hours. This is the most important day of Phase 2.</div>
+
+  <div class="block open" id="d8b1">
+    <div class="block-header" onclick="toggleBlock('d8b1')">
+      <div class="block-time">10:00 – 11:30</div>
+      <div class="block-title">The RADIO Framework — Your SD Answer Structure</div>
+      <div class="block-type bt-sd">Framework</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="radio-grid">
+        <div class="radio-card"><span class="radio-letter">R</span><span class="radio-word">Requirements</span><span class="radio-desc">Functional + non-functional. Clarify scope. Who uses it? What scale?</span></div>
+        <div class="radio-card"><span class="radio-letter">A</span><span class="radio-word">Architecture</span><span class="radio-desc">High-level components. Data flow. Technology choices.</span></div>
+        <div class="radio-card"><span class="radio-letter">D</span><span class="radio-word">Data Model</span><span class="radio-desc">Component state shape. API contracts. What data lives where?</span></div>
+        <div class="radio-card"><span class="radio-letter">I</span><span class="radio-word">Interface</span><span class="radio-desc">Component API design. Props. Events. Public contracts.</span></div>
+        <div class="radio-card"><span class="radio-letter">O</span><span class="radio-word">Optimizations</span><span class="radio-desc">Performance, caching, a11y, error handling, edge cases.</span></div>
+      </div>
+      <div class="build-box sd">
+        <div class="bb-label">🗣 Practice this today — spoken, not written</div>
+        <ul>
+          <li>Every system design answer must follow R→A→D→I→O in order</li>
+          <li>Spend 2 min on R (clarifying), 5 min on A, 3 min on D, 3 min on I, 5 min on O</li>
+          <li>Total: ~18 min answer. This is exactly what a 20-min SD round expects.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" id="d8b2">
+    <div class="block-header" onclick="toggleBlock('d8b2')">
+      <div class="block-time">11:30 – 1:00</div>
+      <div class="block-title">Design: News Feed (Twitter/Facebook) — Spoken out loud</div>
+      <div class="block-type bt-sd">System Design</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list sd">
+        <li><strong>R:</strong> Infinite feed, posts with images/text, like/comment, real-time new posts, pagination strategy</li>
+        <li><strong>A:</strong> Feed component → Post component → Media component. FeedStore (Zustand/Redux). WebSocket for real-time new post notifications.</li>
+        <li><strong>D:</strong> Feed state: posts[], nextCursor, isLoading, hasMore. Post: id, author, content, likes, timestamp. Cursor-based pagination (not offset — explain why: offset breaks when new posts are inserted).</li>
+        <li><strong>I:</strong> &lt;Feed userId={id} pageSize={20} /&gt; &lt;Post post={post} onLike={fn} /&gt;</li>
+        <li><strong>O:</strong> Virtualize the list (only render visible posts). Image lazy loading. Optimistic like updates. Skeleton loading. Error boundaries per post.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block" id="d8b3">
+    <div class="block-header" onclick="toggleBlock('d8b3')">
+      <div class="block-time">3:00 – 5:00</div>
+      <div class="block-title">Design: Autocomplete System + Build: Kanban Board <span class="timer-badge">⏱ 60 min</span></div>
+      <div class="block-type bt-sd">SD + MC</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list sd">
+        <li><strong>SD: Autocomplete</strong> — Debounce (300ms), cancel stale requests (AbortController), in-memory cache (Map), keyboard nav, highlight match, empty/loading/error states, accessibility (combobox ARIA pattern)</li>
+      </ul>
+      <div class="build-box">
+        <div class="bb-label">⚡ Build: Kanban Board (60 min timer)</div>
+        <ul>
+          <li>Columns: Todo, In Progress, Done. Cards with title + description.</li>
+          <li>Drag and drop between columns using HTML5 DnD API</li>
+          <li>Add card, delete card, edit card inline</li>
+          <li>State: { columns: { [id]: { title, cardIds[] } }, cards: { [id]: { title, desc } } }</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-section">
+    <div class="cs-label">Day 8 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d8c1" onchange="updateProgress()"><label for="d8c1">RADIO framework memorized and can apply immediately</label></div>
+      <div class="check-item"><input type="checkbox" id="d8c2" onchange="updateProgress()"><label for="d8c2">Designed News Feed out loud using RADIO</label></div>
+      <div class="check-item"><input type="checkbox" id="d8c3" onchange="updateProgress()"><label for="d8c3">Built Kanban board with drag-and-drop in ≤60 min</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAY 9 ===== -->
+<div class="page" id="page-d9">
+  <div class="page-header">
+    <div class="phase-badge sd">🏗 Phase 2 · System Design</div>
+    <div class="page-title">Day 9 — Sunday, 23 March</div>
+    <div class="page-subtitle">Real-time systems + performance deep dive + advanced components.</div>
+  </div>
+  <div class="weekend-banner">🟢 Weekend — full day. Deep system design practice.</div>
+
+  <div class="block open" id="d9b1">
+    <div class="block-header" onclick="toggleBlock('d9b1')">
+      <div class="block-time">10:00 – 12:00</div>
+      <div class="block-title">Real-time, Performance, Security — SD Follow-up Topics</div>
+      <div class="block-type bt-sd">System Design</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list sd">
+        <li><strong>WebSocket vs SSE vs Polling:</strong> WebSocket = full-duplex (chat). SSE = server→client only, simpler, auto-reconnect (live feeds, notifications). Polling = simple but wasteful. Know which to suggest and why.</li>
+        <li><strong>Core Web Vitals:</strong> LCP (largest content paint, target &lt;2.5s) — fix with preloading, image optimization, fast server. FID/INP (input delay) — fix with code splitting, avoiding long tasks. CLS (layout shift) — fix with explicit dimensions, font loading.</li>
+        <li><strong>SSR vs CSR vs SSG vs ISR:</strong> CSR = React default, bad for SEO, fast after load. SSR = HTML from server per request, good for SEO + dynamic. SSG = pre-rendered at build time, fastest. ISR = SSG + background revalidation. Use ISR for blog, SSR for dashboard, CSR for admin tools.</li>
+        <li><strong>XSS:</strong> Reflected (URL), Stored (DB), DOM-based. Prevention: sanitize inputs, escape output, Content Security Policy header, React's JSX auto-escapes (don't use dangerouslySetInnerHTML with user input).</li>
+        <li><strong>CSRF:</strong> Attacker tricks browser into sending authenticated request. Fix: SameSite=Strict cookies, CSRF tokens, check Origin header.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block" id="d9b2">
+    <div class="block-header" onclick="toggleBlock('d9b2')">
+      <div class="block-time">12:00 – 1:00</div>
+      <div class="block-title">Design: Chat Application — Spoken RADIO</div>
+      <div class="block-type bt-sd">System Design</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list sd">
+        <li><strong>R:</strong> 1:1 + group chat, message history, online presence, typing indicator, read receipts</li>
+        <li><strong>A:</strong> WebSocket for real-time. Message list (virtualized). Conversation sidebar. Optimistic message sending.</li>
+        <li><strong>D:</strong> messages: Message[], status: sent|delivered|read, conversations: { [id]: Conversation }</li>
+        <li><strong>O:</strong> Virtualized message list (thousands of messages). Reconnection with exponential backoff. Offline queue (IndexedDB). Message deduplication by ID.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block" id="d9b3">
+    <div class="block-header" onclick="toggleBlock('d9b3')">
+      <div class="block-time">3:00 – 5:30</div>
+      <div class="block-title">Build: File Uploader + Star Rating <span class="timer-badge">⏱ 40+25 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ File Uploader (40 min)</div>
+        <ul>
+          <li>Drag-and-drop zone + click to browse</li>
+          <li>Multiple file support, type + size validation</li>
+          <li>Progress bar per file (fake XHR progress or actual fetch with ReadableStream)</li>
+          <li>Preview for images, remove uploaded file</li>
+        </ul>
+      </div>
+      <div class="build-box">
+        <div class="bb-label">⚡ Star Rating (25 min)</div>
+        <ul>
+          <li>Hover preview + click to set. Half-star option as prop.</li>
+          <li>role="radiogroup", each star is role="radio" with aria-label</li>
+          <li>Keyboard: Arrow keys change rating</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-section">
+    <div class="cs-label">Day 9 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d9c1" onchange="updateProgress()"><label for="d9c1">Can confidently explain WebSocket vs SSE vs Polling trade-offs</label></div>
+      <div class="check-item"><input type="checkbox" id="d9c2" onchange="updateProgress()"><label for="d9c2">Designed Chat app using RADIO out loud</label></div>
+      <div class="check-item"><input type="checkbox" id="d9c3" onchange="updateProgress()"><label for="d9c3">Built File Uploader + Star Rating with a11y</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAYS 10-13 (work days) ===== -->
+<div class="page" id="page-d10">
+  <div class="page-header">
+    <div class="phase-badge sd">🏗 Phase 2 · Advanced MC</div>
+    <div class="page-title">Day 10 — Monday, 24 March</div>
+    <div class="page-subtitle">Virtual list concept + Data Table. The hardest components you'll face at SDE2.</div>
+  </div>
+  <div class="block open" id="d10b1">
+    <div class="block-header" onclick="toggleBlock('d10b1')">
+      <div class="block-time">7:30 – 9:00 PM</div>
+      <div class="block-title">Virtual List / Windowing — Theory First</div>
+      <div class="block-type bt-react">Performance</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list react">
+        <li><strong>The problem:</strong> 10,000 DOM nodes = browser jank. You only show ~10 rows at any time.</li>
+        <li><strong>The solution:</strong> Fixed-height outer container. Total height = itemCount × itemHeight. Absolute position each visible row. Only render items in [scrollTop/itemHeight, (scrollTop+containerHeight)/itemHeight] range.</li>
+        <li><strong>Overscan:</strong> Render a few extra rows above and below visible range to prevent flicker on fast scroll.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="block" id="d10b2">
+    <div class="block-header" onclick="toggleBlock('d10b2')">
+      <div class="block-time">9:30 – 11:00 PM</div>
+      <div class="block-title">Build: Sortable Data Table <span class="timer-badge">⏱ 55 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Requirements</div>
+        <ul>
+          <li>Sort by column (asc/desc toggle) — show sort indicator arrow</li>
+          <li>Filter rows by global search input (debounced)</li>
+          <li>Client-side pagination (configurable page size)</li>
+          <li>Row selection with checkboxes (multi-select, select all)</li>
+          <li>role="grid", proper scope on th headers, aria-sort</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="concept-section">
+    <div class="cs-label">Day 10 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d10c1" onchange="updateProgress()"><label for="d10c1">Can explain virtual list algorithm from scratch</label></div>
+      <div class="check-item"><input type="checkbox" id="d10c2" onchange="updateProgress()"><label for="d10c2">Built sortable + filterable Data Table with pagination</label></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-d11">
+  <div class="page-header">
+    <div class="phase-badge sd">🏗 Phase 2 · Advanced MC</div>
+    <div class="page-title">Day 11 — Tuesday, 25 March</div>
+    <div class="page-subtitle">Mini mock + Virtual List build. Test yourself before the final stretch.</div>
+  </div>
+  <div class="block open" id="d11b1">
+    <div class="block-header" onclick="toggleBlock('d11b1')">
+      <div class="block-time">7:30 – 9:00 PM</div>
+      <div class="block-title">Mini Mock #2 — System Design Round Simulation</div>
+      <div class="block-type bt-mock">Mock</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box warn">
+        <div class="bb-label">🎯 Simulate a real SD interview — spoken, 20 minutes</div>
+        <ul>
+          <li>Problem: Design a Google Docs-like collaborative editor (high level)</li>
+          <li>Use RADIO. Speak every thought out loud. Time yourself.</li>
+          <li>After: note what you stumbled on. That's tomorrow's study topic.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="block" id="d11b2">
+    <div class="block-header" onclick="toggleBlock('d11b2')">
+      <div class="block-time">9:30 – 11:00 PM</div>
+      <div class="block-title">Build: Virtual List from Scratch <span class="timer-badge">⏱ 55 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ This is a hard problem — take it seriously</div>
+        <ul>
+          <li>Fixed-height container with overflow:hidden + scroll listener</li>
+          <li>Calculate start/end index from scrollTop + containerHeight + itemHeight</li>
+          <li>Render only visible items + overscan (3 above, 3 below)</li>
+          <li>Items use position:absolute with top = index * itemHeight</li>
+          <li>Total height spacer div maintains correct scrollbar</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="concept-section">
+    <div class="cs-label">Day 11 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d11c1" onchange="updateProgress()"><label for="d11c1">Completed SD mini mock — noted weak areas</label></div>
+      <div class="check-item"><input type="checkbox" id="d11c2" onchange="updateProgress()"><label for="d11c2">Built Virtual List from scratch without help</label></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-d12">
+  <div class="page-header">
+    <div class="phase-badge sd">🏗 Phase 2 · Advanced MC</div>
+    <div class="page-title">Day 12 — Wednesday, 26 March</div>
+    <div class="page-subtitle">Recursive rendering + Nested comments. Tests your thinking under complexity.</div>
+  </div>
+  <div class="block open" id="d12b1">
+    <div class="block-header" onclick="toggleBlock('d12b1')">
+      <div class="block-time">7:30 – 9:00 PM</div>
+      <div class="block-title">Recursive Component Pattern</div>
+      <div class="block-type bt-react">React Pattern</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list react">
+        <li>A Comment renders itself recursively for replies. The base case is comment.replies.length === 0.</li>
+        <li>Flatten the tree for rendering performance when depth is unknown</li>
+        <li>Collapse/expand subtrees by toggling a Set of collapsed IDs in state</li>
+        <li>Indentation = depth * paddingLeft. Max depth should be capped (e.g. 6 levels)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="block" id="d12b2">
+    <div class="block-header" onclick="toggleBlock('d12b2')">
+      <div class="block-time">9:30 – 11:00 PM</div>
+      <div class="block-title">Build: Nested Comments Tree <span class="timer-badge">⏱ 55 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Requirements</div>
+        <ul>
+          <li>Recursive Comment component with arbitrary depth</li>
+          <li>Collapse/expand thread (toggle all children)</li>
+          <li>Add reply inline (nested form appears under comment)</li>
+          <li>Like a comment (optimistic update)</li>
+          <li>Loading skeleton for initial fetch</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="concept-section">
+    <div class="cs-label">Day 12 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d12c1" onchange="updateProgress()"><label for="d12c1">Understand recursive rendering + base case + depth cap</label></div>
+      <div class="check-item"><input type="checkbox" id="d12c2" onchange="updateProgress()"><label for="d12c2">Built Nested Comments with collapse + add reply</label></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-d13">
+  <div class="page-header">
+    <div class="phase-badge sd">🏗 Phase 2 · Advanced MC</div>
+    <div class="page-title">Day 13 — Thursday, 27 March</div>
+    <div class="page-subtitle">Calendar component + Large-scale SPA design. The toughest day before the final sprint.</div>
+  </div>
+  <div class="block open" id="d13b1">
+    <div class="block-header" onclick="toggleBlock('d13b1')">
+      <div class="block-time">7:30 – 9:00 PM</div>
+      <div class="block-title">Design: Large-Scale SPA Architecture</div>
+      <div class="block-type bt-sd">System Design</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list sd">
+        <li><strong>Module federation / Micro-frontends:</strong> Multiple teams, separate deployments. Each MFE owns a route. Shared dependencies (React, design system) loaded once. Tradeoff: complexity, version conflicts.</li>
+        <li><strong>Monorepo structure:</strong> apps/ + packages/. Shared UI library, shared hooks, shared types. Nx or Turborepo for build orchestration.</li>
+        <li><strong>Authentication architecture:</strong> Auth service → JWT in httpOnly cookie (not localStorage — XSS safe). Refresh token rotation. Protected route HOC/wrapper. Role-based access control.</li>
+        <li><strong>Feature flags:</strong> LaunchDarkly or home-grown. Wrap features in &lt;FeatureFlag name="new-checkout"&gt;. Kill switch for bad deployments.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="block" id="d13b2">
+    <div class="block-header" onclick="toggleBlock('d13b2')">
+      <div class="block-time">9:30 – 11:00 PM</div>
+      <div class="block-title">Build: Calendar / Date Picker <span class="timer-badge">⏱ 60 min</span></div>
+      <div class="block-type bt-mc">Machine Coding</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ The hardest standard component — plan state first</div>
+        <ul>
+          <li>State: viewMonth, viewYear, selectedDate (or selectedRange for range picker)</li>
+          <li>Month grid: calculate first weekday of month, pad start with prev month days</li>
+          <li>Prev/Next month navigation</li>
+          <li>Disabled dates support (past dates, custom disabledDate fn)</li>
+          <li>Keyboard: Arrow keys navigate days, Enter selects, Page Up/Down changes month</li>
+          <li>role="grid" on calendar, role="gridcell" on each day, aria-selected</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="concept-section">
+    <div class="cs-label">Day 13 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d13c1" onchange="updateProgress()"><label for="d13c1">Can discuss micro-frontends + auth architecture at SDE2 level</label></div>
+      <div class="check-item"><input type="checkbox" id="d13c2" onchange="updateProgress()"><label for="d13c2">Built Calendar with keyboard navigation + ARIA</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAY 14 WFH ===== -->
+<div class="page" id="page-d14">
+  <div class="page-header">
+    <div class="phase-badge mc">🛠 WFH Machine Coding Day 2</div>
+    <div class="page-title">Day 14 — Friday WFH, 28 March</div>
+    <div class="page-subtitle">Speed round day. Close all gaps. Your last day with significant prep time before the final mock.</div>
+  </div>
+  <div class="wfh-banner">⚡ WFH Friday — Close every gap identified in Day 7 + Day 11 mocks.</div>
+
+  <div class="block open" id="d14b1">
+    <div class="block-header" onclick="toggleBlock('d14b1')">
+      <div class="block-time">7:00 – 9:00 AM</div>
+      <div class="block-title">Gap Closing — Custom Hooks from Memory</div>
+      <div class="block-type bt-rev">Revision</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box react">
+        <div class="bb-label">⚡ Write ALL of these from memory — no peeking</div>
+        <ul>
+          <li>useFetch — abort controller + loading/error/data</li>
+          <li>useLocalStorage — SSR-safe + JSON parse</li>
+          <li>useDebounce — debounced value</li>
+          <li>useIntersectionObserver — returns [ref, isIntersecting]</li>
+          <li>useOnClickOutside — ref + callback</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" id="d14b2">
+    <div class="block-header" onclick="toggleBlock('d14b2')">
+      <div class="block-time">7:00 – 10:00 PM</div>
+      <div class="block-title">Speed Round — Rebuild Weak Components Under Timer</div>
+      <div class="block-type bt-mc">Speed Practice</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box">
+        <div class="bb-label">⚡ Rebuild the 2 components you were weakest on</div>
+        <ul>
+          <li>From your Day 7 and Day 11 mock notes — rebuild those components</li>
+          <li>Set a timer. Beat your previous time.</li>
+          <li>Then: 30 min system design spoken answer for any one problem — your choice</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-section">
+    <div class="cs-label">Day 14 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d14c1" onchange="updateProgress()"><label for="d14c1">Wrote all 5 custom hooks from memory</label></div>
+      <div class="check-item"><input type="checkbox" id="d14c2" onchange="updateProgress()"><label for="d14c2">Rebuilt both weak components faster than before</label></div>
+      <div class="check-item"><input type="checkbox" id="d14c3" onchange="updateProgress()"><label for="d14c3">Completed one full spoken SD answer</label></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DAY 15 ===== -->
+<div class="page" id="page-d15">
+  <div class="page-header">
+    <div class="phase-badge mock">🎯 Final Day · Mock Interview</div>
+    <div class="page-title">Day 15 — Saturday, 29 March</div>
+    <div class="page-subtitle">Full mock interview day. No new learning. This is the confidence run. You've done the work.</div>
+  </div>
+  <div class="weekend-banner">🟢 Final day. Treat this like it's the real interview.</div>
+
+  <div class="block open" id="d15b1">
+    <div class="block-header" onclick="toggleBlock('d15b1')">
+      <div class="block-time">10:00 – 10:30</div>
+      <div class="block-title">Light Warmup — No New Topics</div>
+      <div class="block-type bt-rev">Warmup</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <ul class="concept-list">
+        <li>Walk through 3 components in your head — state design only, no code</li>
+        <li>Say RADIO out loud once through the News Feed problem</li>
+        <li>Read your notes on React 18 features. That's it. Stop here.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block" id="d15b2">
+    <div class="block-header" onclick="toggleBlock('d15b2')">
+      <div class="block-time">10:30 – 11:30</div>
+      <div class="block-title">Mock Round 1 — System Design: Twitter/X Timeline</div>
+      <div class="block-type bt-mock">Full Mock</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box warn">
+        <div class="bb-label">🎯 Full RADIO answer — speak every word out loud — 45 min</div>
+        <ul>
+          <li>R: Infinite scroll, media tweets, real-time new tweets, like/retweet, notifications</li>
+          <li>A: Feed + Tweet + Media + RealtimeManager components. WebSocket for new tweets.</li>
+          <li>D: tweets[], nextCursor, seenIds Set (for deduplication), pendingNewTweets counter</li>
+          <li>I: Component props API. Event handlers. What's controlled vs internal.</li>
+          <li>O: Virtualised list. Image lazy load. Skeleton loading. Optimistic likes. Error boundaries.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" id="d15b3">
+    <div class="block-header" onclick="toggleBlock('d15b3')">
+      <div class="block-time">12:30 – 2:00</div>
+      <div class="block-title">Mock Round 2 — Machine Coding: Autocomplete <span class="timer-badge">⏱ 45 min hard limit</span></div>
+      <div class="block-type bt-mock">Full Mock</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box warn">
+        <div class="bb-label">🎯 Rules for this mock — simulate real interview conditions</div>
+        <ul>
+          <li>No Google. No previous code. Start from a blank file.</li>
+          <li>Talk through your approach for 2 minutes before coding</li>
+          <li>Build MVP first (basic working), then add features</li>
+          <li>When timer hits 45 min — stop coding. Review what you'd add.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" id="d15b4">
+    <div class="block-header" onclick="toggleBlock('d15b4')">
+      <div class="block-time">3:00 – 4:30</div>
+      <div class="block-title">Mock Round 3 — Machine Coding: Virtual List OR Kanban <span class="timer-badge">⏱ 60 min</span></div>
+      <div class="block-type bt-mock">Full Mock</div>
+      <div class="block-chevron">▼</div>
+    </div>
+    <div class="block-body">
+      <div class="build-box warn">
+        <div class="bb-label">🎯 Pick whichever felt harder last time</div>
+        <ul>
+          <li>Same rules — blank file, no help, talk through state design before coding</li>
+          <li>After building: do a 5-minute walkthrough of your code as if explaining to an interviewer</li>
+          <li>"Here's the state shape, here's why I chose this, here's what I'd improve"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="rule-box">
+    <h4>🧠 Interview Day Mindset</h4>
+    <div class="rule-grid">
+      <div class="rule-item"><span class="rule-icon">🗣️</span><div>Think out loud. Interviewers want to hear reasoning, not just see output.</div></div>
+      <div class="rule-item"><span class="rule-icon">❓</span><div>Clarify requirements for 2 min before coding. "I'm assuming X — is that right?"</div></div>
+      <div class="rule-item"><span class="rule-icon">🏗️</span><div>State MVP first. "I'll build the core, then add edge cases."</div></div>
+      <div class="rule-item"><span class="rule-icon">♿</span><div>Volunteer accessibility points. Don't wait to be asked.</div></div>
+      <div class="rule-item"><span class="rule-icon">🔮</span><div>"If I had more time I'd add..." shows SDE2-level thinking.</div></div>
+    </div>
+  </div>
+
+  <div class="concept-section">
+    <div class="cs-label">Day 15 Checklist</div>
+    <div class="checklist">
+      <div class="check-item"><input type="checkbox" id="d15c1" onchange="updateProgress()"><label for="d15c1">Completed full system design mock — spoken, timed</label></div>
+      <div class="check-item"><input type="checkbox" id="d15c2" onchange="updateProgress()"><label for="d15c2">Autocomplete built in ≤45 min from blank file</label></div>
+      <div class="check-item"><input type="checkbox" id="d15c3" onchange="updateProgress()"><label for="d15c3">Hard component built in ≤60 min with walkthrough</label></div>
+      <div class="check-item"><input type="checkbox" id="d15c4" onchange="updateProgress()"><label for="d15c4">You're ready. Trust the work you've done. 🚀</label></div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+const pages = ['overview','masterlist','d1','d2','d3','d4','d5','d6','d7','d8','d9','d10','d11','d12','d13','d14','d15'];
+
+function showPage(id) {
+  pages.forEach(p => {
+    document.getElementById('page-'+p).classList.remove('active');
+  });
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function toggleBlock(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// Master list data
+const easy = ['Accordion','Tabs','Toggle Switch','Star Rating','Tooltip','Progress Bar','Badge/Chip'];
+const medium = ['Modal (focus trap)','Dropdown','Autocomplete','Pagination','Image Carousel','Toast System','File Uploader','Compound Select'];
+const hard = ['Infinite Scroll','Kanban Board','Data Table','Virtual List','Nested Comments','Calendar/Date Picker','Drag & Drop List'];
+const hooks = ['useFetch','useDebounce','useLocalStorage','useOnClickOutside','useIntersectionObserver','usePrevious','useEventListener','useThrottle'];
+
+function buildGrid(arr, containerId, diffClass, diffLabel) {
+  const g = document.getElementById(containerId);
+  arr.forEach((item, i) => {
+    const d = document.createElement('div');
+    d.className = 'mc-item';
+    const cbId = containerId+'-'+i;
+    d.innerHTML = `<input type="checkbox" id="${cbId}" onchange="updateProgress()"><label for="${cbId}">${item}</label><span class="diff ${diffClass}">${diffLabel}</span>`;
+    g.appendChild(d);
+  });
+}
+
+buildGrid(easy, 'easy-grid', 'diff-e', 'easy');
+buildGrid(medium, 'med-grid', 'diff-m', 'med');
+buildGrid(hard, 'hard-grid', 'diff-h', 'hard');
+buildGrid(hooks, 'hooks-grid', 'diff-m', 'hook');
+
+function updateProgress() {
+  const all = document.querySelectorAll('input[type=checkbox]');
+  const checked = document.querySelectorAll('input[type=checkbox]:checked');
+  const pct = all.length ? Math.round(checked.length/all.length*100) : 0;
+  document.getElementById('sb-fill').style.width = pct+'%';
+  document.getElementById('sb-pct').textContent = pct+'%';
+  // mark nav items as completed if all their checkboxes are checked
+  pages.forEach(p => {
+    const pg = document.getElementById('page-'+p);
+    if (!pg) return;
+    const pAll = pg.querySelectorAll('input[type=checkbox]');
+    const pChk = pg.querySelectorAll('input[type=checkbox]:checked');
+    if (pAll.length > 0 && pAll.length === pChk.length) {
+      const navs = document.querySelectorAll('.nav-item');
+      navs.forEach(n => { if(n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+p+"'")) n.classList.add('completed'); });
+    }
+  });
+  try { localStorage.setItem('plan_v3', JSON.stringify([...checked].map(c=>c.id))); } catch(e){}
+}
+
+function loadProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('plan_v3') || '[]');
+    saved.forEach(id => { const el = document.getElementById(id); if(el) el.checked = true; });
+  } catch(e) {}
+  updateProgress();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadProgress();
+  // Open first block of active page
+  const firstBlock = document.querySelector('.page.active .block');
+  if (firstBlock && !firstBlock.classList.contains('open')) firstBlock.classList.add('open');
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const checkboxes = document.querySelectorAll("input[type='checkbox']");
+
+  checkboxes.forEach(cb => {
+    const saved = localStorage.getItem(cb.id);
+    if (saved === "true") cb.checked = true;
+  });
+
+  updateProgress();
+});
+
+function updateProgress() {
+  const checkboxes = document.querySelectorAll("input[type='checkbox']");
+  const total = checkboxes.length;
+
+  let checked = 0;
+
+  checkboxes.forEach(cb => {
+    localStorage.setItem(cb.id, cb.checked);
+    if (cb.checked) checked++;
+  });
+
+  const percent = Math.round((checked / total) * 100);
+
+  const fill = document.getElementById("sb-fill");
+  const pct = document.getElementById("sb-pct");
+
+  if (fill) fill.style.width = percent + "%";
+  if (pct) pct.innerText = percent + "%";
+
+  markCompletedDays();
+}
+
+function markCompletedDays() {
+  const pages = document.querySelectorAll(".page");
+
+  pages.forEach(page => {
+    const checks = page.querySelectorAll("input[type='checkbox']");
+    if (checks.length === 0) return;
+
+    const allChecked = [...checks].every(c => c.checked);
+
+    const id = page.id.replace("page-", "");
+    const nav = document.querySelector(`[onclick="showPage('${id}')"]`);
+
+    if (nav) {
+      if (allChecked) nav.classList.add("completed");
+      else nav.classList.remove("completed");
+    }
+  });
+}
+
+function resetProgress() {
+  localStorage.clear();
+  location.reload();
+}
+</script>
+
+</body>
+</html>
