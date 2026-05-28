@@ -3,519 +3,990 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DSA 60 — Last-Moment Mastery Logbook</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=JetBrains+Mono:wght@400;500;700&family=Spline+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>JS Interview Mastery — 15-Day Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --ink:#0a0e1a;--ink-2:#0e1424;--panel:#141c30;--panel-2:#1a2440;
-  --line:rgba(255,255,255,.08);--line-2:rgba(255,255,255,.14);
-  --text:#e9eef9;--muted:#8e9bb6;--muted-2:#647089;
-  --amber:#ffb24a;--amber-deep:#ff8c2e;--cyan:#5fe0cf;--green:#5fe08a;--red:#ff6f8e;--violet:#9b8cff;
-  --display:'Fraunces',serif;--mono:'JetBrains Mono',monospace;--body:'Spline Sans',sans-serif;
+:root {
+  --bg: #080810;
+  --surface: #0f0f1a;
+  --surface2: #161622;
+  --surface3: #1c1c2a;
+  --border: #222233;
+  --border2: #2a2a3d;
+  --accent: #f0c040;
+  --accent2: #5f8aff;
+  --accent3: #ff5f7e;
+  --green: #3dffa0;
+  --purple: #b482ff;
+  --text: #e8e8f0;
+  --text2: #a0a0b8;
+  --muted: #55556a;
+  --radius: 10px;
+  --sidebar-w: 260px;
+  --header-h: 64px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--body);background:var(--ink);color:var(--text);line-height:1.55;overflow-x:hidden;
-  background-image:
-    linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px),
-    radial-gradient(ellipse 80% 60% at 50% -10%,rgba(255,178,74,.10),transparent 60%),
-    radial-gradient(ellipse 60% 50% at 90% 10%,rgba(95,224,207,.07),transparent 55%);
-  background-size:44px 44px,44px 44px,100% 100%,100% 100%;}
-::selection{background:var(--amber);color:var(--ink)}
-::-webkit-scrollbar{width:11px;height:11px}
-::-webkit-scrollbar-track{background:var(--ink-2)}
-::-webkit-scrollbar-thumb{background:#2a3656;border-radius:20px;border:2px solid var(--ink-2)}
-::-webkit-scrollbar-thumb:hover{background:#3a4972}
-.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
 
-/* HERO */
-header.hero{position:relative;padding:64px 0 40px;border-bottom:1px solid var(--line);overflow:hidden}
-.hero .tag{font-family:var(--mono);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);display:inline-flex;align-items:center;gap:9px;margin-bottom:18px}
-.hero .tag::before{content:"";width:30px;height:1px;background:var(--amber)}
-.hero h1{font-family:var(--display);font-weight:900;font-size:clamp(42px,8vw,88px);line-height:.92;letter-spacing:-.02em}
-.hero h1 em{font-style:italic;font-weight:500;color:var(--amber)}
-.hero .sub{margin-top:20px;max-width:640px;color:var(--muted);font-size:17px}
-.hero .sub b{color:var(--text);font-weight:600}
-.warn{display:inline-flex;gap:10px;align-items:center;margin-top:26px;font-family:var(--mono);font-size:12.5px;color:var(--red);background:rgba(255,111,142,.08);border:1px solid rgba(255,111,142,.25);padding:9px 15px;border-radius:8px}
-.hero-meta{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
-.chip{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.02)}
-.chip b{color:var(--cyan)}
+/* HEADER */
+header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 20px; gap: 20px; z-index: 200;
+}
+.logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.logo-badge { background: var(--accent); color: #000; font-family: 'Space Mono', monospace; font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 4px; letter-spacing: 1px; }
+.logo-text { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
+.logo-text span { color: var(--accent); }
+.header-stats { display: flex; gap: 12px; margin-left: auto; align-items: center; flex-wrap: wrap; }
+.stat-pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 999px; padding: 5px 14px; display: flex; align-items: center; gap: 8px; }
+.stat-pill .slabel { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.stat-pill .sval { color: var(--accent); font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+.global-prog-wrap { width: 140px; display: flex; flex-direction: column; gap: 3px; }
+.global-prog-bar { background: var(--border); border-radius: 99px; height: 5px; overflow: hidden; }
+.global-prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 99px; transition: width 0.5s ease; width: 0%; }
+.prog-label { font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace; text-align: right; }
 
-/* DASH */
-.dash{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:36px 0 8px}
-.stat{background:linear-gradient(160deg,var(--panel),var(--ink-2));border:1px solid var(--line);border-radius:16px;padding:20px 20px 18px;position:relative;overflow:hidden}
-.stat::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 100% 0,rgba(255,178,74,.10),transparent 60%);pointer-events:none}
-.stat .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted-2)}
-.stat .val{font-family:var(--display);font-weight:900;font-size:42px;line-height:1;margin:8px 0 4px}
-.stat .val small{font-size:18px;color:var(--muted);font-weight:600}
-.stat .bar{height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:10px}
-.stat .bar i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
-.stat.q .val{color:var(--amber)} .stat.q .bar i{background:linear-gradient(90deg,var(--amber-deep),var(--amber))}
-.stat.t .val{color:var(--cyan)}  .stat.t .bar i{background:linear-gradient(90deg,#2fa898,var(--cyan))}
-.stat.d .val{color:var(--green)} .stat.d .bar i{background:linear-gradient(90deg,#37a85f,var(--green))}
-.stat.s .val{color:var(--violet)}.stat.s .bar i{background:linear-gradient(90deg,#6d5bd6,var(--violet))}
+/* APP BODY */
+.app-body { display: flex; position: fixed; top: var(--header-h); left: 0; right: 0; bottom: 0; }
 
-/* NAV */
-nav.tabs{position:sticky;top:0;z-index:50;background:rgba(10,14,26,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);margin-top:34px}
-nav.tabs .wrap{display:flex;gap:6px;overflow-x:auto;padding:0 22px}
-nav.tabs button{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;background:none;border:none;color:var(--muted);padding:16px 16px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:.2s}
-nav.tabs button:hover{color:var(--text)}
-nav.tabs button.active{color:var(--amber);border-bottom-color:var(--amber)}
-section.view{display:none;padding:44px 0 90px;animation:fade .4s ease}
-section.view.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.sec-head{margin-bottom:26px}
-.sec-head h2{font-family:var(--display);font-weight:900;font-size:clamp(28px,5vw,44px);letter-spacing:-.02em}
-.sec-head h2 .dot{color:var(--amber)}
-.sec-head p{color:var(--muted);margin-top:8px;max-width:720px}
+/* LEFT SIDEBAR */
+.days-sidebar { width: var(--sidebar-w); flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.sidebar-top { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.sidebar-top-title { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px; }
+.week-filters { display: flex; gap: 5px; flex-wrap: wrap; }
+.wf-btn { font-size: 10px; padding: 4px 9px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; font-family: 'Syne', sans-serif; font-weight: 600; }
+.wf-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+.wf-btn:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
 
-/* PHASES */
-.phases{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
-.phase{border:1px solid var(--line);border-radius:14px;padding:16px 16px 16px 22px;background:var(--ink-2);position:relative}
-.phase .pn{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--muted-2);text-transform:uppercase}
-.phase h4{font-family:var(--display);font-size:18px;font-weight:600;margin:6px 0 4px;color:var(--text)}
-.phase .pd{font-family:var(--mono);font-size:11px;color:var(--amber)}
-.phase p{font-size:12.5px;color:var(--muted);margin-top:8px}
-.phase::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px}
-.phase.p1::before{background:var(--amber)} .phase.p2::before{background:var(--cyan)} .phase.p3::before{background:var(--violet)} .phase.p4::before{background:var(--green)}
+.days-list { flex: 1; overflow-y: auto; padding: 8px; }
+.days-list::-webkit-scrollbar { width: 4px; }
+.days-list::-webkit-scrollbar-track { background: transparent; }
+.days-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-.callout{border:1px solid rgba(95,224,207,.25);background:rgba(95,224,207,.05);border-radius:14px;padding:16px 20px;margin-bottom:24px}
-.callout h4{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
-.callout p{font-size:13.5px;color:var(--muted)} .callout p b{color:var(--text)}
+.day-item { padding: 10px 11px; border-radius: 8px; border: 1px solid transparent; cursor: pointer; transition: all 0.15s; margin-bottom: 3px; display: flex; align-items: center; gap: 10px; }
+.day-item:hover { background: var(--surface2); border-color: var(--border); }
+.day-item.active { background: var(--surface3); border-color: var(--accent); }
+.day-item.hidden { display: none; }
 
-/* DAY CARDS */
-.day{border:1px solid var(--line);border-radius:14px;margin-bottom:12px;background:var(--ink-2);overflow:hidden;transition:.25s}
-.day:hover{border-color:var(--line-2)}
-.day.done{border-color:rgba(95,224,138,.35);background:linear-gradient(120deg,rgba(95,224,138,.05),var(--ink-2))}
-.day-top{display:flex;align-items:center;gap:16px;padding:15px 18px;cursor:pointer;user-select:none}
-.daynum{font-family:var(--mono);font-weight:700;font-size:13px;min-width:58px;height:42px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--line);line-height:1.1}
-.daynum small{font-size:8px;letter-spacing:.15em;color:var(--muted-2);text-transform:uppercase}
-.day.done .daynum{background:rgba(95,224,138,.14);border-color:rgba(95,224,138,.3);color:var(--green)}
-.day-title{flex:1;min-width:0}
-.day-title .t{font-weight:600;font-size:15.5px}
-.day-title .meta{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:2px}
-.pbadge{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;border-radius:99px;white-space:nowrap}
-.pbadge.p1{background:rgba(255,178,74,.13);color:var(--amber)}
-.pbadge.p2{background:rgba(95,224,207,.13);color:var(--cyan)}
-.pbadge.p3{background:rgba(155,140,255,.13);color:var(--violet)}
-.pbadge.p4{background:rgba(95,224,138,.13);color:var(--green)}
-.chev{color:var(--muted-2);transition:transform .3s;font-family:var(--mono)}
-.day.open .chev{transform:rotate(90deg)}
-.day-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
-.day.open .day-body{max-height:3000px}
-.day-body-inner{padding:6px 18px 18px;border-top:1px solid var(--line)}
+.di-num { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+.type-workday .di-num { background: var(--surface3); color: var(--text2); }
+.type-wfh .di-num { background: rgba(61,255,160,0.1); color: var(--green); }
+.type-weekend .di-num { background: rgba(95,138,255,0.1); color: var(--accent2); }
+.day-item.active .di-num { background: var(--accent) !important; color: #000 !important; }
 
-/* topic banner inside a day */
-.tbanner{display:flex;align-items:center;gap:14px;margin:14px 0 4px;padding:13px 15px;border-radius:12px;background:var(--panel);border:1px solid var(--line);position:relative;overflow:hidden}
-.tbanner::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
-.tbanner[data-c="amber"]::before{background:var(--amber)} .tbanner[data-c="cyan"]::before{background:var(--cyan)}
-.tbanner[data-c="green"]::before{background:var(--green)} .tbanner[data-c="violet"]::before{background:var(--violet)}
-.tbanner[data-c="red"]::before{background:var(--red)}
-.tbanner .ic{font-size:22px;width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:var(--ink-2);border:1px solid var(--line)}
-.tbanner .bi{flex:1;min-width:0}
-.tbanner h3{font-family:var(--display);font-size:20px;font-weight:600;letter-spacing:-.01em}
-.tbanner .bs{font-size:12.5px;color:var(--muted);margin-top:1px}
-.tbanner .ring{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:700;text-align:right;white-space:nowrap}
-.tbanner .ring small{display:block;font-size:9px;color:var(--muted-2);letter-spacing:.12em;text-transform:uppercase;font-weight:400}
+.di-info { flex: 1; min-width: 0; }
+.di-title { font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.di-meta { display: flex; align-items: center; gap: 5px; margin-top: 3px; }
+.di-dayname { font-size: 10px; color: var(--muted); font-family: 'Space Mono', monospace; }
+.di-badge { font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 700; letter-spacing: 0.3px; }
+.badge-work { background: rgba(255,95,126,0.12); color: var(--accent3); }
+.badge-wfh { background: rgba(61,255,160,0.1); color: var(--green); }
+.badge-weekend { background: rgba(95,138,255,0.1); color: var(--accent2); }
 
-.blk-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted-2);margin:16px 0 9px;display:flex;align-items:center;gap:10px}
-.blk-lbl::after{content:"";flex:1;height:1px;background:var(--line)}
+.di-ring { flex-shrink: 0; position: relative; width: 28px; height: 28px; }
+.di-ring svg { transform: rotate(-90deg); }
+.ring-bg2 { fill: none; stroke: var(--border); stroke-width: 2.5; }
+.ring-fill2 { fill: none; stroke-width: 2.5; stroke-linecap: round; transition: stroke-dashoffset 0.4s; }
+.ring-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 7px; }
 
-.subs{display:grid;grid-template-columns:1fr 1fr;gap:6px 22px}
-.sub{display:flex;gap:10px;align-items:flex-start;padding:4px 0}
-.sub label{font-size:13px;cursor:pointer;color:var(--muted);flex:1;transition:.2s}
-.sub label b{color:var(--text);font-weight:600}
-.sub input:checked ~ label{color:var(--muted-2)}
-.sub input:checked ~ label b{text-decoration:line-through}
+/* Sidebar footer */
+.sidebar-footer { border-top: 1px solid var(--border); padding: 10px 14px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+.leg-item { display: flex; align-items: center; gap: 7px; font-size: 10px; color: var(--muted); }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-.qrow{display:flex;gap:13px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.qrow:last-child{border-bottom:none}
-.qmain{flex:1;min-width:0}
-.qt{font-size:14.5px;font-weight:600}
-.qt .qno{font-family:var(--mono);color:var(--muted-2);font-weight:400;margin-right:7px;font-size:12.5px}
-.qrow input:checked ~ .qmain .qt{text-decoration:line-through;color:var(--muted-2)}
-.qmeta{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;align-items:center}
-.diff{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:5px;font-weight:700}
-.diff.easy{background:rgba(95,224,138,.14);color:var(--green)}
-.diff.med{background:rgba(255,178,74,.14);color:var(--amber)}
-.diff.hard{background:rgba(255,111,142,.14);color:var(--red)}
-.pat{font-family:var(--mono);font-size:10.5px;color:var(--cyan);background:rgba(95,224,207,.07);padding:3px 8px;border-radius:5px}
-.tt{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
-.qnote{font-size:12px;color:var(--muted-2);margin-top:5px;font-style:italic}
+/* DETAIL PANEL */
+.detail-panel { flex: 1; overflow-y: auto; background: var(--bg); }
+.detail-panel::-webkit-scrollbar { width: 5px; }
+.detail-panel::-webkit-scrollbar-track { background: transparent; }
+.detail-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.detail-inner { max-width: 860px; margin: 0 auto; padding: 28px 32px 48px; }
 
-.task{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.05)}
-.task:last-child{border-bottom:none}
-.task label{font-size:13.5px;cursor:pointer;flex:1;color:var(--text)}
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 12px; color: var(--muted); }
+.empty-icon { font-size: 48px; opacity: 0.3; }
+.empty-text { font-size: 14px; }
 
-.cbx{appearance:none;width:19px;height:19px;min-width:19px;border:1.6px solid var(--muted-2);border-radius:6px;cursor:pointer;position:relative;margin-top:2px;transition:.18s;background:rgba(255,255,255,.02)}
-.cbx:hover{border-color:var(--amber)}
-.cbx:checked{background:var(--amber);border-color:var(--amber)}
-.cbx:checked::after{content:"";position:absolute;left:5.5px;top:2px;width:5px;height:9px;border:solid var(--ink);border-width:0 2.4px 2.4px 0;transform:rotate(43deg)}
-.cbx:disabled{opacity:.4;cursor:not-allowed}
+/* Day header */
+.detail-day-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+.detail-day-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.detail-day-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; }
+.detail-day-sub { margin-top: 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.big-badge { font-size: 11px; padding: 4px 10px; border-radius: 6px; font-weight: 700; letter-spacing: 0.5px; }
 
-.markday{margin-top:16px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;cursor:pointer;background:rgba(95,224,138,.1);border:1px solid rgba(95,224,138,.3);color:var(--green);padding:8px 14px;border-radius:8px;transition:.2s}
-.markday:hover{background:rgba(95,224,138,.2)}
+.detail-ring { position: relative; width: 70px; height: 70px; flex-shrink: 0; }
+.detail-ring svg { transform: rotate(-90deg); }
+.detail-ring-bg { fill: none; stroke: var(--border); stroke-width: 4; }
+.detail-ring-fill { fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.5s; }
+.detail-ring-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
 
-/* METHOD */
-.method{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
-.mcard{border:1px solid var(--line);border-radius:14px;padding:20px;background:var(--ink-2)}
-.mcard h4{font-family:var(--display);font-size:19px;font-weight:600;margin-bottom:10px;color:var(--amber)}
-.mcard ol,.mcard ul{padding-left:18px;color:var(--muted);font-size:14px}
-.mcard li{margin-bottom:7px} .mcard li b{color:var(--text)}
+/* Why block */
+.why-block { margin-top: 10px; font-size: 12px; color: var(--text2); background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 9px 12px; border-radius: 6px; line-height: 1.5; }
 
-.footer{border-top:1px solid var(--line);padding:30px 0;text-align:center}
-.footer p{font-family:var(--mono);font-size:11.5px;color:var(--muted-2)}
-.reset{margin-top:14px;font-family:var(--mono);font-size:11px;background:none;border:1px solid var(--line);color:var(--muted);padding:8px 16px;border-radius:8px;cursor:pointer;transition:.2s}
-.reset:hover{border-color:var(--red);color:var(--red)}
+/* Section heads */
+.section-head { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 22px 0 10px; display: flex; align-items: center; gap: 10px; }
+.section-head::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-@media(max-width:820px){.dash{grid-template-columns:1fr 1fr}.phases{grid-template-columns:1fr 1fr}.method{grid-template-columns:1fr}.subs{grid-template-columns:1fr}}
-@media(max-width:520px){.hero{padding:44px 0 30px}.dash{grid-template-columns:1fr 1fr;gap:10px}.stat .val{font-size:34px}.pbadge{display:none}}
+/* Schedule */
+.schedule-grid { display: flex; flex-direction: column; gap: 6px; }
+.sched-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 11px 14px; display: flex; gap: 12px; align-items: flex-start; }
+.sched-dur { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); white-space: nowrap; min-width: 48px; background: rgba(240,192,64,0.08); border-radius: 5px; padding: 2px 7px; text-align: center; flex-shrink: 0; margin-top: 2px; }
+.sched-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.sched-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* Topics */
+.topics-grid { display: flex; flex-direction: column; gap: 6px; }
+.topic-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: all 0.15s; display: flex; gap: 12px; align-items: flex-start; }
+.topic-item:hover { border-color: var(--border2); }
+.topic-item.checked { background: rgba(61,255,160,0.04); border-color: rgba(61,255,160,0.2); }
+.topic-item.imp { border-left: 3px solid var(--accent3); }
+.topic-item.imp.checked { border-left: 3px solid var(--green); }
+.topic-checkbox { width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px; transition: all 0.15s; }
+.topic-item.checked .topic-checkbox { background: var(--green); border-color: var(--green); color: #000; }
+.chk-icon { display: none; }
+.topic-item.checked .chk-icon { display: block; }
+.topic-body { flex: 1; }
+.topic-name-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 4px; }
+.topic-name { font-size: 13px; font-weight: 700; }
+.imp-star { font-size: 9px; font-weight: 800; letter-spacing: 0.5px; background: rgba(255,95,126,0.15); color: var(--accent3); border: 1px solid rgba(255,95,126,0.25); padding: 1px 6px; border-radius: 3px; }
+.poly-badge { font-size: 9px; background: rgba(240,192,64,0.12); color: var(--accent); border: 1px solid rgba(240,192,64,0.25); padding: 1px 5px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: 0.5px; }
+.topic-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 5px; }
+.ttag { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
+.ttag-core { background: rgba(240,192,64,0.1); color: var(--accent); }
+.ttag-advanced { background: rgba(255,95,126,0.1); color: var(--accent3); }
+.ttag-practical { background: rgba(95,138,255,0.1); color: var(--accent2); }
+.ttag-browser { background: rgba(61,255,160,0.1); color: var(--green); }
+.ttag-htmlcss { background: rgba(180,130,255,0.1); color: var(--purple); }
+.topic-note { font-size: 12px; color: var(--text2); line-height: 1.5; }
+.subtopics { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 3px; }
+.st-item { font-size: 11px; color: var(--text2); display: flex; gap: 7px; align-items: flex-start; padding: 2px 0; }
+.st-dot { color: var(--muted); flex-shrink: 0; }
+
+/* Resources */
+.resources { display: flex; gap: 7px; flex-wrap: wrap; }
+.res-link { font-size: 11px; padding: 5px 11px; border-radius: 6px; background: var(--surface); border: 1px solid var(--border); color: var(--accent2); text-decoration: none; font-family: 'JetBrains Mono', monospace; transition: all 0.15s; }
+.res-link:hover { border-color: var(--accent2); }
+
+/* Notes & Mood */
+.notes-area { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; resize: vertical; min-height: 80px; outline: none; transition: border-color 0.15s; line-height: 1.6; }
+.notes-area:focus { border-color: var(--accent); }
+.notes-area::placeholder { color: var(--muted); }
+.mood-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.mood-btn { padding: 6px 13px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; font-family: 'Syne', sans-serif; color: var(--text2); }
+.mood-btn.selected { border-color: var(--accent); background: rgba(240,192,64,0.08); color: var(--accent); }
+
+/* Toast */
+.toast { position: fixed; bottom: 20px; right: 20px; background: var(--green); color: #000; padding: 9px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; font-family: 'Space Mono', monospace; opacity: 0; transform: translateY(8px); transition: all 0.25s; z-index: 9999; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateY(0); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.anim { animation: fadeIn 0.2s ease; }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="wrap">
-    <span class="tag">Last-Moment Interview Drill · 60 Days</span>
-    <h1>DSA <em>by heart</em>.<br>50 problems, zero panic.</h1>
-    <p class="sub">A 60-day campaign that locks <b>50 must-solve problems</b> and their patterns into long-term memory. Everything — what to study and what to solve — lives in <b>one timeline</b> so you tick it all off in place.</p>
-    <div class="warn">⚡ Target: every problem solved cold, with working code, in &lt; 40 min</div>
-    <div class="hero-meta">
-      <span class="chip"><b>50</b> problems</span>
-      <span class="chip"><b>10</b> topics</span>
-      <span class="chip"><b>4</b> phases</span>
-      <span class="chip">Spaced repetition built-in</span>
-      <span class="chip">Progress auto-saved</span>
-    </div>
-    <div class="dash">
-      <div class="stat q"><div class="lbl">Problems mastered</div><div class="val" id="qVal">0<small>/49</small></div><div class="bar"><i id="qBar"></i></div></div>
-      <div class="stat t"><div class="lbl">Subtopics learned</div><div class="val" id="sVal">0<small>/0</small></div><div class="bar"><i id="sBar"></i></div></div>
-      <div class="stat d"><div class="lbl">Days completed</div><div class="val" id="dVal">0<small>/60</small></div><div class="bar"><i id="dBar"></i></div></div>
-      <div class="stat s"><div class="lbl">Overall readiness</div><div class="val" id="oVal">0<small>%</small></div><div class="bar"><i id="oBar"></i></div></div>
+<header>
+  <div class="logo">
+    <div class="logo-badge">15 DAYS</div>
+    <div class="logo-text">JS <span>Mastery</span> Planner</div>
+  </div>
+  <div class="header-stats">
+    <div class="stat-pill"><span class="slabel">Topics</span><span class="sval" id="stat-topics">0/0</span></div>
+    <div class="stat-pill"><span class="slabel">Days Done</span><span class="sval" id="stat-days">0/15</span></div>
+    <div class="global-prog-wrap">
+      <div class="prog-label" id="prog-pct">0%</div>
+      <div class="global-prog-bar"><div class="global-prog-fill" id="global-bar"></div></div>
     </div>
   </div>
 </header>
 
-<nav class="tabs">
-  <div class="wrap">
-    <button class="active" data-v="plan">▸ The 60-Day Timeline</button>
-    <button data-v="method">▸ How to Use This</button>
-  </div>
-</nav>
-
-<section class="view active" id="plan">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>One timeline, everything in place<span class="dot">.</span></h2>
-      <p>Tap any day to expand it. On each topic's first day you'll see its <b>subtopics to study</b> right above the problems to solve — so you always know the technique before you attempt the question. Tick subtopics, problems, and tasks; then mark the day done.</p>
-    </div>
-
-    <div class="phases">
-      <div class="phase p1"><div class="pn">Phase 1</div><h4>Build Foundations</h4><div class="pd">Days 1–30</div><p>Learn each topic's patterns + solve all 50 once, with same-topic revisits.</p></div>
-      <div class="phase p2"><div class="pn">Phase 2</div><h4>Re-solve from Memory</h4><div class="pd">Days 31–44</div><p>Timed re-solves per topic, then cross-pattern mixed sets.</p></div>
-      <div class="phase p3"><div class="pn">Phase 3</div><h4>Speed &amp; Patterns</h4><div class="pd">Days 45–54</div><p>Random 5/day under a strict &lt;40-min timer. Log shaky ones.</p></div>
-      <div class="phase p4"><div class="pn">Phase 4</div><h4>Mock &amp; Mastery</h4><div class="pd">Days 55–60</div><p>Full talk-aloud mocks + final rapid-fire over all 50.</p></div>
-    </div>
-
-    <div class="callout">
-      <h4>Ordering & smart clubbing</h4>
-      <p>Order is sequenced for learning: linear structures first, then the recursion family (<b>Trees → Backtracking → Graphs</b>) kept together since they share DFS/BFS, then Heaps and DP last. <b>Valid Parentheses</b> (#10 = #18) is one problem, shown once. <b>Kadane (#3)</b> ↔ <b>Max Product (#50)</b>, <b>Sliding Window Max (#20)</b> ↔ <b>Median (#45)</b>, and <b>Subsets/Combos/Permutations (#31–33)</b> share an engine — learn it once, get the rest cheaper.</p>
-    </div>
-
-    <div id="dayList"></div>
-  </div>
-</section>
-
-<section class="view" id="method">
-  <div class="wrap">
-    <div class="sec-head">
-      <h2>How to actually get these <span class="dot">"by heart"</span></h2>
-      <p>Memory ≠ re-reading solutions. It comes from <b>retrieval under pressure</b> + <b>spacing</b>. Here's the method baked into the timeline.</p>
-    </div>
-    <div class="method">
-      <div class="mcard">
-        <h4>The daily loop (per problem)</h4>
-        <ol>
-          <li><b>Understand cold</b> — restate the problem + constraints in your own words.</li>
-          <li><b>Recall the pattern</b> — before coding, say which technique applies and why.</li>
-          <li><b>Code without looking</b> — full solution from scratch; run it mentally.</li>
-          <li><b>State complexity</b> — time &amp; space, and the bottleneck.</li>
-          <li><b>Self-grade</b> — peek at a solution only after a real attempt; note what you missed.</li>
-        </ol>
-      </div>
-      <div class="mcard">
-        <h4>The spacing rule (what makes it stick)</h4>
-        <ul>
-          <li><b>Phase 1</b>: first exposure + same-week revisit.</li>
-          <li><b>Phase 2</b>: re-solve each topic from memory (gap of weeks).</li>
-          <li><b>Phase 3</b>: random recall — you don't know what's next, like a real interview.</li>
-          <li><b>Phase 4</b>: verbalize all 50 approaches in one sitting. Explain pattern + complexity in 60s each → it's in long-term memory.</li>
-        </ul>
+<div class="app-body">
+  <aside class="days-sidebar">
+    <div class="sidebar-top">
+      <div class="sidebar-top-title">15-Day Battle Plan</div>
+      <div class="week-filters">
+        <button class="wf-btn active" onclick="filterWeek('all',this)">All</button>
+        <button class="wf-btn" onclick="filterWeek(1,this)">Week 1</button>
+        <button class="wf-btn" onclick="filterWeek(2,this)">Week 2</button>
+        <button class="wf-btn" onclick="filterWeek(3,this)">Day 15</button>
       </div>
     </div>
-    <div class="callout">
-      <h4>The &lt; 40-minute discipline</h4>
-      <p>Use a visible timer. <b>Max 5 min thinking</b> before coding. Stuck at 25 min? Peek at one hint and continue. If a problem takes &gt; 40 min, it joins your re-drill list for the next speed day. Speed comes from <b>recognizing the pattern fast</b>, not typing faster.</p>
+    <div class="days-list" id="days-list"></div>
+    <div class="sidebar-footer">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--border2)"></div>Mon–Thu · 3h study</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div>Friday WFH · 4h study</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--accent2)"></div>Weekend · 8h study</div>
     </div>
-    <div class="method">
-      <div class="mcard">
-        <h4>Interview-day reflexes</h4>
-        <ul>
-          <li><b>Clarify</b> ranges, duplicates, empty cases before coding.</li>
-          <li><b>Talk while you code</b> — silence reads as being stuck.</li>
-          <li><b>Trace one example</b> by hand to catch off-by-one bugs.</li>
-          <li><b>Know the brute force first</b>, then optimize.</li>
-        </ul>
-      </div>
-      <div class="mcard">
-        <h4>Core patterns powering all 50</h4>
-        <ul>
-          <li>Two pointers · Sliding window · Prefix sums · Hashing</li>
-          <li>Fast &amp; slow pointers · in-place reversal</li>
-          <li>Monotonic stack · deque</li>
-          <li>BFS · DFS · topological sort · union-find</li>
-          <li>Binary search on index <i>and</i> on answer</li>
-          <li>Backtracking (choose / explore / un-choose)</li>
-          <li>Heaps · two-heap median · 1-D &amp; subsequence DP</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
+  </aside>
 
-<div class="footer">
-  <div class="wrap">
-    <p>Your progress is saved automatically in this browser. Reopen this file on the same device to resume.</p>
-    <button class="reset" id="resetBtn">⟲ Reset all progress</button>
+  <div class="detail-panel" id="detail-panel">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">📅</div>
+      <div class="empty-text">Pick a day from the sidebar</div>
+    </div>
+    <div id="detail-inner" style="display:none"></div>
   </div>
 </div>
 
+<div class="toast" id="toast">✓ Saved</div>
+
 <script>
-/* =================== TOPIC DATA =================== */
-const TOPICS = [
-  {id:"arrays",name:"Arrays",icon:"▦",color:"amber",sum:"Two pointers, prefix products, the running-max idea.",
-   subs:[["Two-pointer","traversal & in-place techniques"],["Hashing","seen-map for O(1) lookups (Two Sum)"],["Kadane's algorithm","running max subarray"],["Prefix / suffix products","Product Except Self, no division"],["Interval sorting","sort by start, then merge overlaps"],["Single-pass min tracking","Buy/Sell Stock"]],
-   qs:[{n:1,t:"Two Sum",d:"easy",p:"Hash Map",tt:"15m"},{n:2,t:"Best Time to Buy and Sell Stock",d:"easy",p:"Greedy / Min-so-far",tt:"15m"},{n:3,t:"Maximum Subarray (Kadane's)",d:"med",p:"Kadane / DP",tt:"15m",note:"Same engine as #50 Max Product Subarray."},{n:4,t:"Merge Intervals",d:"med",p:"Sort + Merge",tt:"25m"},{n:5,t:"Product of Array Except Self",d:"med",p:"Prefix/Suffix",tt:"20m"}]},
-  {id:"strings",name:"Strings",icon:"❝",color:"cyan",sum:"Sliding window, frequency maps, expand-around-center.",
-   subs:[["Two-pointer on chars","palindrome checks, skipping non-alnum"],["Sliding window","longest substring w/o repeats"],["Frequency map / sorted key","grouping anagrams"],["Expand around center","longest palindromic substring"],["Stack matching","balanced parentheses"],["ASCII / char hashing","26-size arrays vs maps"]],
-   qs:[{n:6,t:"Valid Palindrome",d:"easy",p:"Two Pointers",tt:"15m"},{n:7,t:"Longest Substring Without Repeating Characters",d:"med",p:"Sliding Window",tt:"25m"},{n:8,t:"Group Anagrams",d:"med",p:"Hash by signature",tt:"20m"},{n:9,t:"Longest Palindromic Substring",d:"med",p:"Expand Center",tt:"30m"},{n:10,t:"Valid Parentheses",d:"easy",p:"Stack",tt:"15m",note:"Same as Stacks #18 — solve once, revisit with the stack lens."}]},
-  {id:"bsearch",name:"Binary Search",icon:"◐",color:"cyan",sum:"Search on index, on rotation, and on the answer itself.",
-   subs:[["Classic binary search","lo/hi/mid invariants, avoid overflow"],["Rotated array search","which half is sorted?"],["Find rotation minimum","compare mid vs hi"],["Binary search on answer","First Bad Version / monotonic predicate"],["Partition search","median of two arrays (hard)"]],
-   qs:[{n:26,t:"Binary Search (Basic)",d:"easy",p:"Binary Search",tt:"10m"},{n:27,t:"Search in Rotated Sorted Array",d:"med",p:"Modified BS",tt:"25m"},{n:28,t:"Find Minimum in Rotated Sorted Array",d:"med",p:"Modified BS",tt:"20m"},{n:29,t:"First Bad Version",d:"easy",p:"BS on answer",tt:"15m"},{n:30,t:"Median of Two Sorted Arrays",d:"hard",p:"Partition BS",tt:"35m",note:"Hardest of the set — budget extra revisits."}]},
-  {id:"linked",name:"Linked List",icon:"↬",color:"violet",sum:"Dummy nodes, fast/slow pointers, in-place reversal.",
-   subs:[["Pointer manipulation","next/prev rewiring without losing nodes"],["Dummy head node","simplifies merge/remove edge cases"],["Fast & slow pointers","cycle detection, nth-from-end"],["In-place reversal","iterative 3-pointer reverse"],["Carry handling","digit addition across lists"]],
-   qs:[{n:11,t:"Reverse Linked List",d:"easy",p:"Iterative Reverse",tt:"15m"},{n:12,t:"Merge Two Sorted Lists",d:"easy",p:"Dummy + Merge",tt:"15m"},{n:13,t:"Linked List Cycle Detection",d:"easy",p:"Floyd's Tortoise/Hare",tt:"15m"},{n:14,t:"Remove Nth Node From End",d:"med",p:"Two Pointers (gap)",tt:"20m"},{n:15,t:"Add Two Numbers",d:"med",p:"Carry Simulation",tt:"25m"}]},
-  {id:"stack",name:"Stacks & Queues",icon:"⊟",color:"amber",sum:"Monotonic stacks, deques, stack-built queues.",
-   subs:[["Stack design w/ O(1) min","auxiliary stack pattern"],["Queue via two stacks","amortized O(1) dequeue"],["Monotonic stack","next-greater / Daily Temperatures"],["Monotonic deque","sliding window maximum"],["Bracket matching","parentheses validation"]],
-   qs:[{n:16,t:"Min Stack",d:"med",p:"Aux Stack",tt:"20m"},{n:17,t:"Implement Queue using Stacks",d:"easy",p:"Two Stacks",tt:"20m"},{n:18,t:"Valid Parentheses (Stack)",d:"easy",p:"Stack",tt:"15m",note:"Identical to Strings #10 — counted once."},{n:19,t:"Daily Temperatures",d:"med",p:"Monotonic Stack",tt:"20m"},{n:20,t:"Sliding Window Maximum",d:"hard",p:"Monotonic Deque",tt:"30m",note:"Windowing skeleton reused in #45."}]},
-  {id:"trees",name:"Binary Trees",icon:"⑂",color:"green",sum:"DFS recursion, BFS level order, ancestor logic.",
-   subs:[["DFS recursion","return-value-up vs pass-down state"],["BFS level order","queue + level-size loop"],["Tree symmetry / mirror","paired recursion"],["Lowest common ancestor","split-point recursion"],["Height & diameter","post-order, track global max"]],
-   qs:[{n:21,t:"Maximum Depth of Binary Tree",d:"easy",p:"DFS",tt:"10m"},{n:22,t:"Symmetric Tree",d:"easy",p:"Paired DFS",tt:"15m"},{n:23,t:"Binary Tree Level Order Traversal",d:"med",p:"BFS",tt:"20m"},{n:24,t:"Lowest Common Ancestor",d:"med",p:"Recursion",tt:"20m"},{n:25,t:"Diameter of Binary Tree",d:"easy",p:"Post-order + global",tt:"20m"}]},
-  {id:"backtrack",name:"Recursion & Backtracking",icon:"⟁",color:"violet",sum:"One choose/explore/un-choose template, many problems.",
-   subs:[["Recursion tree thinking","state, choices, base case"],["Choose → explore → un-choose","the backtracking spine"],["Subsets / combinations","start-index to avoid repeats"],["Permutations","used[] / swap technique"],["Pruning","skip duplicates, bound checks (N-Queens, Word Search)"]],
-   qs:[{n:31,t:"Subsets",d:"med",p:"Backtracking",tt:"20m"},{n:32,t:"Combination Sum",d:"med",p:"Backtracking + reuse",tt:"25m"},{n:33,t:"Permutations",d:"med",p:"Backtracking + used[]",tt:"20m",note:"#31–33 share one template — learn it once."},{n:34,t:"Word Search",d:"med",p:"Grid DFS + backtrack",tt:"30m"},{n:35,t:"N-Queens",d:"hard",p:"Backtracking + pruning",tt:"35m"}]},
-  {id:"graphs",name:"Graphs",icon:"⬡",color:"green",sum:"BFS, DFS, topological sort, multi-source spread.",
-   subs:[["Grid as graph","4-direction traversal, visited marking"],["BFS & DFS","queue vs stack/recursion"],["Multi-source BFS","simultaneous starts (Rotting Oranges)"],["Topological sort","cycle detection / Course Schedule"],["Adjacency list + clone","hash old→new node mapping"],["Reverse-flow trick","Pacific Atlantic from oceans inward"]],
-   qs:[{n:36,t:"Number of Islands",d:"med",p:"Grid DFS/BFS",tt:"20m"},{n:37,t:"Clone Graph",d:"med",p:"DFS + Hash map",tt:"25m"},{n:38,t:"Course Schedule",d:"med",p:"Topo sort / cycle",tt:"25m"},{n:39,t:"Rotten Oranges",d:"med",p:"Multi-source BFS",tt:"25m"},{n:40,t:"Pacific Atlantic Water Flow",d:"med",p:"Reverse DFS/BFS",tt:"30m"}]},
-  {id:"heaps",name:"Heaps & Priority Queue",icon:"△",color:"red",sum:"Top-K patterns, k-way merge, two-heap median.",
-   subs:[["Heap basics","min/max heap, heapify, push/pop O(log n)"],["Top-K elements","size-k heap to keep largest/most-frequent"],["K-way merge","heap of list heads"],["Two-heap pattern","max-heap (low) + min-heap (high) for median"],["Heap + windowing","running median over a sliding window"]],
-   qs:[{n:41,t:"Kth Largest Element in an Array",d:"med",p:"Min-heap size k",tt:"20m"},{n:42,t:"Top K Frequent Elements",d:"med",p:"Freq + heap/bucket",tt:"25m"},{n:43,t:"Merge K Sorted Lists",d:"hard",p:"K-way merge heap",tt:"30m"},{n:44,t:"Find Median from Data Stream",d:"hard",p:"Two heaps",tt:"30m"},{n:45,t:"Sliding Window Median",d:"hard",p:"Two heaps + window",tt:"35m",note:"Combines #44's two-heap with windowing from #20."}]},
-  {id:"dp",name:"Dynamic Programming",icon:"◧",color:"amber",sum:"Recurrences, 1-D DP, subsequence DP, decision DP.",
-   subs:[["State & recurrence","define dp[i], find the transition"],["Memoization vs tabulation","top-down vs bottom-up"],["1-D climbing DP","Fibonacci-style (Climbing Stairs)"],["Unbounded knapsack","Coin Change min coins"],["Subsequence DP / patience","Longest Increasing Subsequence"],["String / decision DP","Word Break; sign-tracking Max Product"]],
-   qs:[{n:46,t:"Climbing Stairs",d:"easy",p:"1-D DP",tt:"10m"},{n:47,t:"Coin Change",d:"med",p:"Unbounded knapsack",tt:"25m"},{n:48,t:"Longest Increasing Subsequence",d:"med",p:"DP / patience BS",tt:"25m"},{n:49,t:"Word Break",d:"med",p:"DP over string",tt:"25m"},{n:50,t:"Maximum Product Subarray",d:"med",p:"Track max & min",tt:"20m",note:"Kadane variant of #3 — keep the min too (negatives flip)."}]},
+// ═══════════════════════════════════════════════
+// DATA — Priority-ordered for SDE2 JS interview
+// ═══════════════════════════════════════════════
+const PLAN = [
+  {
+    day:1, dayName:"Monday", type:"workday",
+    title:"Execution Context & Hoisting",
+    why:"Foundation of all JS. Every other concept (closures, async, this) builds on execution context. Start here, never skip.",
+    schedule:[
+      {dur:"1.5h", title:"Execution Context & Call Stack", desc:"Global EC, function EC, creation vs execution phase. Draw the call stack for nested functions."},
+      {dur:"1h", title:"Hoisting — var / let / const / functions", desc:"What gets hoisted, TDZ for let/const, function declarations vs expressions."},
+      {dur:"0.5h", title:"Job Applications", desc:"Apply to 3–5 roles. Tailor keywords to JD."},
+    ],
+    topics:[
+      {id:"d1t1", name:"Execution Context & Call Stack", tag:"core", imp:true,
+       note:"Interviewers ask 'explain how JS executes this code'. Know this diagram cold.",
+       sub:["Global EC created when script runs","Function EC pushed on each fn call","EC has 2 phases: Creation (memory allocation) and Execution (code runs)","Call stack is LIFO — last in, first out","Stack overflow = infinite recursion filling the stack"]},
+      {id:"d1t2", name:"Hoisting", tag:"core", imp:true,
+       note:"Most interviews open with a hoisting output puzzle. Never get it wrong.",
+       sub:["var: hoisted + initialised to undefined","let/const: hoisted BUT not initialised → TDZ","Function declarations: fully hoisted (name + body)","Function expressions: treated like var — only declaration hoisted","Class declarations: hoisted but TDZ applies (like let)"]},
+      {id:"d1t3", name:"Temporal Dead Zone (TDZ)", tag:"core", imp:true,
+       note:"Why does accessing let before declaration throw ReferenceError and not undefined?",
+       sub:["TDZ = gap between hoisting and initialisation line","Accessing in TDZ → ReferenceError (NOT undefined)","Even typeof on a TDZ variable throws","Applies to let, const, class","Common trap: using let in a function before it's declared"]},
+      {id:"d1t4", name:"var vs let vs const — All Differences", tag:"core", imp:true,
+       note:"Classic table question. Know all 5 differences.",
+       sub:["var: function-scoped, re-declarable, re-assignable, initialised to undefined","let: block-scoped, not re-declarable, re-assignable, TDZ","const: block-scoped, not re-declarable, not re-assignable, TDZ","const object properties CAN be mutated — only the binding is const","Classic trap: var in for-loop + setTimeout shares one binding"]},
+      {id:"d1t5", name:"Scope & Scope Chain", tag:"core", imp:false,
+       note:"Lexical scope = determined at write time. Scope chain = how JS looks up variables.",
+       sub:["Global, function, block scope","Lexical scope: inner fn can access outer vars, not vice versa","Scope chain walks outward until global scope","IIFE pattern for scope isolation","Module scope in ES6 modules"]},
+    ],
+    resources:[{label:"JS Visualizer 9000", url:"https://www.jsv9000.app/"},{label:"MDN Hoisting", url:"https://developer.mozilla.org/en-US/docs/Glossary/Hoisting"}]
+  },
+  {
+    day:2, dayName:"Tuesday", type:"workday",
+    title:"Closures — Most Asked JS Topic",
+    why:"Closures appear in 90%+ of JS interviews. Understand the mechanism deeply, not just 'function inside function'.",
+    schedule:[
+      {dur:"1.5h", title:"Closures — mechanism, memory, patterns", desc:"How closure captures lexical env. Stale closure. Counter, once(), memoize, module pattern."},
+      {dur:"1h", title:"Currying & Partial Application", desc:"Write curry(fn). Partial application. Common interview coding question."},
+      {dur:"0.5h", title:"Job Applications", desc:"Apply to 3–5 roles."},
+    ],
+    topics:[
+      {id:"d2t1", name:"What is a Closure", tag:"core", imp:true,
+       note:"Function + its lexical environment. Created every time a function is created.",
+       sub:["Closure = function bundled with reference to its outer scope","Inner function retains access to outer vars AFTER outer function returns","Closed-over variables stay in memory as long as closure exists","Every function in JS is technically a closure","Interview: 'What is a closure?' — don't just say 'function inside function'"]},
+      {id:"d2t2", name:"Closure Patterns (coding)", tag:"practical", imp:true,
+       note:"These appear directly as coding questions. Write each one from scratch.",
+       sub:["Counter with private state (encapsulation)","once(fn): runs only first time, returns same result after","memoize(fn): cache results using closure Map","Module pattern: IIFE returning public API","Partial application using closure"]},
+      {id:"d2t3", name:"Closure in Loops — The var Trap", tag:"core", imp:true,
+       note:"Most common closure output puzzle. Interviewers always use this.",
+       sub:["var in for loop: all callbacks share same 'i' binding → all log same value","Fix 1: use let (creates new binding per iteration)","Fix 2: IIFE inside loop to create new scope","Fix 3: forEach — each call is a new function scope","Always test yourself: setTimeout in for-loop with var vs let"]},
+      {id:"d2t4", name:"Stale Closures", tag:"advanced", imp:false,
+       note:"Common React bug. Handler closes over old state value.",
+       sub:["Closure captures value at time of creation, not current value","React useEffect with stale state: handler uses initial state, not updated","Fix: dependency array, useRef, or pass value as argument","Interview: explain a React bug caused by stale closure"]},
+      {id:"d2t5", name:"Currying", tag:"advanced", imp:true,
+       note:"Write curry(fn) that converts f(a,b,c) → f(a)(b)(c). Very frequently asked.",
+       sub:["Currying: transform multi-arg fn into chain of single-arg fns","Partial application: fix some args, return fn expecting rest","curry() implementation: check args.length vs fn.length, recurse","Use case: reusable configured functions, point-free style","Difference: currying = always 1 arg per call. Partial = any number."]},
+    ],
+    resources:[{label:"MDN Closures", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures"}]
+  },
+  {
+    day:3, dayName:"Wednesday", type:"workday",
+    title:"this Keyword + call / apply / bind Polyfills",
+    why:"Top-3 most asked JS concept. Mastering 'this' makes you look senior instantly. Polyfill for bind is almost guaranteed.",
+    schedule:[
+      {dur:"1.5h", title:"4 Rules of this + Arrow functions", desc:"Default, implicit, explicit, new binding. Arrow = lexical this. Predict output of 10 puzzles."},
+      {dur:"1h", title:"Polyfills: bind, call, apply", desc:"Write Function.prototype.myBind from scratch. Handle partial application and new keyword."},
+      {dur:"0.5h", title:"Job Applications", desc:"Apply to 3–5 roles."},
+    ],
+    topics:[
+      {id:"d3t1", name:"4 Rules of this Binding", tag:"core", imp:true,
+       note:"Priority: new > explicit > implicit > default. Memorise this order.",
+       sub:["Default: standalone fn call → global (undefined in strict mode)","Implicit: obj.fn() → this = obj","Explicit: call/apply/bind → this = first argument","new: constructor call → this = newly created object","Arrow functions: no own 'this', inherit from enclosing scope"]},
+      {id:"d3t2", name:"call() vs apply() vs bind()", tag:"core", imp:true,
+       note:"Return values: call/apply invoke immediately. bind returns new function.",
+       sub:["call(thisArg, arg1, arg2) — invoke immediately, args spread","apply(thisArg, [args]) — invoke immediately, args as array","bind(thisArg, arg1) — returns NEW function, not invoked","Method borrowing: Array.prototype.slice.call(arguments)","Partial application with bind: fn.bind(null, firstArg)"]},
+      {id:"d3t3", name:"Polyfill: Function.prototype.bind", tag:"core", imp:true, polyfill:true,
+       note:"#2 most asked polyfill. Write from memory in under 5 minutes.",
+       sub:["Capture 'this' context and pre-set args using closure","Return new function that calls original via apply","Handle pre-set arguments (partial application)","Handle new: if called with new, use newly created object as this","Check: if (this instanceof bound) — then ignore bound this"]},
+      {id:"d3t4", name:"Arrow Functions vs Regular Functions", tag:"core", imp:true,
+       note:"Arrow has no this, no arguments, no prototype. Cannot use as constructor.",
+       sub:["Arrow captures 'this' from surrounding lexical scope","Cannot change arrow's this via call/apply/bind","No 'arguments' object in arrow — use rest params","Cannot use as constructor: new arrowFn() throws TypeError","Great for callbacks inside methods (preserves outer this)"]},
+      {id:"d3t5", name:"new keyword — 4 Internal Steps", tag:"core", imp:true,
+       note:"'What does new do under the hood?' — very common SDE2 question.",
+       sub:["1. Create new empty object {}","2. Set __proto__ = Constructor.prototype","3. Execute constructor with this = new object","4. Return the object (unless constructor explicitly returns an object)","If constructor returns primitive → ignored. Returns object → that wins."]},
+    ],
+    resources:[{label:"MDN this", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this"}]
+  },
+  {
+    day:4, dayName:"Thursday", type:"workday",
+    title:"Prototype Chain & Inheritance",
+    why:"OOP questions always come at SDE2. Understanding the prototype system (not just class syntax) is what interviewers look for.",
+    schedule:[
+      {dur:"1.5h", title:"Prototype chain + Object.create + ES6 class", desc:"[[Prototype]], __proto__, property lookup, prototypal inheritance, class as sugar."},
+      {dur:"1h", title:"Coding: inheritance patterns", desc:"Build inheritance chain without class. Override methods. instanceof check."},
+      {dur:"0.5h", title:"Job Applications", desc:"Apply to 3–5 roles."},
+    ],
+    topics:[
+      {id:"d4t1", name:"Prototype Chain", tag:"core", imp:true,
+       note:"Property lookup walks up the chain until null. This is the entire system.",
+       sub:["Every object has [[Prototype]] internal slot","Property lookup: own properties first → proto → proto's proto → null","Object.prototype is the top of every chain","hasOwnProperty() checks only own, not prototype","for..in iterates inherited properties too (use hasOwnProperty to filter)"]},
+      {id:"d4t2", name:"Prototypal Inheritance (without class)", tag:"core", imp:true,
+       note:"Know this — interviewers ask you to implement inheritance without class keyword.",
+       sub:["Object.create(parent) sets parent as the new object's prototype","Child.prototype = Object.create(Parent.prototype)","Reset constructor: Child.prototype.constructor = Child","Call parent constructor: Parent.call(this, ...args)","Add child methods after: Child.prototype.childMethod = fn"]},
+      {id:"d4t3", name:"ES6 Class — What it Compiles To", tag:"core", imp:true,
+       note:"Class is syntactic sugar. Know what the prototype chain looks like underneath.",
+       sub:["class X {} → function X() + X.prototype","extends → sets up prototype chain","super() must be called before 'this' in derived class","Static methods live on the class itself, not prototype","Private fields with # (ES2022). Getter/setter in class body."]},
+      {id:"d4t4", name:"Object.create vs new vs literal", tag:"core", imp:true,
+       note:"Three ways to create objects — know exact prototype for each.",
+       sub:["Literal {}: proto = Object.prototype","new Fn(): proto = Fn.prototype","Object.create(proto): proto = specified object","Object.create(null): no prototype — pure dictionary","Most flexible: Object.create allows custom proto directly"]},
+      {id:"d4t5", name:"instanceof & typeof", tag:"core", imp:true,
+       note:"instanceof checks proto chain. typeof has famous null bug.",
+       sub:["instanceof: walks proto chain checking for Constructor.prototype","x instanceof Array vs Array.isArray(x) — prefer isArray","typeof null === 'object' — famous JS bug, cannot be fixed","typeof function === 'function' (special case)","Symbol.hasInstance to customise instanceof behaviour"]},
+    ],
+    resources:[{label:"MDN Prototype Chain", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain"}]
+  },
+  {
+    day:5, dayName:"Friday (WFH)", type:"wfh",
+    title:"Objects — Complete Deep Dive",
+    why:"Objects are the heart of JS and frequently under-prepared. Property descriptors, deep clone, and Object methods are heavily tested at SDE2.",
+    schedule:[
+      {dur:"1.5h", title:"Object methods + property descriptors", desc:"keys/values/entries, freeze/seal/assign, defineProperty, getOwnPropertyDescriptor."},
+      {dur:"1h", title:"Deep clone + shallow clone", desc:"Structural clone, JSON limitations, recursive deep clone with circular ref handling."},
+      {dur:"1h", title:"Destructuring, spread, shorthand, optional chaining", desc:"All ES6+ object sugar. Code each pattern."},
+      {dur:"1h", title:"Job Applications", desc:"Apply to 3–5 roles."},
+    ],
+    topics:[
+      {id:"d5t1", name:"Object Methods — Complete Reference", tag:"core", imp:true,
+       note:"These appear constantly in coding rounds. Know return types and gotchas.",
+       sub:["Object.keys(obj) → array of own enumerable string keys","Object.values(obj) → array of own enumerable values","Object.entries(obj) → array of [key, value] pairs","Object.assign(target, ...sources) → shallow merge, mutates target","Object.fromEntries(entries) → reverse of entries","Object.freeze(obj) → no add/edit/delete (shallow freeze)","Object.seal(obj) → no add/delete, but can edit existing","Object.is(a, b) → strict equality, NaN-safe (Object.is(NaN,NaN) = true)","Object.create, getPrototypeOf, setPrototypeOf","Object.getOwnPropertyDescriptor / getOwnPropertyNames"]},
+      {id:"d5t2", name:"Property Descriptors", tag:"advanced", imp:true,
+       note:"Senior-level knowledge. Know the 4 descriptor attributes.",
+       sub:["Every property has: value, writable, enumerable, configurable","Object.defineProperty(obj, 'key', {value, writable, enumerable, configurable})","writable: false → cannot reassign","enumerable: false → hidden from for..in and Object.keys","configurable: false → cannot delete or redefine","Object.getOwnPropertyDescriptor(obj, 'key') to inspect","Getter/setter: defineProperty with get() and set()"]},
+      {id:"d5t3", name:"Shallow vs Deep Clone", tag:"core", imp:true,
+       note:"'How do you deep clone?' is asked in almost every interview.",
+       sub:["Shallow: Object.assign({}, obj) or {...obj} — nested objects still share refs","JSON.parse(JSON.stringify(obj)) — loses: undefined, fn, Symbol, Date, circular","structuredClone(obj) — ES2022, handles Date/Array/Map/Set, NOT fn/Symbol","Recursive clone: check typeof, handle arrays, objects separately","Circular refs: use WeakMap to track visited nodes"]},
+      {id:"d5t4", name:"Object Destructuring — All Patterns", tag:"core", imp:true,
+       note:"Used everywhere. Know every pattern.",
+       sub:["Basic: const {a, b} = obj","Rename: const {a: aliasName} = obj","Default: const {a = 10} = obj","Nested: const {address: {city}} = user","Rest: const {a, ...rest} = obj — rest is remaining props","Function params: fn({name, age = 0} = {}) — with defaults","Swap vars: [a, b] = [b, a]"]},
+      {id:"d5t5", name:"Optional Chaining (?.) & Nullish Coalescing (??)", tag:"core", imp:true,
+       note:"Must-know modern JS. Distinguish ?? from || — this is tested.",
+       sub:["?. — safe navigation: obj?.prop returns undefined if obj is null/undefined","?.method?.() — safe method call","?.[index] — safe array/bracket access","?? — returns right side ONLY if left is null or undefined","?? vs || : ?? does NOT treat 0, '', false as falsy — only null/undefined","??= : x ??= defaultValue — assign only if null/undefined"]},
+      {id:"d5t6", name:"Computed Properties & Shorthand", tag:"core", imp:false,
+       note:"ES6 sugar for cleaner object code.",
+       sub:["Shorthand: const name = 'Ali'; { name } instead of { name: name }","Computed key: { [variable]: value }","Method shorthand: { greet() {} }","Dynamic object building in loops with computed keys"]},
+      {id:"d5t7", name:"Object.freeze vs Object.seal vs const", tag:"core", imp:true,
+       note:"Frequently confused. Know exact differences.",
+       sub:["const: binding can't change. Object itself can still be mutated.","freeze: no add, no edit, no delete. Shallow only.","seal: no add, no delete. Can still edit existing values.","Deep freeze: recursively call freeze on all nested objects","Frozen object in strict mode throws on mutation attempt"]},
+    ],
+    resources:[{label:"MDN Object", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object"}]
+  },
+  {
+    day:6, dayName:"Saturday", type:"weekend",
+    title:"Async JS — Event Loop, Promises & Async/Await",
+    why:"Second most tested topic cluster. Event loop output prediction is guaranteed in JS interviews. Master the queue order.",
+    schedule:[
+      {dur:"1.5h", title:"Event Loop — Full mental model", desc:"Call stack, Web APIs, callback queue, microtask queue. Predict output of 20 puzzles."},
+      {dur:"1.5h", title:"Promises — all internals + chaining", desc:"States, .then chaining, error propagation, microtask scheduling."},
+      {dur:"1h", title:"Async/Await + error handling", desc:"try/catch, parallel vs sequential, async iteration."},
+      {dur:"1h", title:"Promise combinators + polyfills", desc:"all vs allSettled vs race vs any. Write Promise.all from scratch."},
+      {dur:"1h", title:"20 event loop output puzzles", desc:"Mix setTimeout, Promise.resolve, queueMicrotask. Write answers before running."},
+      {dur:"1h", title:"Generators + Iterators", desc:"function*, yield, Symbol.iterator. How async/await is built on generators."},
+    ],
+    topics:[
+      {id:"d6t1", name:"Event Loop — Complete Mental Model", tag:"core", imp:true,
+       note:"Draw this from memory. Every output prediction question uses this.",
+       sub:["Call stack: executes synchronous JS","Web APIs (browser/Node): handle setTimeout, fetch, DOM events outside JS engine","Callback queue (macrotask): setTimeout/setInterval callbacks wait here","Microtask queue: Promise.then, queueMicrotask, MutationObserver","Order: stack empty → drain ALL microtasks → 1 macrotask → drain microtasks → repeat","requestAnimationFrame runs before paint, after microtasks"]},
+      {id:"d6t2", name:"Microtasks vs Macrotasks", tag:"core", imp:true,
+       note:"The classic output prediction question always tests this order.",
+       sub:["Microtasks: Promise.then/catch/finally, queueMicrotask, MutationObserver","Macrotasks: setTimeout, setInterval, setImmediate, I/O callbacks, UI events","ALL microtasks drain before next macrotask runs","Microtask starvation: infinite microtask loop blocks all macrotasks","console.log → sync. Promise.then → microtask. setTimeout → macrotask"]},
+      {id:"d6t3", name:"Promises — Internals & Chaining", tag:"core", imp:true,
+       note:"Know all 3 states, chaining mechanics, and error propagation flow.",
+       sub:["3 states: pending → fulfilled or rejected (irreversible)","new Promise((resolve, reject) => {})","Each .then returns a NEW promise","Return value from .then becomes input of next .then","Throw inside .then = rejected promise",".catch(fn) = .then(undefined, fn). .finally runs regardless.","Unhandled rejection: Promise rejects with no .catch"]},
+      {id:"d6t4", name:"Promise Combinators — All 4", tag:"core", imp:true,
+       note:"Know exact behaviour. Interviewers ask 'which one would you use here?'",
+       sub:["Promise.all([]) → all resolve = resolve, ONE reject = reject immediately","Promise.allSettled([]) → waits for ALL, returns {status, value/reason} per item","Promise.race([]) → first to settle (resolve OR reject) wins","Promise.any([]) → first to RESOLVE wins; AggregateError if all reject","all: parallel tasks that all must succeed. race: timeout pattern. any: first available."]},
+      {id:"d6t5", name:"Polyfill: Promise.all", tag:"core", imp:true, polyfill:true,
+       note:"Most common Promise polyfill. Counter pattern. Must write from memory.",
+       sub:["Return new Promise","results array + counter","On each resolve: store at correct index, increment counter","When counter === length: resolve(results)","On any reject: reject immediately","Edge case: empty array → resolve([]) instantly"]},
+      {id:"d6t6", name:"Async / Await", tag:"core", imp:true,
+       note:"Syntactic sugar over promises. Know how it maps to .then chains.",
+       sub:["async fn always returns a Promise","await pauses execution inside async fn only — rest of code runs","try/catch for error handling","Sequential: const a = await fa(); const b = await fb(); — waits each","Parallel: const [a,b] = await Promise.all([fa(), fb()]) — concurrent","Async IIFE: (async () => { await ... })()"]},
+      {id:"d6t7", name:"Generators — function* & yield", tag:"advanced", imp:false,
+       note:"Signals deep knowledge. How async/await was designed.",
+       sub:["function* creates generator. Calling returns iterator (no execution yet)","iterator.next() runs to next yield, returns {value, done}","Generators can pause and resume execution","Infinite sequences: while(true) { yield n++; }","async/await is built on generators + promise resolution under the hood"]},
+    ],
+    resources:[{label:"Loupe (Event Loop Visual)", url:"http://latentflip.com/loupe/"},{label:"BFE.dev Async", url:"https://bigfrontend.dev/problem"},{label:"MDN Promises", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise"}]
+  },
+  {
+    day:7, dayName:"Sunday", type:"weekend",
+    title:"DOM, Events, Delegation & Debounce/Throttle",
+    why:"Frontend coding interviews always include DOM + event questions. Debounce and throttle polyfills are near-guaranteed at SDE2.",
+    schedule:[
+      {dur:"1.5h", title:"DOM manipulation + traversal", desc:"querySelector, createElement, append/remove, classList, dataset, innerHTML vs textContent."},
+      {dur:"1.5h", title:"Event system: bubbling, capturing, delegation", desc:"Phase explanation, stopPropagation, preventDefault, event.target vs currentTarget."},
+      {dur:"1.5h", title:"Polyfills: debounce + throttle (both approaches)", desc:"Write both from scratch. Leading/trailing edge. Real use cases."},
+      {dur:"1h", title:"Build: search with debounce + infinite scroll", desc:"Mini-projects to cement concepts."},
+      {dur:"1h", title:"Intersection + Mutation Observer", desc:"Lazy loading, infinite scroll, watching DOM changes."},
+      {dur:"0.5h", title:"Week 1 revision", desc:"Skim days 1–6. Mark any gaps."},
+    ],
+    topics:[
+      {id:"d7t1", name:"DOM Selection & Manipulation", tag:"practical", imp:true,
+       note:"Core practical skill. Tested in live coding and take-home rounds.",
+       sub:["querySelector(selector) — first match. querySelectorAll — NodeList (not Array!).","getElementById (fastest), getElementsByClassName/TagName","createElement, createTextNode","append/prepend/before/after, remove(), replaceWith()","cloneNode(true) for deep copy","innerHTML (XSS risk) vs textContent vs innerText","dataset: data-userId → el.dataset.userId","classList: add, remove, toggle, contains, replace"]},
+      {id:"d7t2", name:"Event Bubbling & Capturing", tag:"core", imp:true,
+       note:"Explain the 3 phases. Interviewers love this topic.",
+       sub:["3 phases: capture (top → target) → target → bubble (target → top)","addEventListener(event, fn, true) = capture phase listener","stopPropagation() — stops further propagation up/down","stopImmediatePropagation() — also stops other listeners on same element","preventDefault() — stops browser default (form submit, link nav, etc). Does NOT stop bubbling.","event.target = element that fired event. event.currentTarget = element with listener."]},
+      {id:"d7t3", name:"Event Delegation", tag:"core", imp:true,
+       note:"Fundamental performance pattern. Always explain why it works.",
+       sub:["One listener on parent handles events for all children","event.target identifies which child was clicked","Works for dynamically added elements (unlike direct binding)","Performance: fewer listeners = less memory","Pattern: event.target.closest('.class') — handles nested elements","Common mistake: attaching listener to every item in a list"]},
+      {id:"d7t4", name:"Polyfill: debounce", tag:"core", imp:true, polyfill:true,
+       note:"#1 most asked polyfill ever. Write in under 3 minutes from memory.",
+       sub:["clearTimeout + setTimeout pattern","Each call resets the timer","fn only fires after calls stop for 'delay' ms — trailing edge","Leading edge variant: fire on first call, block subsequent","Use case: search input, form validation, resize handler","Cancel method: return obj with cancel() to clear pending timeout"]},
+      {id:"d7t5", name:"Polyfill: throttle", tag:"core", imp:true, polyfill:true,
+       note:"Knows both approaches. Pick the timestamp one for interviews.",
+       sub:["Approach 1: lastRun timestamp — if Date.now()-lastRun >= limit, run","Approach 2: boolean flag — set true on call, reset after delay via setTimeout","Throttle guarantees max 1 call per interval — different from debounce","Use case: scroll handler, mousemove, button spam prevention","Combine with requestAnimationFrame for animation throttle"]},
+      {id:"d7t6", name:"Intersection Observer", tag:"browser", imp:true,
+       note:"Modern lazy load and infinite scroll. Better than scroll event listeners.",
+       sub:["new IntersectionObserver(callback, {threshold, rootMargin, root})","Callback fires when element enters/leaves viewport","Observe: observer.observe(element). Unobserve to stop.","Infinite scroll: observe last item, load more when visible","Lazy images: swap data-src to src when visible","Much better than scroll events: no forced layout recalculation"]},
+      {id:"d7t7", name:"Custom Events", tag:"practical", imp:false,
+       note:"Useful for component communication without a framework.",
+       sub:["new CustomEvent('myEvent', {detail: {data}, bubbles: true, cancelable: true})","element.dispatchEvent(event)","Listen with addEventListener('myEvent', fn)","Custom events bubble if bubbles:true"]},
+    ],
+    resources:[{label:"MDN Events", url:"https://developer.mozilla.org/en-US/docs/Web/API/Event"}]
+  },
+  {
+    day:8, dayName:"Monday", type:"workday",
+    title:"Arrays — All Methods & Polyfills",
+    why:"Array methods are the #1 coding round topic. Interviewers ask you to write map/filter/reduce polyfills cold.",
+    schedule:[
+      {dur:"1.5h", title:"All array methods — encyclopaedia", desc:"map, filter, reduce, find, findIndex, some, every, flat, flatMap, sort, splice, slice, Array.from."},
+      {dur:"1h", title:"Polyfills: map, filter, reduce, flat", desc:"Write all 4 on Array.prototype. Handle edge cases like initial value in reduce."},
+      {dur:"0.5h", title:"Job Applications", desc:"Apply to 3–5 roles."},
+    ],
+    topics:[
+      {id:"d8t1", name:"Iteration: map / filter / reduce / forEach", tag:"core", imp:true,
+       note:"Know return values and when to use each. These appear in every coding round.",
+       sub:["map: transforms each element, returns NEW array of same length","filter: returns NEW array of elements where callback returns truthy","reduce: accumulates to single value. Callback gets (acc, cur, idx, arr).","forEach: returns undefined. Cannot break/return out. Side-effects only.","All take: callback(currentValue, index, array) and optional thisArg"]},
+      {id:"d8t2", name:"Polyfill: Array.map", tag:"core", imp:true, polyfill:true,
+       note:"Write this on Array.prototype. 8-line implementation.",
+       sub:["Array.prototype.myMap = function(callback, thisArg)","Iterate with for loop (never use native .map inside!)","result.push(callback.call(thisArg, this[i], i, this))","Return result array","Handle sparse arrays: check if index exists with 'i in this'"]},
+      {id:"d8t3", name:"Polyfill: Array.filter & reduce", tag:"core", imp:true, polyfill:true,
+       note:"reduce is most versatile — can implement map and filter.",
+       sub:["filter: if callback returns truthy, push to result","reduce: takes (accumulator, currentValue, index, array) and optional initialValue","If no initialValue: first element = accumulator, start at index 1","reduce → map: acc.push(cb(cur)); return acc","reduce → filter: if cb(cur) acc.push(cur); return acc"]},
+      {id:"d8t4", name:"Search: find / findIndex / indexOf / includes", tag:"core", imp:true,
+       note:"Know exact return types — often confused in output questions.",
+       sub:["find: returns first matching element (undefined if none)","findIndex: returns index of first match (-1 if none)","indexOf: returns index by reference equality, -1 if not found","includes: returns boolean, uses SameValueZero (handles NaN)","findLast / findLastIndex (ES2023) — search from right end"]},
+      {id:"d8t5", name:"some / every", tag:"core", imp:false,
+       note:"Short-circuit evaluation. Very efficient for validation.",
+       sub:["some: true if AT LEAST ONE passes. Stops at first true.","every: true if ALL pass. Stops at first false.","Empty array: every([]) = true, some([]) = false (vacuous truth)"]},
+      {id:"d8t6", name:"flat / flatMap + custom flatten", tag:"core", imp:true,
+       note:"flat(Infinity) for deep flatten is a classic. Write recursive flatten too.",
+       sub:["flat(depth): flatten to specified depth. Default = 1.","flat(Infinity): fully flatten any nesting","flatMap: map then flat(1). More efficient than [].map().flat().","Write flatten from scratch: arr.reduce((acc,cur) => acc.concat(Array.isArray(cur)?flatten(cur):[cur]),[])"]},
+      {id:"d8t7", name:"sort — The Gotcha", tag:"core", imp:true,
+       note:"Default sort is lexicographic — [10,2].sort() = [10,2]. Always pass comparator.",
+       sub:["Default: coerces to string → lexicographic (alphabetical)","Numeric: arr.sort((a, b) => a - b)","Negative result: a comes first. Positive: b first. Zero: equal.","Stable sort guaranteed since ES2019 (and V8 before that)","Sort by multiple keys: sort by primary, then secondary if equal"]},
+      {id:"d8t8", name:"Array.from / Array.of / spread", tag:"core", imp:true,
+       note:"Array.from is very versatile. Know all 4 use cases.",
+       sub:["Array.from(iterable) — converts NodeList, Set, Map, String to Array","Array.from({length:5}, (_,i) => i) — creates [0,1,2,3,4]","Array.of(1,2,3) = [1,2,3]. Unlike new Array(3) which creates 3 holes.","Spread [...arr] shallow clones. [...a, ...b] merges arrays."]},
+    ],
+    resources:[{label:"MDN Array", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array"}]
+  },
+  {
+    day:9, dayName:"Tuesday", type:"workday",
+    title:"Functions — HOF, Compose, Memoize & Generators",
+    why:"Advanced function patterns distinguish intermediate from senior. These filter candidates at SDE2 level.",
+    schedule:[
+      {dur:"1.5h", title:"HOF patterns + compose/pipe/memoize", desc:"once, retry, promisify, compose, pipe. Write each from scratch."},
+      {dur:"1h", title:"Generators + custom iterables", desc:"function*, yield, Symbol.iterator. Implement range() generator."},
+      {dur:"0.5h", title:"Job Applications", desc:"Apply to 3–5 roles."},
+    ],
+    topics:[
+      {id:"d9t1", name:"Higher-Order Functions", tag:"core", imp:true,
+       note:"Functions that take or return functions. Foundation of functional JS.",
+       sub:["HOF accepts function: map, filter, sort, addEventListener","HOF returns function: memoize, once, debounce, curry, bind","Enables reuse, composition, and deferred execution","Callback pattern: pass behaviour, not result","HOF transforms or wraps behaviour without modifying original"]},
+      {id:"d9t2", name:"Function Composition & pipe", tag:"advanced", imp:true,
+       note:"compose is right-to-left. pipe is left-to-right. Both asked directly.",
+       sub:["compose(f,g)(x) = f(g(x)) — right to left","pipe(f,g)(x) = g(f(x)) — left to right (more readable)","Implement compose: fns.reduceRight((acc, fn) => fn(acc), x)","Implement pipe: fns.reduce((acc, fn) => fn(acc), x)","Real use: transform data through pipeline of pure functions"]},
+      {id:"d9t3", name:"Memoization", tag:"advanced", imp:true,
+       note:"Write memoize(fn). Cache with Map. Handle multiple arguments.",
+       sub:["Cache results of expensive function calls","Single arg: Map where key = arg value","Multi-arg: JSON.stringify(args) as key (or nested WeakMap)","Return cached result if key exists, else compute + cache","Trade-off: memory vs speed. Good for: pure fns, expensive computation"]},
+      {id:"d9t4", name:"once() / retry() / promisify()", tag:"practical", imp:true,
+       note:"Small utility functions. All are direct coding questions.",
+       sub:["once(fn): executes only on first call. Returns same result on subsequent calls.","retry(fn, n): attempts fn up to n times on failure","promisify(nodeFn): wraps callback-style fn to return Promise","All use closures to track state (called flag, attempt count, etc)"]},
+      {id:"d9t5", name:"Generators — function* & yield", tag:"advanced", imp:false,
+       note:"Shows deep JS knowledge. Understand the iterator protocol.",
+       sub:["function* declaration. Calling it returns an iterator (no code runs yet)","iterator.next() executes until next yield, returns {value, done}","Can pass value into yield: const x = yield someValue","Infinite sequences: while(true) { yield n++; }","async/await desugars to generators + promise chains"]},
+      {id:"d9t6", name:"Symbol.iterator — Custom Iterables", tag:"advanced", imp:false,
+       note:"Make any object work with for..of and spread operator.",
+       sub:["Add [Symbol.iterator]() method to any object","Return object with next() method","next() returns {value: any, done: boolean}","When done=true iteration stops","Arrays, String, Map, Set, generators are built-in iterables"]},
+    ],
+    resources:[{label:"MDN Generators", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator"}]
+  },
+  {
+    day:10, dayName:"Wednesday", type:"workday",
+    title:"Strings, Type Coercion & Loops",
+    why:"String manipulation appears in every coding round. Type coercion is a favourite trick question in output puzzles.",
+    schedule:[
+      {dur:"1h", title:"String methods — encyclopaedia", desc:"slice, split/join, trim, replace, includes, match, padStart, repeat, at(). Know return types."},
+      {dur:"1h", title:"Type coercion + typeof/instanceof/NaN", desc:"== vs ===, truthy/falsy table, typeof gotchas, Number() coercion rules."},
+      {dur:"0.5h", title:"Loops: for..in vs for..of + labels", desc:"When to use each. Break/continue. while vs do..while."},
+      {dur:"0.5h", title:"Job Applications", desc:"Apply to 3–5 roles."},
+    ],
+    topics:[
+      {id:"d10t1", name:"String Methods — Complete", tag:"core", imp:true,
+       note:"Strings are immutable — all methods return NEW string. Know each return type.",
+       sub:["slice(start, end) — supports negative indices","split(separator) → array. join(separator) → string","trim() / trimStart() / trimEnd()","replace(str|regex, repl) — first match only","replaceAll(str|regex, repl) — all matches","includes / startsWith / endsWith → boolean (case sensitive)","padStart(len, char) / padEnd(len, char)","repeat(n)","at(index) — negative index support","match(regex) → array of matches. matchAll(regex) → iterator","toUpperCase / toLowerCase"]},
+      {id:"d10t2", name:"Type Coercion — == vs ===", tag:"core", imp:true,
+       note:"== has 9 coercion rules. Know the most common traps.",
+       sub:["=== strict equality: checks type AND value, no coercion","== loose equality: coerces types first","null == undefined → true! (special rule)","0 == false → true. '' == false → true","null == 0 → false (null only == undefined)","Always use ===, except for null check: x == null catches both null and undefined","String + Number: + triggers concatenation if either is string"]},
+      {id:"d10t3", name:"Truthy & Falsy Values", tag:"core", imp:true,
+       note:"6 falsy values. Everything else is truthy. Memorise the 6.",
+       sub:["Falsy: false, 0, -0, 0n, '', null, undefined, NaN","Truthy: everything else — including '0', 'false', [], {}","[] == false → true (coercion magic), but Boolean([]) → true","!! converts to boolean. Use !!value to check truthiness explicitly","NaN is falsy but typeof NaN === 'number'"]},
+      {id:"d10t4", name:"typeof, instanceof, NaN gotchas", tag:"core", imp:true,
+       note:"typeof null = 'object' is the most famous JS bug. NaN !== NaN.",
+       sub:["typeof null === 'object' (historical bug, never fixed)","typeof NaN === 'number'","typeof undefined === 'undefined'","NaN !== NaN — only value not equal to itself","Use Number.isNaN() not global isNaN() (isNaN coerces arg first)","instanceof: checks prototype chain. Fails across iframes.","Array.isArray(arr) — preferred over arr instanceof Array"]},
+      {id:"d10t5", name:"for..in vs for..of vs forEach", tag:"core", imp:true,
+       note:"for..in iterates keys (including inherited!). for..of iterates values.",
+       sub:["for..in: iterates enumerable string keys, including inherited ones","Always filter with hasOwnProperty inside for..in","for..of: iterates values of any iterable (Array, String, Map, Set, Generator)","forEach: Array only. Cannot break, continue, or return out","for loop: best when you need index control or need to break early","for..of on Map: gives [key, value] entries"]},
+    ],
+    resources:[{label:"MDN String", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String"}]
+  },
+  {
+    day:11, dayName:"Thursday", type:"workday",
+    title:"ES6+ — Map, Set, Proxy, Symbols & Modules",
+    why:"SDE2 interviews assume deep knowledge of modern JS. These features are the gap between intermediate and senior.",
+    schedule:[
+      {dur:"1.5h", title:"Map, Set, WeakMap, WeakSet", desc:"When Map beats Object. Set for uniqueness. Weak references for GC-friendly caches."},
+      {dur:"1h", title:"Proxy, Reflect, Symbol, ES Modules", desc:"Meta-programming. Dynamic import. Tree shaking. Named vs default exports."},
+      {dur:"0.5h", title:"Job Applications", desc:"Apply to 3–5 roles."},
+    ],
+    topics:[
+      {id:"d11t1", name:"Map vs Object — When to Use Which", tag:"core", imp:true,
+       note:"Know the 5 reasons to prefer Map over a plain object.",
+       sub:["Map: any type as key (objects, functions, NaN)","Map preserves insertion order guaranteed","Map has .size property","Map directly iterable: for..of gives [key, value]","Map: better performance for frequent add/delete","Object: faster property access when keys are known strings","Convert: Object.fromEntries(map). new Map(Object.entries(obj))"]},
+      {id:"d11t2", name:"Set — Unique Value Collections", tag:"core", imp:true,
+       note:"Deduplication with Set is a very common interview answer.",
+       sub:["Set: stores unique values of any type","new Set([1,2,2,3]) → {1,2,3}","has(), add(), delete(), clear(), .size","Convert to array: [...set] or Array.from(set)","Set operations: union = new Set([...a,...b]). intersection = filter by has.","difference = filter a where !b.has(val)","WeakSet: weak refs to objects only. Not iterable, no size."]},
+      {id:"d11t3", name:"WeakMap & WeakSet", tag:"advanced", imp:false,
+       note:"GC-friendly. Keys can be garbage collected.",
+       sub:["WeakMap: only object keys. No size. Not enumerable.","When object key has no other refs → entry is GC'd","Use: private per-instance data, DOM element → metadata","WeakSet: weak refs to objects only","Neither is iterable — you can't list contents"]},
+      {id:"d11t4", name:"Proxy & Reflect", tag:"advanced", imp:true,
+       note:"Powers Vue 3 reactivity system. Know the concept and key traps.",
+       sub:["new Proxy(target, handler) — intercept operations","Traps: get, set, has, deleteProperty, apply, construct","Use Reflect inside handlers for default behaviour","get trap: validation, defaults, logging","set trap: type checking, reactive updates","Revocable: Proxy.revocable() — can disable proxy later"]},
+      {id:"d11t5", name:"ES Modules: import / export", tag:"core", imp:true,
+       note:"Know differences from CommonJS. Static analysis = tree shaking.",
+       sub:["Named export: export const fn = () => {}","Named import: import { fn } from './module'","Default export: export default fn","Default import: import anyName from './module'","Dynamic import: import('./module').then(m => m.fn()) — returns Promise","Tree shaking: bundlers remove unused named exports (not default)","CJS: require() is sync. ESM: static imports, async evaluation"]},
+      {id:"d11t6", name:"Symbol", tag:"advanced", imp:false,
+       note:"Unique keys that don't clash. Well-known symbols power JS internals.",
+       sub:["Symbol() creates unique primitive — no two are ===","Symbol as object key: obj[Symbol('id')] won't appear in for..in / Object.keys","Symbol.for('key') — global registry, returns same symbol for same key","Well-known: Symbol.iterator, Symbol.toPrimitive, Symbol.hasInstance","Symbol.toPrimitive to control coercion behaviour"]},
+    ],
+    resources:[{label:"MDN Map", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map"},{label:"MDN Proxy", url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy"}]
+  },
+  {
+    day:12, dayName:"Friday (WFH)", type:"wfh",
+    title:"Design Patterns & Functional JS",
+    why:"SDE2 goes beyond syntax — design patterns show you think architecturally. EventEmitter is almost always asked.",
+    schedule:[
+      {dur:"1.5h", title:"JS Design Patterns", desc:"Singleton, Observer/Pub-Sub, Factory, Module, Strategy. Code each one."},
+      {dur:"1h", title:"Implement EventEmitter", desc:"on, off, emit, once. Full implementation with edge cases."},
+      {dur:"1h", title:"Functional JS principles", desc:"Pure functions, immutability, composition, avoiding side effects."},
+      {dur:"1h", title:"Job Applications", desc:"Apply to 3–5 roles. Follow up on earlier ones."},
+    ],
+    topics:[
+      {id:"d12t1", name:"Observer / Pub-Sub (EventEmitter)", tag:"advanced", imp:true,
+       note:"Implement EventEmitter class. Appears in almost every SDE2 JS round.",
+       sub:["on(event, cb) — register subscriber in a Map of arrays","off(event, cb) — remove specific callback","emit(event, data) — call all subscribers with data","once(event, cb) — wraps cb to call once then off() itself","Pub-Sub vs Observer: Observer = direct. Pub-Sub = broker in between."]},
+      {id:"d12t2", name:"Module Pattern", tag:"advanced", imp:true,
+       note:"Encapsulation. Foundation of JS architecture before ES6 modules.",
+       sub:["IIFE returning public API. Private state in closure.","Revealing module: explicitly choose what to expose","ES6 modules replace need for IIFE module pattern","Namespace pattern to avoid global pollution"]},
+      {id:"d12t3", name:"Singleton Pattern", tag:"advanced", imp:false,
+       note:"Only one instance. Common for config, loggers, store.",
+       sub:["Check if instance exists; return it if so","Lazy initialization — create only when first needed","JS module system naturally creates singletons (cached after first import)","Downside: global state, hard to test, tight coupling"]},
+      {id:"d12t4", name:"Factory Pattern", tag:"advanced", imp:false,
+       note:"Create objects without new. Encapsulates creation logic.",
+       sub:["Function returns object based on input","No new keyword needed","Easier to mock/test than constructors","Can return different object subtypes based on config"]},
+      {id:"d12t5", name:"Strategy Pattern", tag:"advanced", imp:false,
+       note:"Swap algorithms at runtime. Replaces long if/else chains.",
+       sub:["Map of strategy functions: {sort: bubbleSort, quick: quickSort}","Select at runtime: strategies[name](data)","Clean alternative to switch statements","Example: payment processor, validation rules, sort algorithms"]},
+      {id:"d12t6", name:"Pure Functions & Immutability", tag:"core", imp:true,
+       note:"Core of functional programming. Testable, predictable, composable.",
+       sub:["Pure: same input → same output. No side effects.","Side effects: modifying outer vars, DOM, console, network","Immutability: never mutate. Return new data.","Spread for immutable updates: {...obj, key: newVal}","Benefits: easy testing, memoization possible, concurrent-safe"]},
+      {id:"d12t7", name:"memoize + compose/pipe — Live Coding", tag:"practical", imp:true,
+       note:"Write both from memory. Direct interview coding questions.",
+       sub:["memoize(fn): const cache = new Map(); return (...args) => { const key = JSON.stringify(args); if (cache.has(key)) return cache.get(key); const result = fn(...args); cache.set(key, result); return result; }","pipe(...fns): x => fns.reduce((v, f) => f(v), x)","compose(...fns): x => fns.reduceRight((v, f) => f(v), x)"]},
+    ],
+    resources:[{label:"Patterns.dev", url:"https://www.patterns.dev/"}]
+  },
+  {
+    day:13, dayName:"Saturday", type:"weekend",
+    title:"Browser Internals, Web Workers & Performance",
+    why:"Senior frontend interviews always include browser/performance depth. This separates you from candidates who only know syntax.",
+    schedule:[
+      {dur:"1.5h", title:"Browser rendering pipeline", desc:"Full pipeline from URL to pixels. Reflow vs repaint. Layout thrashing."},
+      {dur:"1.5h", title:"Web Workers + Service Workers", desc:"Main thread vs worker. postMessage. Offline-first with Service Worker cache."},
+      {dur:"1h", title:"Storage APIs — complete comparison", desc:"localStorage, sessionStorage, IndexedDB, cookies. When to use each."},
+      {dur:"1h", title:"Core Web Vitals + performance patterns", desc:"LCP, CLS, FID/INP targets. Code splitting, lazy loading, requestAnimationFrame."},
+      {dur:"1.5h", title:"Security: CORS, XSS, CSRF, CSP", desc:"How each attack works. Headers. Prevention strategies."},
+      {dur:"0.5h", title:"Polyfill practice", desc:"Write debounce + Promise.all from memory. No reference."},
+    ],
+    topics:[
+      {id:"d13t1", name:"Browser Rendering Pipeline", tag:"browser", imp:true,
+       note:"'What happens when you type a URL?' is asked at every SDE2 interview.",
+       sub:["DNS lookup → TCP/TLS handshake → HTTP request/response","Parse HTML → DOM tree (incremental, can be blocked by scripts)","Parse CSS → CSSOM tree","DOM + CSSOM → Render tree (visible elements only)","Layout (reflow): calculate exact sizes and positions","Paint: fill pixels layer by layer","Composite: combine layers, hand off to GPU"]},
+      {id:"d13t2", name:"Reflow vs Repaint vs Composite", tag:"browser", imp:true,
+       note:"Know which operations trigger which. Key for writing performant DOM code.",
+       sub:["Reflow: geometry changes (width, height, position, font-size) — very expensive","Repaint: visual changes only (colour, background, visibility) — cheaper","Composite only: transform, opacity — handled by GPU, cheapest","Read-then-write in same frame triggers layout thrashing","Batch: use DocumentFragment. Avoid reading layout props (offsetWidth) mid-loop","requestAnimationFrame for animations — syncs with 60fps refresh rate"]},
+      {id:"d13t3", name:"Web Workers", tag:"browser", imp:true,
+       note:"Background thread for CPU-heavy tasks. Unblocks main thread.",
+       sub:["new Worker('script.js') — runs in separate thread","postMessage(data) to send. self.onmessage to receive in worker","Worker has NO access to DOM or window","Use for: image processing, large data sorting, crypto, WebAssembly","Terminate: worker.terminate(). Or self.close() from inside worker","Shared workers: shared across tabs. SharedArrayBuffer for shared memory"]},
+      {id:"d13t4", name:"Service Workers", tag:"browser", imp:false,
+       note:"Network proxy for offline-first apps. Enables PWA.",
+       sub:["Sits between browser and network — can intercept fetch requests","Lifecycle: install → activate → fetch interceptions","Cache API: cache.put, cache.match for offline responses","Background sync, push notifications (even when tab closed)","Only on HTTPS (and localhost for dev)"]},
+      {id:"d13t5", name:"Storage APIs — All 4 Compared", tag:"browser", imp:true,
+       note:"'Where would you store user auth token?' — know your answer.",
+       sub:["localStorage: 5–10MB, persists across sessions, same origin, sync","sessionStorage: same API, only per tab and session, cleared on close","Cookies: 4KB max, sent with every HTTP request, expiry, httpOnly/Secure/SameSite flags","IndexedDB: large structured data, async API, transactions, 50MB+","httpOnly cookies: JS can't read → protects from XSS token theft"]},
+      {id:"d13t6", name:"Core Web Vitals", tag:"browser", imp:true,
+       note:"Google ranking signals. Know targets and how to improve each.",
+       sub:["LCP (Largest Contentful Paint): < 2.5s — loading performance","CLS (Cumulative Layout Shift): < 0.1 — visual stability","INP (Interaction to Next Paint): < 200ms — interactivity","Improve LCP: preload critical resources, CDN, optimise images","Improve CLS: reserve space for images/embeds/ads, avoid late injection","Improve INP: move work off main thread, reduce JS execution time"]},
+      {id:"d13t7", name:"CORS, XSS, CSRF, CSP", tag:"browser", imp:true,
+       note:"Security always comes up at SDE2 frontend interviews.",
+       sub:["CORS: browser blocks cross-origin requests. Server opts in via Access-Control-Allow-Origin header","Preflight (OPTIONS) for non-simple requests. credentials mode.","XSS: inject malicious scripts via unsanitised input. Prevent: sanitise, CSP, avoid innerHTML.","CSRF: trick user's browser into making authenticated request to another site. Prevent: SameSite=Strict, CSRF tokens.","CSP: Content-Security-Policy header allows only specified script sources","httpOnly + Secure + SameSite = cookie trifecta for security"]},
+    ],
+    resources:[{label:"web.dev Performance", url:"https://web.dev/performance/"}]
+  },
+  {
+    day:14, dayName:"Sunday", type:"weekend",
+    title:"HTML, CSS & Full Mock Interview Day",
+    why:"HTML/CSS questions always appear in frontend rounds. Mock interview locks in all 13 days of knowledge.",
+    schedule:[
+      {dur:"1.5h", title:"HTML semantics + accessibility + forms", desc:"Semantic elements, ARIA roles, form attributes, meta tags, tabindex."},
+      {dur:"1.5h", title:"CSS: Box model, Flexbox, Grid, Specificity", desc:"All flex properties, grid patterns, stacking context, z-index."},
+      {dur:"1h", title:"CSS: Animations, positioning, variables", desc:"transition, keyframes, transform, position types, sticky, CSS custom properties."},
+      {dur:"1h", title:"Mock Round 1: Verbal concepts", desc:"Pick 20 random topics. Explain each out loud for 60 seconds. Record yourself."},
+      {dur:"1.5h", title:"Mock Round 2: Coding", desc:"Write from memory: debounce, throttle, bind, Promise.all, deep clone, EventEmitter, memoize."},
+      {dur:"0.5h", title:"Identify & fix gaps", desc:"Note what you fumbled. Plan Day 15 around those specific topics."},
+    ],
+    topics:[
+      {id:"d14t1", name:"Semantic HTML", tag:"html-css", imp:true,
+       note:"Know which element to use when. SEO + accessibility impact.",
+       sub:["header, main, footer, nav, aside, article, section — meaningful structure","Use <button> for clicks (keyboard accessible, focusable by default)","Use <a href> for navigation (opens in new tab, right-click menu)","figure + figcaption for images with captions","time[datetime], mark, abbr, details/summary","alt on images. aria-label for icon buttons. role attribute for custom components."]},
+      {id:"d14t2", name:"CSS Box Model", tag:"html-css", imp:true,
+       note:"box-sizing: border-box is the most important CSS property in practice.",
+       sub:["content → padding → border → margin (outward)","box-sizing: content-box (default): width = content only","box-sizing: border-box: width includes padding + border (use this always)","Margin collapse: vertical margins between siblings collapse to larger of the two","Negative margin: valid, pulls elements. Negative padding: invalid.","outline: does NOT affect layout (good for focus rings without layout shift)"]},
+      {id:"d14t3", name:"Flexbox — All Properties", tag:"html-css", imp:true,
+       note:"Know both container AND item properties. Most asked CSS topic.",
+       sub:["Container: display:flex, flex-direction(row/col), flex-wrap, justify-content, align-items, align-content, gap","Item: flex-grow, flex-shrink, flex-basis, flex(shorthand), align-self, order","justify-content: along main axis. align-items: along cross axis.","flex: 1 = flex-grow:1, flex-shrink:1, flex-basis:0","Center anything: justify-content:center + align-items:center on flex container"]},
+      {id:"d14t4", name:"CSS Grid", tag:"html-css", imp:true,
+       note:"Grid for 2D layout. Know template areas and auto-fit pattern.",
+       sub:["grid-template-columns: repeat(3, 1fr) or auto-fill or auto-fit","grid-template-rows, gap (row-gap, column-gap)","grid-column / grid-row span for item placement","Named areas: grid-template-areas + grid-area on items","auto-fill: keeps empty track. auto-fit: collapses empty tracks.","minmax(200px, 1fr) for responsive no-media-query columns"]},
+      {id:"d14t5", name:"CSS Specificity", tag:"html-css", imp:true,
+       note:"Calculate specificity score. Know why !important is last resort.",
+       sub:["Inline style: (1,0,0,0)","ID selector #id: (0,1,0,0)","Class .class, pseudo-class :hover, [attr]: (0,0,1,0)","Element div, pseudo-element ::before: (0,0,0,1)","Universal *: (0,0,0,0)","Higher specificity wins regardless of order","Same specificity: last rule wins. !important overrides all."]},
+      {id:"d14t6", name:"Positioning & Stacking Context", tag:"html-css", imp:true,
+       note:"z-index only works on positioned elements. Stacking context confuses many.",
+       sub:["static: default. No z-index, no top/left effect.","relative: offset from normal position. Creates stacking context.","absolute: removed from flow. Positioned to nearest non-static ancestor.","fixed: relative to viewport. Stays on scroll.","sticky: relative until threshold scroll, then fixed. Stays in container.","Stacking context: position+z-index, opacity<1, transform, filter, will-change","z-index only works within the same stacking context"]},
+      {id:"d14t7", name:"Final Polyfill Mock Run", tag:"core", imp:true,
+       note:"Write all from scratch without looking. If you hesitate, it's a gap.",
+       sub:["debounce(fn, delay) — clearTimeout + setTimeout","throttle(fn, limit) — timestamp comparison","Function.prototype.myBind — apply-based with partial args","Array.prototype.myMap — loop + callback + thisArg","Promise.all([promises]) — counter pattern","Array flatten(arr, depth) — recursive reduce","memoize(fn) — Map cache + JSON.stringify key","EventEmitter — Map of event → array of callbacks"]},
+    ],
+    resources:[{label:"CSS Tricks Flexbox", url:"https://css-tricks.com/snippets/css/a-guide-to-flexbox/"},{label:"CSS Tricks Grid", url:"https://css-tricks.com/snippets/css/complete-guide-grid/"}]
+  },
+  {
+    day:15, dayName:"Monday", type:"workday",
+    title:"Final Revision + Mock + Interview Ready",
+    why:"Consolidate everything. Fill gaps. Walk into the interview knowing you've covered every base.",
+    schedule:[
+      {dur:"1h", title:"Rapid-fire revision", desc:"2 min per topic. Flashcard style. Hesitate = re-read it now."},
+      {dur:"1h", title:"Write all polyfills cold", desc:"No reference. Time yourself. Target < 5 min each. Full implementations."},
+      {dur:"0.5h", title:"Job Applications + Company Research", desc:"Research the company. Know their tech stack before the interview."},
+      {dur:"0.5h", title:"Interview mindset", desc:"STAR answers. Questions to ask. Expected CTC. Morning routine."},
+    ],
+    topics:[
+      {id:"d15t1", name:"Rapid-fire: All Core Concepts", tag:"core", imp:true,
+       note:"If you hesitate on any of these, spend 10 minutes on it right now.",
+       sub:["Hoisting, TDZ, Execution Context","Closures, closure loop trap, stale closure","this + 4 binding rules + arrow function","Prototype chain + new keyword internals","Event Loop: microtask vs macrotask order","Promises + async/await + Promise.all","Debounce vs throttle — explain AND implement","Deep clone — 3 approaches + tradeoffs","Map vs Object, Set vs Array","Currying, compose, pipe","Object.freeze vs seal vs const","CORS, XSS, CSRF — how each works","Reflow vs repaint vs composite","CSS specificity calculation"]},
+      {id:"d15t2", name:"Final Polyfill Run (All from Memory)", tag:"core", imp:true, polyfill:true,
+       note:"Write all 10. No looking. This is your exam.",
+       sub:["debounce(fn, delay)","throttle(fn, limit)","Function.prototype.myBind(ctx, ...args)","Array.prototype.myMap(cb, thisArg)","Array.prototype.myFilter(cb)","Array.prototype.myReduce(cb, init)","Promise.myAll([promises])","flatten(arr, depth)","memoize(fn)","EventEmitter class (on/off/emit/once)"]},
+      {id:"d15t3", name:"Output Prediction — Final Set", tag:"core", imp:true,
+       note:"Focus on async order, closure loops, this in callbacks.",
+       sub:["setTimeout + Promise.then + sync — predict exact order","Closure in for-loop with var vs let","this inside arrow vs regular method — same class","Chained promises with throw inside .then","Event loop: multiple setTimeouts + queueMicrotask","Class inheritance + method override resolution order"]},
+      {id:"d15t4", name:"Behavioural Answers (STAR)", tag:"practical", imp:true,
+       note:"Prepare 4 stories. Situation, Task, Action, Result. Keep under 2 min each.",
+       sub:["Most challenging bug you debugged — and how you found it","Disagreed with teammate's approach — how you handled it","Had to learn something fast — what you did","Went beyond your role to take ownership","Improved performance significantly — metrics and approach"]},
+      {id:"d15t5", name:"Questions to Ask Interviewer", tag:"practical", imp:false,
+       note:"Asking good questions signals seniority and genuine curiosity.",
+       sub:["What does a typical sprint look like for the frontend team?","What's the biggest tech debt challenge right now?","How is code review done here? PR size, review time?","What's the engineering culture around learning and growth?","What would make the ideal candidate for this role stand out in 90 days?"]},
+    ],
+    resources:[{label:"Frontend Interview Handbook", url:"https://frontendinterviewhandbook.com/"},{label:"BFE.dev Practice", url:"https://bigfrontend.dev/"}]
+  },
 ];
-const QBYNUM={};TOPICS.forEach(t=>t.qs.forEach(q=>QBYNUM[q.n]={...q,topic:t.id}));
-const tName=Object.fromEntries(TOPICS.map(t=>[t.id,t.name]));
-const ALL_QNUMS=TOPICS.flatMap(t=>t.qs.filter(q=>q.n!==18).map(q=>q.n));
-const ALL_SUBS=[];TOPICS.forEach(t=>t.subs.forEach((s,i)=>ALL_SUBS.push(t.id+":"+i)));
 
-/* =================== 60-DAY TIMELINE =================== */
-const tOrder=["arrays","strings","bsearch","linked","stack","trees","backtrack","graphs","heaps","dp"];
-function buildDays(){
-  const D=[];let id=0;
-  const add=o=>{id++;D.push({id,...o});};
-  // Phase 1: 3 days per topic
-  tOrder.forEach(tid=>{
-    const t=TOPICS.find(x=>x.id===tid);const q=t.qs.map(x=>x.n);
-    add({phase:1,topic:tid,banner:true,subs:true,title:`${t.name} — Learn the patterns`,meta:"study subtopics + 2 problems",
-      qnums:[q[0],q[1]],tasks:[
-        "Study the subtopics above — write a 2-line note on each in your own words.",
-        "Solve the 2 problems below: brute force first, then optimal, coded from scratch.",
-        "Say each problem's pattern + time/space complexity out loud."]});
-    add({phase:1,topic:tid,title:`${t.name} — Finish & deepen`,meta:"2 problems",
-      qnums:[q[2],q[3]],tasks:[
-        "Solve the 2 problems below cold; time each against its target.",
-        "Hand-trace one example per problem to catch edge cases.",
-        "Revisit any subtopic that still feels shaky."]});
-    add({phase:1,topic:tid,title:`${t.name} — Consolidate`,meta:"1 problem + review",
-      qnums:[q[4]],tasks:[
-        "Solve the problem below (toughest in the bucket).",
-        `Re-explain all 5 ${t.name} problems aloud, no looking.`,
-        "Re-attempt from memory whichever gave you the most trouble."]});
-  });
-  // Phase 2: timed re-solves
-  tOrder.forEach(tid=>{
-    const t=TOPICS.find(x=>x.id===tid);
-    add({phase:2,topic:tid,title:`Timed re-solve: ${t.name}`,meta:"all 5, from memory",
-      qnums:t.qs.map(x=>x.n),tasks:[
-        "Close all notes. Re-solve the problems below from scratch.",
-        "Strict timer — each under its target. Flag any that exceed it.",
-        "Redo flagged ones now; write the key insight on a flashcard."]});
-  });
-  add({phase:2,title:"Mixed set: Two Pointers + Sliding Window",meta:"cross-pattern",qnums:[6,7,14,20],
-    tasks:["Re-solve the problems below back-to-back with no topic hints.","Goal: recognize the pattern within 60 seconds of reading."]});
-  add({phase:2,title:"Mixed set: Tree + Graph traversal",meta:"cross-pattern",qnums:[23,24,36,39],
-    tasks:["Re-solve below, switching between BFS/DFS fluently.","Verbalize when you'd pick BFS vs DFS for each."]});
-  add({phase:2,title:"Mixed set: Heap + Binary Search",meta:"cross-pattern",qnums:[27,30,41,44],
-    tasks:["Re-solve the trickier optimal solutions below.","Re-derive the median two-heap balance rule from scratch."]});
-  add({phase:2,title:"Mixed set: DP + Backtracking",meta:"cross-pattern",qnums:[31,35,47,49],
-    tasks:["Re-solve below — template recall.","Write the generic backtracking skeleton from memory, then specialize it."]});
-  // Phase 3: speed runs
-  for(let k=1;k<=10;k++){
-    add({phase:3,title:`Speed run #${k}`,meta:"5 random · strict <40m each",tasks:[
-      "Pick 5 problems at random (shuffle / dice). Don't know them in advance.",
-      "Strict 40-min cap each. Talk aloud as if interviewing.",
-      "Any problem over 40 min or needing a hint → re-drill list.",
-      "End: re-solve one re-drill problem before stopping."]});
-  }
-  // Phase 4
-  add({phase:4,title:"Mock interview #1",meta:"2 unseen Q · talk aloud",tasks:[
-    "Get 2 random problems (a friend, or timer + webcam).",
-    "Clarify → brute force → optimize → code → test, narrating throughout.",
-    "Review: where did you stall or go silent?"]});
-  add({phase:4,title:"Mock interview #2",meta:"2 unseen Q · talk aloud",tasks:[
-    "Two more random problems under interview conditions.",
-    "Focus on clean code + stating complexity confidently."]});
-  add({phase:4,title:"Mock #3 + weakest topic",meta:"2 Q + targeted review",tasks:[
-    "Mock with 2 problems, then re-drill your single weakest topic end-to-end."]});
-  add({phase:4,title:"Mock #4 + 2nd weakest topic",meta:"2 Q + targeted review",tasks:[
-    "Mock with 2 problems, then re-drill your second weakest topic."]});
-  add({phase:4,title:"Rapid-fire: all 50 approaches",meta:"verbalize only",tasks:[
-    "Go through all 50. For each in ~60s: state the pattern, the key trick, time/space — no coding.",
-    "Any you can't explain instantly → final flashcard pile."]});
-  add({phase:4,title:"Confidence pass + rest",meta:"light review",tasks:[
-    "Skim your flashcard pile only. Re-solve at most 3 favorites to end on a win.",
-    "Stop early. Sleep well. You've drilled all 50 — trust the reps."]});
-  return D;
+// ════════════════════════════
+// STATE HELPERS
+// ════════════════════════════
+function getState() { try { return JSON.parse(localStorage.getItem('jsp_v3')||'{}'); } catch { return {}; } }
+function saveState(s) { localStorage.setItem('jsp_v3', JSON.stringify(s)); }
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 1500);
 }
-const DAYS=buildDays();
-const phaseName={1:"Phase 1",2:"Phase 2",3:"Phase 3",4:"Phase 4"};
 
-/* =================== STATE =================== */
-const KEY="dsa60_v2";
-let S=load();
-function blank(){return{q:{},sub:{},task:{},day:{}}}
-function load(){try{return Object.assign(blank(),JSON.parse(localStorage.getItem(KEY)))}catch(e){return blank()}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let selectedDay = null;
 
-/* =================== RENDER HELPERS =================== */
-function qRow(n){
-  const q=QBYNUM[n];if(!q)return"";
-  const dup=q.n===18;const ck=S.q[n]?"checked":"";
-  const dCls=q.d==="easy"?"easy":q.d==="med"?"med":"hard";
-  const dTxt=q.d==="easy"?"Easy":q.d==="med"?"Medium":"Hard";
-  return `<div class="qrow">
-    <input type="checkbox" class="cbx q-cb" data-q="${n}" ${ck} ${dup?'disabled title="Same as #10"':''}>
-    <div class="qmain">
-      <div class="qt"><span class="qno">#${n}</span>${q.t}</div>
-      <div class="qmeta"><span class="diff ${dCls}">${dTxt}</span><span class="pat">${q.p}</span><span class="tt">⏱ ${q.tt}</span></div>
-      ${q.note?`<div class="qnote">↳ ${q.note}</div>`:""}
-    </div></div>`;
-}
-function subRow(tid,i,s){
-  const sk=tid+":"+i;const ck=S.sub[sk]?"checked":"";
-  return `<div class="sub"><input type="checkbox" class="cbx sub-cb" data-sk="${sk}" ${ck}>
-    <label><b>${s[0]}</b> — ${s[1]}</label></div>`;
-}
-function renderDays(){
-  document.getElementById("dayList").innerHTML=DAYS.map(d=>{
-    const done=S.day[d.id]?"done":"";
-    let body="";
-    if(d.banner&&d.topic){
-      const t=TOPICS.find(x=>x.id===d.topic);
-      body+=`<div class="tbanner" data-c="${t.color}">
-        <div class="ic">${t.icon}</div>
-        <div class="bi"><h3>${t.name}</h3><div class="bs">${t.sum}</div></div>
-        <div class="ring" data-tring="${t.id}">0/0<small>solved</small></div></div>`;
-    }
-    if(d.subs&&d.topic){
-      const t=TOPICS.find(x=>x.id===d.topic);
-      body+=`<div class="blk-lbl">Subtopics to study first</div><div class="subs">${t.subs.map((s,i)=>subRow(t.id,i,s)).join("")}</div>`;
-    }
-    if(d.qnums&&d.qnums.length){
-      body+=`<div class="blk-lbl">Problems to solve</div>${d.qnums.map(qRow).join("")}`;
-    }
-    body+=`<div class="blk-lbl">Tasks</div>`;
-    body+=d.tasks.map((tx,i)=>{
-      const tk=`${d.id}.${i}`;const ck=S.task[tk]?"checked":"";
-      return `<div class="task"><input type="checkbox" class="cbx task-cb" data-tk="${tk}" ${ck}><label>${tx}</label></div>`;
-    }).join("");
-    body+=`<button class="markday" data-mark="${d.id}">${done?"✓ Day complete — undo":"Mark Day "+d.id+" complete"}</button>`;
-    return `<div class="day ${done}" data-day="${d.id}">
-      <div class="day-top" data-toggle="${d.id}">
-        <div class="daynum"><small>Day</small>${d.id}</div>
-        <div class="day-title"><div class="t">${d.title}</div><div class="meta">${d.meta}</div></div>
-        <span class="pbadge p${d.phase}">${phaseName[d.phase]}</span>
-        <span class="chev">▸</span>
+// ════════════════════════════
+// SIDEBAR RENDER
+// ════════════════════════════
+function renderSidebar() {
+  const state = getState();
+  const list = document.getElementById('days-list');
+  list.innerHTML = '';
+  let totalT = 0, doneT = 0, doneD = 0;
+
+  PLAN.forEach(day => {
+    const ch = day.topics.filter(t => state[t.id]).length;
+    const tot = day.topics.length;
+    const pct = tot ? ch/tot : 0;
+    if (pct===1 && tot>0) doneD++;
+    totalT += tot; doneT += ch;
+
+    const r=11, circ = 2*Math.PI*r;
+    const offset = circ*(1-pct);
+    const ringColor = pct===1?'var(--green)':pct>0?'var(--accent)':'var(--border)';
+    const textColor = pct===1?'var(--green)':pct>0?'var(--accent)':'var(--muted)';
+
+    const typeC = day.type==='weekend'?'type-weekend':day.type==='wfh'?'type-wfh':'type-workday';
+    const bLabel = day.type==='weekend'?'WEEKEND':day.type==='wfh'?'WFH':'WORKDAY';
+    const bClass = day.type==='weekend'?'badge-weekend':day.type==='wfh'?'badge-wfh':'badge-work';
+    const weekN = day.day<=7?1:day.day<=14?2:3;
+    const dn = day.dayName.split(' ')[0].toUpperCase().slice(0,3);
+    const isActive = selectedDay===day.day;
+
+    const el = document.createElement('div');
+    el.className = `day-item ${typeC}${isActive?' active':''}`;
+    el.dataset.day = day.day;
+    el.dataset.week = weekN;
+    el.onclick = () => selectDay(day.day);
+    el.innerHTML = `
+      <div class="di-num">D${day.day}</div>
+      <div class="di-info">
+        <div class="di-title">${day.title}</div>
+        <div class="di-meta">
+          <span class="di-dayname">${dn}</span>
+          <span class="di-badge ${bClass}">${bLabel}</span>
+        </div>
       </div>
-      <div class="day-body"><div class="day-body-inner">${body}</div></div>
+      <div class="di-ring">
+        <svg width="28" height="28" viewBox="0 0 28 28">
+          <circle class="ring-bg2" cx="14" cy="14" r="${r}"/>
+          <circle class="ring-fill2" cx="14" cy="14" r="${r}"
+            stroke-dasharray="${circ.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"
+            stroke="${ringColor}"/>
+        </svg>
+        <div class="ring-pct" style="color:${textColor}">${Math.round(pct*100)}%</div>
+      </div>`;
+    list.appendChild(el);
+  });
+
+  document.getElementById('stat-topics').textContent = `${doneT}/${totalT}`;
+  document.getElementById('stat-days').textContent = `${doneD}/15`;
+  const pct = totalT ? Math.round(doneT/totalT*100) : 0;
+  document.getElementById('global-bar').style.width = pct+'%';
+  document.getElementById('prog-pct').textContent = pct+'%';
+}
+
+// ════════════════════════════
+// DETAIL RENDER
+// ════════════════════════════
+function selectDay(dayNum) {
+  selectedDay = dayNum;
+  renderSidebar();
+  renderDetail(dayNum);
+}
+
+function topicHTML(t, state) {
+  const ch = !!state[t.id];
+  const tagMap = {core:['CORE','ttag-core'],advanced:['ADVANCED','ttag-advanced'],practical:['PRACTICAL','ttag-practical'],browser:['BROWSER','ttag-browser'],'html-css':['HTML/CSS','ttag-htmlcss']};
+  const [tagLabel, tagClass] = tagMap[t.tag] || tagMap.core;
+  return `
+    <div class="topic-item${ch?' checked':''}${t.imp?' imp':''}" id="ti-${t.id}" onclick="toggleTopic('${t.id}')">
+      <div class="topic-checkbox">
+        <svg class="chk-icon" width="10" height="8" viewBox="0 0 10 8">
+          <polyline points="1 4 3.5 7 9 1" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="topic-body">
+        <div class="topic-name-row">
+          <span class="topic-name">${t.name}</span>
+          ${t.imp?'<span class="imp-star">★ IMP</span>':''}
+          ${t.polyfill?'<span class="poly-badge">POLYFILL</span>':''}
+        </div>
+        <div class="topic-tags"><span class="ttag ${tagClass}">${tagLabel}</span></div>
+        <div class="topic-note">${t.note}</div>
+        ${t.sub&&t.sub.length?`<div class="subtopics">${t.sub.map(s=>`<div class="st-item"><span class="st-dot">›</span><span>${s}</span></div>`).join('')}</div>`:''}
+      </div>
     </div>`;
-  }).join("");
 }
 
-/* =================== STATS & SYNC =================== */
-function pct(a,b){return b?Math.round(a/b*100):0}
-function syncQ(n){document.querySelectorAll(`[data-q="${n}"]`).forEach(cb=>{if(!cb.disabled)cb.checked=!!S.q[n];});}
-function syncSub(sk){document.querySelectorAll(`[data-sk="${sk}"]`).forEach(cb=>cb.checked=!!S.sub[sk]);}
-function refreshStats(){
-  const qd=ALL_QNUMS.filter(n=>S.q[n]).length,qt=ALL_QNUMS.length;
-  const sd=ALL_SUBS.filter(k=>S.sub[k]).length,st=ALL_SUBS.length;
-  const dd=DAYS.filter(d=>S.day[d.id]).length,dt=DAYS.length;
-  set("qVal",`${qd}<small>/${qt}</small>`);bar("qBar",pct(qd,qt));
-  set("sVal",`${sd}<small>/${st}</small>`);bar("sBar",pct(sd,st));
-  set("dVal",`${dd}<small>/${dt}</small>`);bar("dBar",pct(dd,dt));
-  const overall=Math.round((pct(qd,qt)+pct(sd,st)+pct(dd,dt))/3);
-  set("oVal",`${overall}<small>%</small>`);bar("oBar",overall);
-  TOPICS.forEach(t=>{
-    const tq=t.qs.filter(q=>q.n!==18);const done=tq.filter(q=>S.q[q.n]).length;
-    document.querySelectorAll(`[data-tring="${t.id}"]`).forEach(r=>r.innerHTML=`${done}/${tq.length}<small>solved</small>`);
+function renderDetail(dayNum) {
+  const day = PLAN.find(d=>d.day===dayNum);
+  if (!day) return;
+  const state = getState();
+
+  document.getElementById('empty-state').style.display = 'none';
+  const inner = document.getElementById('detail-inner');
+  inner.style.display = 'block';
+  inner.className = 'detail-inner anim';
+  setTimeout(()=>inner.classList.remove('anim'),300);
+
+  const ch = day.topics.filter(t=>state[t.id]).length;
+  const tot = day.topics.length;
+  const pct = tot ? ch/tot : 0;
+  const r=31, circ=2*Math.PI*r, offset=circ*(1-pct);
+  const ringCol = pct===1?'var(--green)':pct>0?'var(--accent)':'var(--border)';
+  const textCol = pct===1?'var(--green)':pct>0?'var(--accent)':'var(--muted)';
+
+  const bClass = day.type==='weekend'?'badge-weekend':day.type==='wfh'?'badge-wfh':'badge-work';
+  const typeLabel = day.type==='weekend'?'WEEKEND · 8h Study':day.type==='wfh'?'FRIDAY WFH · 4h Study':'WEEKDAY · 3h Study';
+
+  const savedNote = state[`note_${dayNum}`]||'';
+  const savedMood = state[`mood_${dayNum}`]||'';
+  const moods = [{v:'great',e:'🔥',l:'Crushed it'},{v:'good',e:'✅',l:'Solid'},{v:'ok',e:'😐',l:'Average'},{v:'struggle',e:'😤',l:'Struggled'}];
+
+  inner.innerHTML = `
+    <div class="detail-day-header">
+      <div>
+        <div class="detail-day-label">
+          <span style="font-family:'Space Mono',monospace">DAY ${day.day}</span>
+          <span>·</span>
+          <span>${day.dayName.toUpperCase()}</span>
+        </div>
+        <div class="detail-day-title">${day.title}</div>
+        <div class="detail-day-sub">
+          <span class="big-badge ${bClass}">${typeLabel}</span>
+          <span style="font-size:12px;color:var(--muted)" id="day-progress-text">${ch}/${tot} topics done</span>
+        </div>
+        <div class="why-block">💡 ${day.why}</div>
+      </div>
+      <div class="detail-ring">
+        <svg width="70" height="70" viewBox="0 0 70 70">
+          <circle class="detail-ring-bg" cx="35" cy="35" r="${r}"/>
+          <circle class="detail-ring-fill" id="detail-ring-fill" cx="35" cy="35" r="${r}"
+            stroke-dasharray="${circ.toFixed(2)}" stroke-dashoffset="${offset.toFixed(2)}"
+            stroke="${ringCol}"/>
+        </svg>
+        <div class="detail-ring-text" id="detail-ring-text" style="color:${textCol}">${Math.round(pct*100)}%</div>
+      </div>
+    </div>
+
+    <div class="section-head">Daily Schedule</div>
+    <div class="schedule-grid">
+      ${day.schedule.map(s=>`
+        <div class="sched-block">
+          <div class="sched-dur">${s.dur}</div>
+          <div>
+            <div class="sched-title">${s.title}</div>
+            ${s.desc?`<div class="sched-desc">${s.desc}</div>`:''}
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <div class="section-head">Topics to Study</div>
+    <div id="topics-grid">${day.topics.map(t=>topicHTML(t,state)).join('')}</div>
+
+    ${day.resources&&day.resources.length?`
+      <div class="section-head">Resources</div>
+      <div class="resources">${day.resources.map(r=>`<a class="res-link" href="${r.url}" target="_blank">↗ ${r.label}</a>`).join('')}</div>
+    `:''}
+
+    <div class="section-head">Session Notes</div>
+    <textarea class="notes-area" placeholder="Key insights, aha moments, things to revisit…"
+      onblur="saveNote(${dayNum},this.value)"
+      onchange="saveNote(${dayNum},this.value)">${savedNote}</textarea>
+
+    <div class="section-head" style="margin-top:14px">Session Mood</div>
+    <div class="mood-row">
+      ${moods.map(m=>`<button class="mood-btn${savedMood===m.v?' selected':''}" onclick="saveMood(${dayNum},'${m.v}',this)">${m.e} ${m.l}</button>`).join('')}
+    </div>`;
+
+  document.getElementById('detail-panel').scrollTop = 0;
+}
+
+// ════════════════════════════
+// ACTIONS
+// ════════════════════════════
+function toggleTopic(id) {
+  const state = getState();
+  state[id] = !state[id];
+  saveState(state);
+  showToast();
+
+  const el = document.getElementById('ti-'+id);
+  if (el) {
+    const t = PLAN.flatMap(d=>d.topics).find(t=>t.id===id);
+    if (t) el.outerHTML = topicHTML(t, state);
+  }
+
+  renderSidebar();
+
+  // restore active sidebar item
+  document.querySelectorAll('.day-item').forEach(el=>{
+    if (parseInt(el.dataset.day)===selectedDay) el.classList.add('active');
+  });
+
+  // update ring in detail
+  if (selectedDay) {
+    const day = PLAN.find(d=>d.day===selectedDay);
+    if (day) {
+      const ch = day.topics.filter(t=>state[t.id]).length;
+      const tot = day.topics.length;
+      const pct = tot?ch/tot:0;
+      const r=31, circ=2*Math.PI*r, offset=circ*(1-pct);
+      const col = pct===1?'var(--green)':pct>0?'var(--accent)':'var(--border)';
+      const el1=document.getElementById('detail-ring-fill');
+      const el2=document.getElementById('detail-ring-text');
+      const el3=document.getElementById('day-progress-text');
+      if(el1){el1.setAttribute('stroke-dashoffset',offset.toFixed(2));el1.setAttribute('stroke',col);}
+      if(el2){el2.textContent=Math.round(pct*100)+'%';el2.style.color=col;}
+      if(el3) el3.textContent=`${ch}/${tot} topics done`;
+    }
+  }
+}
+
+function saveNote(dayNum, val) {
+  const state = getState();
+  state[`note_${dayNum}`] = val;
+  saveState(state);
+  showToast();
+}
+
+function saveMood(dayNum, mood, btn) {
+  const state = getState();
+  state[`mood_${dayNum}`] = mood;
+  saveState(state);
+  btn.closest('.mood-row').querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  showToast();
+}
+
+function filterWeek(week, btn) {
+  document.querySelectorAll('.wf-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.day-item').forEach(el=>{
+    el.classList.toggle('hidden', week!=='all' && el.dataset.week!=week);
   });
 }
-function set(id,h){document.getElementById(id).innerHTML=h}
-function bar(id,p){document.getElementById(id).style.width=p+"%"}
 
-/* =================== EVENTS =================== */
-function bind(){
-  document.querySelectorAll("nav.tabs button").forEach(b=>b.onclick=()=>{
-    document.querySelectorAll("nav.tabs button").forEach(x=>x.classList.remove("active"));
-    document.querySelectorAll("section.view").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");document.getElementById(b.dataset.v).classList.add("active");
-    window.scrollTo({top:document.querySelector("nav.tabs").offsetTop-1,behavior:"smooth"});
-  });
-  document.body.addEventListener("click",e=>{
-    const tog=e.target.closest("[data-toggle]");
-    if(tog&&!e.target.classList.contains("cbx")){tog.closest(".day").classList.toggle("open");return;}
-    const mk=e.target.closest("[data-mark]");
-    if(mk){const id=mk.dataset.mark;S.day[id]=!S.day[id];save();
-      const dayEl=mk.closest(".day");dayEl.classList.toggle("done",!!S.day[id]);
-      mk.textContent=S.day[id]?"✓ Day complete — undo":"Mark Day "+id+" complete";refreshStats();}
-  });
-  document.body.addEventListener("change",e=>{
-    const c=e.target;
-    if(c.classList.contains("q-cb")){S.q[c.dataset.q]=c.checked;save();syncQ(c.dataset.q);refreshStats();}
-    else if(c.classList.contains("sub-cb")){S.sub[c.dataset.sk]=c.checked;save();syncSub(c.dataset.sk);refreshStats();}
-    else if(c.classList.contains("task-cb")){S.task[c.dataset.tk]=c.checked;save();}
-  });
-  document.getElementById("resetBtn").onclick=()=>{
-    if(confirm("Reset ALL progress? This clears every checkbox and completed day.")){S=blank();save();renderDays();refreshStats();}
-  };
-}
-
-renderDays();refreshStats();bind();
-document.querySelector(".day")?.classList.add("open");
+// INIT
+renderSidebar();
+selectDay(1);
 </script>
 </body>
 </html>
