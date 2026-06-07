@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zustand // 7-Day Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#15110c;
+    --bg2:#1d1810;
+    --panel:#211b12;
+    --panel2:#272015;
+    --line:#3a3020;
+    --ink:#f2e9da;
+    --muted:#a99b81;
+    --faint:#73684f;
+    --honey:#e8a444;
+    --honey2:#f6c66b;
+    --sage:#8fb89a;
+    --rust:#d4775a;
+    --ok:#7fb37f;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --disp:'Fraunces',Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:
+      radial-gradient(900px 500px at 12% -8%, rgba(232,164,68,.10), transparent 60%),
+      radial-gradient(800px 600px at 105% 10%, rgba(143,184,154,.07), transparent 55%),
+      var(--bg);
+    color:var(--ink);font-family:var(--mono);font-size:15px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px 90px;position:relative;z-index:1}
+
+  /* HEADER */
+  header{padding:54px 0 26px;border-bottom:1px solid var(--line)}
+  .kicker{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--honey);margin:0 0 14px}
+  h1{font-family:var(--disp);font-weight:900;font-size:clamp(38px,7vw,72px);line-height:.95;margin:0;letter-spacing:-.02em}
+  h1 em{font-style:italic;color:var(--honey2)}
+  .sub{color:var(--muted);max-width:640px;margin:18px 0 0;font-size:14px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .pill{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:6px 13px;background:var(--panel)}
+  .pill b{color:var(--ink)}
+
+  /* OVERALL PROGRESS */
+  .topbar{display:flex;align-items:center;gap:26px;flex-wrap:wrap;margin-top:30px;
+    background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);
+    border-radius:16px;padding:22px 24px}
+  .ring{--p:0;width:92px;height:92px;flex:none;border-radius:50%;display:grid;place-items:center;
+    background:conic-gradient(var(--honey) calc(var(--p)*1%), #2c2417 0);transition:background .5s ease}
+  .ring .hole{width:72px;height:72px;border-radius:50%;background:var(--bg2);display:grid;place-items:center;
+    font-family:var(--disp);font-weight:900;font-size:22px}
+  .topbar .copy{flex:1;min-width:200px}
+  .topbar h3{margin:0 0 4px;font-family:var(--disp);font-weight:600;font-size:20px}
+  .topbar p{margin:0;color:var(--muted);font-size:13px}
+  .resetbtn{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);background:none;border:1px solid var(--line);border-radius:8px;
+    padding:8px 12px;cursor:pointer;transition:.2s}
+  .resetbtn:hover{color:var(--rust);border-color:var(--rust)}
+
+  /* TABS */
+  nav.tabs{position:sticky;top:0;z-index:5;display:flex;gap:4px;flex-wrap:wrap;margin:30px 0 8px;
+    padding:8px;background:rgba(21,17,12,.86);backdrop-filter:blur(10px);
+    border:1px solid var(--line);border-radius:14px}
+  .tab{flex:1;min-width:130px;text-align:center;font-family:var(--mono);font-size:12px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:none;border:0;
+    padding:13px 10px;border-radius:9px;cursor:pointer;transition:.18s}
+  .tab:hover{color:var(--ink)}
+  .tab.on{background:var(--honey);color:#1b1408;font-weight:700}
+  .tab small{display:block;font-size:10px;letter-spacing:.05em;opacity:.7;margin-top:2px;text-transform:none}
+
+  section.view{display:none;animation:fade .4s ease}
+  section.view.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* DAY CARDS */
+  .day{border:1px solid var(--line);border-radius:14px;margin-top:16px;overflow:hidden;
+    background:linear-gradient(180deg,var(--panel),var(--bg2))}
+  .day.done{border-color:var(--sage)}
+  .dhead{display:flex;align-items:center;gap:18px;padding:18px 22px;cursor:pointer;user-select:none}
+  .dnum{font-family:var(--disp);font-weight:900;font-size:30px;color:var(--honey);line-height:1;flex:none;width:46px}
+  .day.done .dnum{color:var(--sage)}
+  .dinfo{flex:1;min-width:0}
+  .dinfo .date{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+  .dinfo .focus{font-family:var(--disp);font-weight:600;font-size:19px;margin-top:2px}
+  .dright{display:flex;align-items:center;gap:14px;flex:none}
+  .hrs{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--honey2);
+    border:1px solid var(--line);border-radius:999px;padding:5px 11px;white-space:nowrap}
+  .mini{width:64px;height:6px;border-radius:3px;background:#2c2417;overflow:hidden}
+  .mini i{display:block;height:100%;background:var(--honey);width:0;transition:width .4s}
+  .day.done .mini i{background:var(--sage)}
+  .chev{color:var(--faint);transition:transform .25s;font-size:13px}
+  .day.open .chev{transform:rotate(90deg)}
+  .dbody{display:none;padding:4px 22px 20px}
+  .day.open .dbody{display:block}
+  .dgoal{color:var(--muted);font-size:13px;border-left:2px solid var(--honey);padding:4px 0 4px 14px;margin:0 0 14px}
+
+  /* CHECK ITEMS */
+  .item{display:flex;gap:13px;align-items:flex-start;padding:9px 0;border-top:1px dashed #2c2417}
+  .item:first-of-type{border-top:0}
+  .cb{flex:none;width:20px;height:20px;border:1.5px solid var(--faint);border-radius:6px;margin-top:2px;
+    cursor:pointer;display:grid;place-items:center;transition:.15s;background:none}
+  .cb:hover{border-color:var(--honey)}
+  .cb svg{width:12px;height:12px;opacity:0;transform:scale(.5);transition:.15s;stroke:#1b1408}
+  .item.checked .cb{background:var(--honey);border-color:var(--honey)}
+  .item.checked .cb svg{opacity:1;transform:scale(1)}
+  .item label{cursor:pointer;flex:1;font-size:14px;transition:.15s}
+  .item.checked label{color:var(--faint);text-decoration:line-through;text-decoration-color:var(--faint)}
+  .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--sage);border:1px solid var(--line);border-radius:5px;padding:2px 7px;margin-left:8px;
+    white-space:nowrap;vertical-align:middle}
+
+  /* INTERVIEW */
+  .cat{margin-top:30px}
+  .cat h2{font-family:var(--disp);font-weight:600;font-size:24px;margin:0 0 4px;display:flex;align-items:center;gap:12px}
+  .cat h2 span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--faint);
+    border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+  .cat .cdesc{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .q{border:1px solid var(--line);border-radius:11px;margin-top:10px;background:var(--panel);overflow:hidden}
+  .q.checked{border-color:var(--sage)}
+  .qtop{display:flex;align-items:flex-start;gap:13px;padding:15px 18px;cursor:pointer}
+  .qtxt{flex:1;font-weight:500;font-size:14.5px}
+  .qchev{color:var(--faint);transition:transform .25s;flex:none;margin-top:2px;font-size:12px}
+  .q.open .qchev{transform:rotate(90deg)}
+  .ans{display:none;padding:0 18px 18px 51px;color:var(--muted);font-size:13.5px;line-height:1.7}
+  .q.open .ans{display:block;animation:fade .3s}
+  .ans code{font-family:var(--mono);background:#2c2417;color:var(--honey2);padding:1px 6px;border-radius:5px;font-size:12.5px}
+  .ans b{color:var(--ink)}
+  .ans .pin{display:block;margin-top:9px;padding-left:12px;border-left:2px solid var(--rust);color:var(--ink);font-size:12.5px}
+
+  /* PROJECTS */
+  .proj{border:1px solid var(--line);border-radius:13px;margin-top:16px;padding:20px 22px;
+    background:linear-gradient(135deg,var(--panel),var(--bg2))}
+  .proj.checked{border-color:var(--sage)}
+  .phead{display:flex;align-items:flex-start;gap:14px}
+  .ptitle{flex:1}
+  .ptitle h3{font-family:var(--disp);font-weight:600;font-size:21px;margin:0}
+  .lvl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:999px;margin-top:6px;display:inline-block}
+  .l1{background:rgba(143,184,154,.16);color:var(--sage)}
+  .l2{background:rgba(246,198,107,.16);color:var(--honey2)}
+  .l3{background:rgba(212,119,90,.18);color:var(--rust)}
+  .proj p{color:var(--muted);font-size:13.5px;margin:13px 0 0}
+  .proj .teaches{margin-top:12px;display:flex;flex-wrap:wrap;gap:7px}
+  .chip{font-size:10.5px;letter-spacing:.05em;color:var(--ink);background:#2c2417;border:1px solid var(--line);
+    border-radius:6px;padding:4px 9px}
+
+  /* CHEAT */
+  .snip{border:1px solid var(--line);border-radius:12px;margin-top:18px;overflow:hidden;background:var(--panel)}
+  .snip .sh{padding:12px 18px;border-bottom:1px solid var(--line);font-family:var(--disp);font-weight:600;font-size:16px;background:var(--panel2)}
+  .snip .sd{padding:6px 18px 0;color:var(--muted);font-size:12.5px}
+  pre{margin:0;padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.65;color:#dcd3c0}
+  pre .k{color:var(--honey2)}
+  pre .s{color:var(--sage)}
+  pre .c{color:var(--faint);font-style:italic}
+  pre .f{color:var(--rust)}
+
+  footer{margin-top:50px;padding-top:22px;border-top:1px solid var(--line);color:var(--faint);font-size:12px;text-align:center}
+  ::-webkit-scrollbar{height:8px;width:8px}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="kicker">Frontend SDE II · State Management Track</p>
+    <h1>Zustand in <em>7 days</em>.</h1>
+    <p class="sub">A complete, interview-ready sprint built for someone who already knows React. Core API → selectors & perf → middleware → async → architecture & TypeScript → SSR/scaling → drills + capstone. Tap anything to track it. Progress saves automatically.</p>
+    <div class="meta">
+      <span class="pill">Start <b>Sun, Jun 7</b></span>
+      <span class="pill">Finish <b>Sat, Jun 13</b></span>
+      <span class="pill">Weekends <b>6h</b></span>
+      <span class="pill">Weekdays <b>2h</b></span>
+      <span class="pill">Total <b>~22 hours</b></span>
+    </div>
+
+    <div class="topbar">
+      <div class="ring" id="ring"><div class="hole" id="ringtxt">0%</div></div>
+      <div class="copy">
+        <h3 id="statusTitle">Let's get you interview-ready.</h3>
+        <p id="statusLine">0 of 0 items complete across plan, interview bank, and projects.</p>
+      </div>
+      <button class="resetbtn" id="reset">Reset progress</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab on" data-v="plan">7-Day Plan<small id="t-plan">0/0</small></button>
+    <button class="tab" data-v="iv">Interview Bank<small id="t-iv">0/0</small></button>
+    <button class="tab" data-v="proj">Projects<small id="t-proj">0/0</small></button>
+    <button class="tab" data-v="cheat">Cheat Sheet<small>quick ref</small></button>
+  </nav>
+
+  <section class="view on" id="view-plan"></section>
+  <section class="view" id="view-iv"></section>
+  <section class="view" id="view-proj"></section>
+  <section class="view" id="view-cheat"></section>
+
+  <footer>Built as a self-contained study tracker · uncheck nothing you haven't earned · good luck.</footer>
+</div>
+
+<script>
+/* ============================== DATA ============================== */
+const PLAN = [
+  { n:1, date:"Sun · Jun 7 · 6h", hrs:"6 hours", focus:"Core API & Mental Model",
+    goal:"Rebuild the fundamentals from first principles so nothing feels like magic. By tonight you can create a store, explain how it works under the hood, and write idiomatic reads/writes.",
+    items:[
+      ["Why Zustand exists: the boilerplate/perf problems it solves vs Redux","concept"],
+      ["When to pick Zustand vs Redux Toolkit vs Context vs Jotai/Recoil","compare"],
+      ["create((set,get)=>({...})) — the store-creator signature","core"],
+      ["set() merge semantics: shallow merge at top level only","gotcha"],
+      ["set(partial, true) to REPLACE entire state instead of merge","core"],
+      ["get() to read current state inside actions","core"],
+      ["Reading in components with selectors: useStore(s => s.x)","core"],
+      ["Co-locating actions inside the store (no reducers/dispatch)","pattern"],
+      ["Updating nested state with spread (and why deep merge is manual)","gotcha"],
+      ["Vanilla createStore vs React create; useStore binding","core"],
+      ["Under the hood: useSyncExternalStore → concurrent-safe, tear-free","deep"],
+      ["WARM-UP: build a counter store from scratch","build"],
+      ["WARM-UP: build a todo store (add/toggle/remove/clear)","build"],
+    ]},
+  { n:2, date:"Mon · Jun 8 · 2h", hrs:"2 hours", focus:"Selectors, Re-renders & Performance",
+    goal:"This is the #1 interview area. Master exactly when a component re-renders and how to control it. Be able to diagnose a re-render bug live.",
+    items:[
+      ["Atomic selectors: one value per hook to minimize re-renders","perf"],
+      ["Default equality is Object.is — what that means in practice","perf"],
+      ["useShallow for selecting multiple values / objects / arrays","perf"],
+      ["The infinite re-render trap: selector returning a NEW object each render","gotcha"],
+      ["Custom equality functions (legacy 2nd arg / createWithEqualityFn)","perf"],
+      ["Anti-pattern: selecting the whole store (const s = useStore())","gotcha"],
+      ["Derived / computed state: compute in selector vs factory selectors","pattern"],
+      ["Transient updates: store.subscribe() with NO re-render","perf"],
+      ["subscribeWithSelector for targeted transient subscriptions","perf"],
+      ["DRILL: profile a component and explain why it re-renders","build"],
+    ]},
+  { n:3, date:"Tue · Jun 9 · 2h", hrs:"2 hours", focus:"Middleware",
+    goal:"Know every built-in middleware cold, and be able to write your own. Interviewers love asking you to explain persist and to author a logger middleware.",
+    items:[
+      ["persist: storage adapters (localStorage / sessionStorage / custom)","mw"],
+      ["persist: partialize to persist only part of the state","mw"],
+      ["persist: version + migrate for schema evolution","mw"],
+      ["persist: onRehydrateStorage, merge, skipHydration","mw"],
+      ["devtools: Redux DevTools + naming actions set(.., false, 'name')","mw"],
+      ["immer: mutable-style updates for deep nested state","mw"],
+      ["combine: typed initial state + actions with less boilerplate","mw"],
+      ["subscribeWithSelector middleware","mw"],
+      ["Write a custom logger middleware (the (config)=>(set,get,api) shape)","build"],
+      ["Middleware ORDER: devtools outermost, immer/persist inner — and why","gotcha"],
+    ]},
+  { n:4, date:"Wed · Jun 10 · 2h", hrs:"2 hours", focus:"Async & Side Effects",
+    goal:"Show you understand the boundary between client state (Zustand) and server cache (React Query). Handle loading, errors, optimistic updates and race conditions correctly.",
+    items:[
+      ["Async actions are just async functions that call set()","core"],
+      ["loading / error / data state pattern inside a store","pattern"],
+      ["Optimistic updates with rollback on failure","pattern"],
+      ["Race conditions: stale responses, request IDs, AbortController","gotcha"],
+      ["Server state vs client state — Zustand vs React Query/SWR","compare"],
+      ["When NOT to put server data in Zustand","concept"],
+      ["BUILD: an async fetch store with optimistic add","build"],
+    ]},
+  { n:5, date:"Thu · Jun 11 · 2h", hrs:"2 hours", focus:"Architecture & TypeScript",
+    goal:"Senior-level positioning. Organize stores for a large app, type everything correctly, and test stores. Be able to whiteboard a slices architecture.",
+    items:[
+      ["Single store vs multiple stores — tradeoffs & when to split","arch"],
+      ["The Slices pattern: StateCreator per slice → combined store","arch"],
+      ["TypeScript: the curried create<Store>()(...) and WHY it's needed","ts"],
+      ["Typing middleware (persist/immer/devtools) with TS","ts"],
+      ["Typing slices with cross-slice access via combined type","ts"],
+      ["Testing stores: call actions, assert getState(), reset between tests","test"],
+      ["Using the store outside React: getState() / setState() / subscribe()","pattern"],
+      ["Folder structure for stores in a large app","arch"],
+      ["BUILD: a 2-slice store (auth + cart) fully typed","build"],
+    ]},
+  { n:6, date:"Fri · Jun 12 · 2h", hrs:"2 hours", focus:"SSR / Next.js & Scaling",
+    goal:"The questions that separate mid from senior. Why a module-level store leaks data across requests, and how to scale stores in a real production app.",
+    items:[
+      ["Why a module-level store is DANGEROUS in SSR (state leaks across users)","gotcha"],
+      ["Store-per-request: Context + createStore in Next.js App Router","arch"],
+      ["Initializing a store from server props / initial data","arch"],
+      ["Hydration mismatch with persist; skipHydration + manual rehydrate()","gotcha"],
+      ["Scaling: split stores by domain; lazy / code-split stores","scale"],
+      ["Perf at scale: normalized state (byId/allIds) + atomic selectors","scale"],
+      ["Virtualized lists/tables with Zustand (selective subscriptions)","scale"],
+      ["Cross-store communication patterns","arch"],
+      ["Reset & cleanup patterns (logout, unmount, route change)","pattern"],
+      ["BUILD: a Next.js store-provider with per-request createStore","build"],
+    ]},
+  { n:7, date:"Sat · Jun 13 · 6h", hrs:"6 hours", focus:"Drills + Capstone",
+    goal:"Consolidate. Run the whole interview bank out loud, fix weak spots, and ship one capstone you can talk about end-to-end in an interview.",
+    items:[
+      ["Run the FULL interview bank out loud — mark every Q you can answer","review"],
+      ["Re-do any unchecked items from Days 1-6","review"],
+      ["Live exercise: convert a Context-based app to Zustand","build"],
+      ["Live exercise: implement undo/redo as custom middleware","build"],
+      ["CAPSTONE: ship one Advanced project (kanban or realtime dashboard)","build"],
+      ["Mock: explain a store you built end-to-end, including perf decisions","review"],
+      ["Write a 60-second 'how I'd structure state for X' answer","review"],
+    ]},
+];
+
+const INTERVIEW = [
+  { cat:"Fundamentals", desc:"The warm-up questions. Answer crisply — interviewers gauge depth from how you frame the basics.", qs:[
+    ["What is Zustand and how does it differ from Redux?",
+     "Zustand is a minimal hook-based state manager. The store lives <b>outside React</b> as a module-level hook; components subscribe to slices via selectors. Versus Redux it drops the ceremony — <b>no provider, no reducers, no action creators, no dispatch</b>. You write plain functions that call <code>set()</code>. Redux gives stricter unidirectional flow, time-travel by default, and a large middleware ecosystem; Zustand trades that structure for tiny bundle size (~1KB) and far less boilerplate."],
+    ["Does Zustand require a Context Provider?",
+     "No — by default the store is a module-level singleton, so any component can call the hook without a provider. <b>You only introduce a provider</b> when you need per-instance or per-request stores (most importantly for SSR/Next.js, to avoid leaking state across requests)."],
+    ["How does set() update state — does it merge?",
+     "<code>set()</code> does a <b>shallow merge at the top level only</b>. Returning <code>{count: 1}</code> merges that key and leaves siblings intact. Nested objects are <b>replaced, not deep-merged</b>, so you spread them yourself (<code>{...state.user, name}</code>) or use the immer middleware. Pass <code>true</code> as the second arg to replace the whole state object instead of merging."],
+    ["How do components avoid re-rendering on every change?",
+     "Through <b>selectors</b>. <code>useStore(s => s.count)</code> subscribes only to <code>count</code>; the component re-renders only when that selected value changes by the equality check (<code>Object.is</code> by default). Selecting the whole store subscribes to everything and re-renders on any change."],
+    ["What powers Zustand's subscriptions under the hood?",
+     "React's <code>useSyncExternalStore</code>. That's what makes it <b>concurrent-safe and tear-free</b> — selected values stay consistent during concurrent renders. Good answer to show you understand it's not just a clever closure."],
+  ]},
+  { cat:"Selectors & Performance", desc:"The highest-signal area. Be ready to diagnose a re-render bug on the spot.", qs:[
+    ["Why select atomically instead of grabbing the whole store?",
+     "Each selector creates a targeted subscription. <code>useStore(s => s.user)</code> re-renders only when <code>user</code> changes. <code>const s = useStore()</code> subscribes to the entire store, so <b>any</b> mutation anywhere re-renders the component — a common perf bug."],
+    ["What does useShallow solve?",
+     "When a selector returns a <b>new object or array</b> each render (e.g. <code>s => ({a:s.a, b:s.b})</code> or <code>s => s.items.map(...)</code>), <code>Object.is</code> sees a new reference every time and re-renders forever / on every change. <code>useShallow</code> wraps the selector to do a <b>shallow compare</b> of the returned object's values, so it only re-renders when one of those values actually changes."],
+    ["What's the classic cause of an infinite re-render loop?",
+     "A selector that <b>returns a freshly-created reference each call</b> while the component also triggers a render — new object → fails Object.is → re-render → new object again. Fix: select primitives atomically, or wrap with <code>useShallow</code>, or memoize the derived value.<span class='pin'>Say this exact diagnosis out loud — it's a frequent live-debug question.</span>"],
+    ["How do you handle derived / computed state?",
+     "Compute it <b>in the selector</b> (<code>useStore(s => s.items.filter(i=>i.done).length)</code>) for simple cases, or use a <b>factory/parametric selector</b> for reuse. Avoid storing derived values in state — keep one source of truth and derive on read. For expensive derivations, memoize with <code>useMemo</code> on the selected inputs."],
+    ["How do you update state without causing a re-render?",
+     "<b>Transient updates</b>: subscribe imperatively with <code>useEffect(()=>store.subscribe(...))</code> and write to a ref / DOM directly instead of selecting into render. Great for high-frequency values like scroll/mouse position or live socket ticks. <code>subscribeWithSelector</code> lets you subscribe to just one slice transiently."],
+  ]},
+  { cat:"Middleware", desc:"Know each built-in cold and be able to author a custom one.", qs:[
+    ["How does the persist middleware work?",
+     "It wraps the store creator, writes state to a <b>storage adapter</b> (localStorage by default, or sessionStorage/IndexedDB/custom) on every change, and rehydrates on load. Key options: <code>partialize</code> (persist only chosen keys), <code>version</code> + <code>migrate</code> (evolve the schema across releases), <code>onRehydrateStorage</code> (lifecycle hook), <code>merge</code> (custom merge of persisted + initial), and <code>skipHydration</code> (defer hydration — important for SSR)."],
+    ["How do you handle a breaking change to persisted state?",
+     "Bump <code>version</code> and provide a <code>migrate(persistedState, fromVersion)</code> that transforms old shapes into the new one. Without this, users with old localStorage data get crashes or stale fields after deploy."],
+    ["How do you integrate Redux DevTools?",
+     "Wrap the creator in the <code>devtools</code> middleware and give it a store name. Name your actions by passing a third arg to set: <code>set(partial, false, 'cart/addItem')</code>, which labels entries in the DevTools timeline so the action log is readable."],
+    ["When and why use the immer middleware?",
+     "When updates are <b>deeply nested</b> and spreading gets painful/error-prone. immer lets you write 'mutating' code (<code>state.user.address.city = x</code>) that it turns into an immutable update. Trade-off: a small runtime cost and a dependency — for shallow state, plain spread is fine."],
+    ["Write the shape of a custom middleware.",
+     "A middleware is a function that wraps the config: <code>const logger = (config) => (set, get, api) => config((...args) => { console.log(args); set(...args); }, get, api)</code>. You intercept <code>set</code>, do your side effect, then forward. This is the pattern for logging, analytics, validation, undo/redo."],
+    ["Does middleware order matter?",
+     "Yes. They compose like an onion. <b>devtools usually goes outermost</b> so it sees the final action labels; <code>persist</code> and <code>immer</code> go inner. Getting the order wrong can break action naming in DevTools or how persisted state is read/written."],
+  ]},
+  { cat:"Async & Data", desc:"Show you know the client-state vs server-cache boundary.", qs:[
+    ["How do you do async actions in Zustand?",
+     "There's no special API — an action is just an <code>async</code> function that calls <code>set</code>: set <code>loading:true</code>, await the fetch, then <code>set({data, loading:false})</code> or <code>set({error})</code>. Use <code>get()</code> to read current state mid-action."],
+    ["Zustand or React Query — when each?",
+     "<b>React Query/SWR for server state</b> (anything fetched from an API): they give caching, dedupe, background refetch, stale-while-revalidate, retries. <b>Zustand for client/UI state</b>: auth session, theme, modals, cart, wizard steps, selections. A clean architecture uses both. Putting raw server data in Zustand means you re-implement caching badly — a red flag in interviews."],
+    ["How do you implement optimistic updates?",
+     "Apply the change to state immediately, fire the request, and on failure <b>roll back</b> to the snapshot you captured (or refetch). Keep the pre-update value so you can restore it. Pair with a request flag to handle the in-flight UI."],
+    ["How do you handle race conditions / stale responses?",
+     "Track a <b>request id</b> (or use <code>AbortController</code>) and ignore a response if a newer request has started — i.e. only commit if the response's id still matches the latest. Otherwise a slow earlier request can overwrite fresher data."],
+  ]},
+  { cat:"Architecture & TypeScript", desc:"Senior-level signal: structure, typing, and testing.", qs:[
+    ["Single store or multiple stores?",
+     "Either works — Zustand has no global registry. <b>One store with slices</b> keeps related state coordinated and is easy to reason about; <b>multiple stores</b> give isolation and independent code-splitting per domain. Practical rule: split by clear domain boundaries (auth, cart, ui) when they rarely interact; combine via slices when they do."],
+    ["Explain the slices pattern.",
+     "Each slice is a <code>StateCreator</code> returning its own state + actions, typed to the <b>combined</b> store type so it can read sibling slices via <code>get()</code>. You compose them in one <code>create</code>: <code>create((...a)=>({...authSlice(...a), ...cartSlice(...a)}))</code>. Keeps a large store modular without losing cross-slice access."],
+    ["Why the curried create&lt;T&gt;()() in TypeScript?",
+     "TypeScript can't infer the full store type while also inferring middleware generics in one call. The <b>curried form</b> <code>create&lt;Store&gt;()(...)</code> lets you supply the state type explicitly and still get middleware inference. It's the documented idiom for typed stores — knowing this signals real TS-with-Zustand experience."],
+    ["How do you test a Zustand store?",
+     "Import the store, call its actions, and assert on <code>store.getState()</code> — no React needed for logic. <b>Reset between tests</b> by exposing a <code>reset()</code> action or re-creating the store, so state doesn't leak across cases. For hooks, render with React Testing Library and assert rendered output."],
+    ["How do you use the store outside React?",
+     "Call <code>useStore.getState()</code> / <code>useStore.setState()</code> / <code>useStore.subscribe()</code> directly — in utility functions, event handlers, interceptors, or socket callbacks. This is a real strength: state isn't trapped inside the component tree."],
+  ]},
+  { cat:"SSR, Next.js & Scaling", desc:"The mid-vs-senior dividing line. Production-grade concerns.", qs:[
+    ["Why is a module-level store dangerous in SSR?",
+     "On the server the module is shared across <b>all requests</b>, so a single store instance would mix one user's state into another's response — a serious data-leak/security bug. The fix is a <b>store per request</b>: create the store inside a React Context provider so each request (and each client) gets its own instance."],
+    ["How do you set up Zustand in Next.js App Router?",
+     "Create the store with vanilla <code>createStore</code> inside a client <code>StoreProvider</code> that holds it in a <code>useRef</code>, expose it via Context, and read it with a <code>useStore(context, selector)</code> hook. Initialize per-request state from server-passed props. This gives per-request isolation and clean hydration."],
+    ["How do you fix a persist hydration mismatch?",
+     "Server render has no localStorage, so persisted values differ from the first client render → hydration warning. Use <code>skipHydration:true</code> and call <code>rehydrate()</code> in an effect after mount, or gate rendering until hydrated, so server and first client render agree."],
+    ["How do you scale Zustand in a large/perf-critical app?",
+     "Split stores by domain and code-split them; <b>normalize</b> collections as <code>byId</code>/<code>allIds</code> so updates touch one entity; use <b>atomic selectors</b> + <code>useShallow</code> so list rows only re-render when their own data changes; combine with <b>virtualization</b> for long lists; use transient subscriptions for high-frequency streams (e.g. WebSocket ticks) to keep them out of render.<span class='pin'>If you've shipped virtualized tables or live dashboards, tell that story here — it lands hard.</span>"],
+    ["How do you reset/clean up state (e.g. on logout)?",
+     "Capture the initial state and expose a <code>reset()</code> action that sets back to it (replace mode), or re-create the store. On logout, reset all stores; on unmount of a feature, clear its slice. Avoid stale per-user data persisting into the next session."],
+  ]},
+  { cat:"Gotchas & Live Coding", desc:"What trips people up, and the hands-on asks.", qs:[
+    ["Top gotchas to mention proactively.",
+     "1) Selecting the whole store → re-renders on everything. 2) Returning a new object/array from a selector without <code>useShallow</code> → extra/infinite re-renders. 3) Expecting deep merge from <code>set</code> (it's shallow). 4) Reading <code>getState()</code> in render instead of selecting (no subscription → stale UI). 5) Module-level store in SSR. 6) persist hydration timing on first render."],
+    ["Coding: build a counter store.",
+     "<code>const useCounter = create((set)=>({ count:0, inc:()=>set(s=>({count:s.count+1})), dec:()=>set(s=>({count:s.count-1})), reset:()=>set({count:0}) }))</code>. Read with <code>useCounter(s=>s.count)</code>."],
+    ["Coding: convert a Context+useReducer app to Zustand.",
+     "Move the reducer's state into the store creator, turn each action case into a method that calls <code>set</code>, delete the Provider/Context, and replace <code>useContext</code> calls with selector hooks. Highlight the wins: fewer re-renders (selectors vs context broadcast), no provider tree, usable outside React."],
+    ["Coding: implement undo/redo.",
+     "Keep <code>past[]</code>, <code>present</code>, <code>future[]</code>. Each mutating action pushes the old present to <code>past</code> and clears <code>future</code>; <code>undo()</code> pops past→present and pushes old present to future; <code>redo()</code> reverses. Cleanest as a small <b>custom middleware</b> that wraps <code>set</code>."],
+  ]},
+];
+
+const PROJECTS = [
+  ["Persisted Todo + Filters","l1","Beginner",
+   "A todo app that survives refresh. Add/toggle/remove/clear, plus active/completed/all filters. Sounds simple — it forces clean selectors and persistence.",
+   ["persist + partialize","derived selectors (counts)","atomic reads","localStorage adapter"]],
+  ["E-commerce Cart with Slices","l2","Intermediate",
+   "Product list + cart with quantities, computed totals/tax, and an optimistic 'add to cart'. Organize it as two typed slices (catalog + cart).",
+   ["slices pattern","TypeScript curried create","computed totals","optimistic update"]],
+  ["Multi-step Form Wizard","l2","Intermediate",
+   "A 4-step wizard that persists progress and survives reload, with per-step validation state. Then bump the schema and write a migration.",
+   ["persist version + migrate","validation state","step navigation","partialize"]],
+  ["Kanban Board","l3","Advanced",
+   "Drag-and-drop cards across columns with normalized state and full undo/redo. The canonical 'show me complex state management' project.",
+   ["normalized byId/allIds","undo/redo middleware","drag-drop state","immer (optional)"]],
+  ["Real-time Metrics Dashboard","l3","Advanced",
+   "A live dashboard fed by a WebSocket (or mock interval) streaming high-frequency updates into a virtualized table — without melting the render. Perfect to talk about if you've shipped streaming UIs.",
+   ["transient subscriptions","subscribeWithSelector","virtualization + Zustand","perf at scale"]],
+  ["Next.js App-Router SSR Store","l3","Advanced",
+   "A store-per-request setup in the App Router: StoreProvider + useRef + Context, initialized from server data, with persist + skipHydration done right.",
+   ["store-per-request","SSR hydration","Context + createStore","skipHydration"]],
+];
+
+const CHEAT = [
+  ["Create a store","Module-level hook. Actions live inside.",
+`<span class="k">import</span> { create } <span class="k">from</span> <span class="s">'zustand'</span>
+
+<span class="k">const</span> useBears = <span class="f">create</span>((set, get) => ({
+  bears: <span class="s">0</span>,
+  <span class="f">add</span>: () => set((s) => ({ bears: s.bears + <span class="s">1</span> })),
+  <span class="f">reset</span>: () => set({ bears: <span class="s">0</span> }),       <span class="c">// shallow-merges</span>
+  <span class="f">replaceAll</span>: () => set({ bears: <span class="s">0</span> }, <span class="k">true</span>), <span class="c">// replaces state</span>
+}))`],
+  ["Read efficiently","Atomic = fewer re-renders. useShallow for groups.",
+`<span class="c">// re-renders only when bears changes</span>
+<span class="k">const</span> bears = <span class="f">useBears</span>((s) => s.bears)
+
+<span class="c">// selecting multiple values → wrap with useShallow</span>
+<span class="k">import</span> { useShallow } <span class="k">from</span> <span class="s">'zustand/react/shallow'</span>
+<span class="k">const</span> { add, reset } = <span class="f">useBears</span>(
+  <span class="f">useShallow</span>((s) => ({ add: s.add, reset: s.reset }))
+)`],
+  ["persist middleware","Survive reloads; evolve the schema safely.",
+`<span class="k">import</span> { persist, createJSONStorage } <span class="k">from</span> <span class="s">'zustand/middleware'</span>
+
+<span class="k">const</span> useStore = <span class="f">create</span>(<span class="f">persist</span>(
+  (set) => ({ token: <span class="k">null</span>, theme: <span class="s">'dark'</span> }),
+  {
+    name: <span class="s">'app-store'</span>,
+    storage: <span class="f">createJSONStorage</span>(() => localStorage),
+    partialize: (s) => ({ theme: s.theme }), <span class="c">// don't persist token</span>
+    version: <span class="s">2</span>,
+    migrate: (old, v) => (v === <span class="s">1</span> ? { ...old, theme: <span class="s">'dark'</span> } : old),
+  }
+))`],
+  ["Slices + TypeScript","Curried create, modular slices, cross-slice get().",
+`<span class="k">import</span> { create, StateCreator } <span class="k">from</span> <span class="s">'zustand'</span>
+
+<span class="k">type</span> Store = AuthSlice & CartSlice
+
+<span class="k">const</span> authSlice: StateCreator&lt;Store, [], [], AuthSlice&gt; =
+  (set) => ({ user: <span class="k">null</span>, <span class="f">login</span>: (u) => set({ user: u }) })
+
+<span class="k">const</span> cartSlice: StateCreator&lt;Store, [], [], CartSlice&gt; =
+  (set, get) => ({ items: [], <span class="f">checkout</span>: () => { <span class="k">const</span> u = <span class="f">get</span>().user } })
+
+<span class="k">const</span> useStore = <span class="f">create</span>&lt;Store&gt;()((...a) => ({
+  ...<span class="f">authSlice</span>(...a), ...<span class="f">cartSlice</span>(...a),
+}))`],
+  ["Custom middleware","Intercept set(). Logger / analytics / undo.",
+`<span class="k">const</span> logger = (config) => (set, get, api) =>
+  <span class="f">config</span>((...args) => {
+    <span class="f">console.log</span>(<span class="s">'prev'</span>, <span class="f">get</span>())
+    <span class="f">set</span>(...args)
+    <span class="f">console.log</span>(<span class="s">'next'</span>, <span class="f">get</span>())
+  }, get, api)
+
+<span class="k">const</span> useStore = <span class="f">create</span>(<span class="f">logger</span>((set) => ({ <span class="c">/* ... */</span> })))`],
+  ["Async action","No special API — just async + set.",
+`<span class="f">create</span>((set, get) => ({
+  data: <span class="k">null</span>, loading: <span class="k">false</span>, error: <span class="k">null</span>,
+  <span class="f">load</span>: <span class="k">async</span> (id) => {
+    set({ loading: <span class="k">true</span>, error: <span class="k">null</span> })
+    <span class="k">try</span> {
+      <span class="k">const</span> res = <span class="k">await</span> <span class="f">fetch</span>(<span class="s">\`/api/\${id}\`</span>)
+      set({ data: <span class="k">await</span> res.<span class="f">json</span>(), loading: <span class="k">false</span> })
+    } <span class="k">catch</span> (e) { set({ error: e, loading: <span class="k">false</span> }) }
+  },
+}))`],
+  ["Use outside React","getState / setState / subscribe anywhere.",
+`useStore.<span class="f">getState</span>().login(user)   <span class="c">// in an event handler</span>
+useStore.<span class="f">setState</span>({ theme: <span class="s">'light'</span> })
+<span class="k">const</span> unsub = useStore.<span class="f">subscribe</span>((s) => console.<span class="f">log</span>(s)) <span class="c">// transient</span>`],
+  ["Next.js store-per-request","Avoid cross-request leaks in SSR.",
+`<span class="s">'use client'</span>
+<span class="k">const</span> StoreContext = <span class="f">createContext</span>(<span class="k">null</span>)
+
+<span class="k">function</span> <span class="f">StoreProvider</span>({ children, initial }) {
+  <span class="k">const</span> ref = <span class="f">useRef</span>()
+  <span class="k">if</span> (!ref.current) ref.current = <span class="f">createStore</span>(() => ({ ...initial }))
+  <span class="k">return</span> &lt;StoreContext.Provider value={ref.current}&gt;{children}&lt;/&gt;
+}
+<span class="c">// each request gets its own store instance</span>`],
+];
+
+/* ============================== STATE ============================== */
+const KEY = "zustand-tracker-v1";
+let checked = {};
+const memFallback = {};
+
+async function loadState(){
+  try{
+    const r = await window.storage.get(KEY);
+    if(r && r.value) checked = JSON.parse(r.value);
+  }catch(e){
+    if(memFallback[KEY]) checked = memFallback[KEY];
+  }
+}
+async function saveState(){
+  memFallback[KEY] = checked;
+  try{ await window.storage.set(KEY, JSON.stringify(checked)); }catch(e){}
+}
+function isOn(id){ return !!checked[id]; }
+function toggle(id){ if(checked[id]) delete checked[id]; else checked[id]=1; saveState(); }
+
+/* ============================== IDS ============================== */
+function planId(d,i){ return `p${d}_${i}`; }
+function ivId(c,i){ return `i${c}_${i}`; }
+function projId(i){ return `j${i}`; }
+
+function allPlanIds(){ const a=[]; PLAN.forEach(d=>d.items.forEach((_,i)=>a.push(planId(d.n,i)))); return a; }
+function allIvIds(){ const a=[]; INTERVIEW.forEach((c,ci)=>c.qs.forEach((_,i)=>a.push(ivId(ci,i)))); return a; }
+function allProjIds(){ return PROJECTS.map((_,i)=>projId(i)); }
+
+/* ============================== RENDER ============================== */
+function check(id){
+  return `<button class="cb" data-id="${id}" aria-label="toggle"><svg viewBox="0 0 24 24" fill="none" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>`;
+}
+
+function renderPlan(){
+  const root = document.getElementById("view-plan");
+  root.innerHTML = PLAN.map(d=>{
+    const items = d.items.map((it,i)=>{
+      const id = planId(d.n,i);
+      return `<div class="item ${isOn(id)?'checked':''}" data-id="${id}">
+        ${check(id)}
+        <label data-id="${id}">${it[0]}<span class="tag">${it[1]}</span></label>
+      </div>`;
+    }).join("");
+    return `<div class="day ${d.n===1?'open':''}" data-day="${d.n}">
+      <div class="dhead" data-day="${d.n}">
+        <div class="dnum">${d.n}</div>
+        <div class="dinfo">
+          <div class="date">${d.date}</div>
+          <div class="focus">${d.focus}</div>
+        </div>
+        <div class="dright">
+          <span class="hrs">${d.hrs}</span>
+          <span class="mini"><i data-mini="${d.n}"></i></span>
+          <span class="chev">▶</span>
+        </div>
+      </div>
+      <div class="dbody">
+        <p class="dgoal">${d.goal}</p>
+        ${items}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderIv(){
+  const root = document.getElementById("view-iv");
+  root.innerHTML = INTERVIEW.map((c,ci)=>{
+    const qs = c.qs.map((q,i)=>{
+      const id = ivId(ci,i);
+      return `<div class="q ${isOn(id)?'checked':''}" data-id="${id}">
+        <div class="qtop">
+          ${check(id)}
+          <div class="qtxt" data-q="${id}">${q[0]}</div>
+          <span class="qchev" data-q="${id}">▶</span>
+        </div>
+        <div class="ans">${q[1]}</div>
+      </div>`;
+    }).join("");
+    return `<div class="cat">
+      <h2>${c.cat} <span>${c.qs.length} Q</span></h2>
+      <p class="cdesc">${c.desc}</p>
+      ${qs}
+    </div>`;
+  }).join("");
+}
+
+function renderProj(){
+  const root = document.getElementById("view-proj");
+  root.innerHTML = `<div class="cat"><p class="cdesc" style="margin-top:18px">Six projects, easy → hard. Ship at least one Advanced one — that's your capstone and your strongest interview story. Each maps to a skill cluster interviewers probe.</p></div>` +
+  PROJECTS.map((p,i)=>{
+    const id = projId(i);
+    return `<div class="proj ${isOn(id)?'checked':''}" data-id="${id}">
+      <div class="phead">
+        ${check(id)}
+        <div class="ptitle">
+          <h3>${p[0]}</h3>
+          <span class="lvl ${p[1]}">${p[2]}</span>
+        </div>
+      </div>
+      <p>${p[3]}</p>
+      <div class="teaches">${p[4].map(t=>`<span class="chip">${t}</span>`).join("")}</div>
+    </div>`;
+  }).join("");
+}
+
+function renderCheat(){
+  const root = document.getElementById("view-cheat");
+  root.innerHTML = `<div class="cat"><p class="cdesc" style="margin-top:18px">Memorize these shapes. If you can write each from blank, you can pass the live-coding round.</p></div>` +
+  CHEAT.map(s=>`<div class="snip">
+    <div class="sh">${s[0]}</div>
+    <div class="sd">${s[1]}</div>
+    <pre>${s[2]}</pre>
+  </div>`).join("");
+}
+
+/* ============================== PROGRESS ============================== */
+function countOn(ids){ return ids.filter(isOn).length; }
+
+function updateProgress(){
+  const p = allPlanIds(), iv = allIvIds(), pr = allProjIds();
+  const all = [...p,...iv,...pr];
+  const done = countOn(all), total = all.length;
+  const pct = total? Math.round(done/total*100):0;
+
+  const ring = document.getElementById("ring");
+  ring.style.setProperty("--p", pct);
+  document.getElementById("ringtxt").textContent = pct+"%";
+
+  document.getElementById("statusLine").textContent =
+    `${done} of ${total} items complete across plan, interview bank, and projects.`;
+  const t = document.getElementById("statusTitle");
+  if(pct===0) t.textContent="Let's get you interview-ready.";
+  else if(pct<35) t.textContent="Momentum building — keep going.";
+  else if(pct<70) t.textContent="Solid progress. You're past the hump.";
+  else if(pct<100) t.textContent="Almost there — polish the weak spots.";
+  else t.textContent="Done. You're interview-ready. 🐻";
+
+  document.getElementById("t-plan").textContent = `${countOn(p)}/${p.length}`;
+  document.getElementById("t-iv").textContent = `${countOn(iv)}/${iv.length}`;
+  document.getElementById("t-proj").textContent = `${countOn(pr)}/${pr.length}`;
+
+  // per-day minibars + done state
+  PLAN.forEach(d=>{
+    const ids = d.items.map((_,i)=>planId(d.n,i));
+    const dpct = Math.round(countOn(ids)/ids.length*100);
+    const bar = document.querySelector(`[data-mini="${d.n}"]`);
+    if(bar) bar.style.width = dpct+"%";
+    const card = document.querySelector(`.day[data-day="${d.n}"]`);
+    if(card) card.classList.toggle("done", dpct===100);
+  });
+}
+
+/* ============================== EVENTS ============================== */
+function onClick(e){
+  const cb = e.target.closest(".cb");
+  if(cb){ flip(cb.dataset.id); return; }
+
+  const lbl = e.target.closest("label[data-id]");
+  if(lbl){ flip(lbl.dataset.id); return; }
+
+  const proj = e.target.closest(".proj");
+  if(proj && !e.target.closest(".cb")){ flip(proj.dataset.id); return; }
+
+  const q = e.target.closest("[data-q]");
+  if(q){ const card=q.closest(".q"); card.classList.toggle("open"); return; }
+
+  const dh = e.target.closest(".dhead");
+  if(dh){ dh.closest(".day").classList.toggle("open"); return; }
+}
+
+function flip(id){
+  toggle(id);
+  // update relevant element classes
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(el=>{
+    if(el.classList.contains("item")||el.classList.contains("q")||el.classList.contains("proj"))
+      el.classList.toggle("checked", isOn(id));
+  });
+  updateProgress();
+}
+
+function switchTab(v){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on", t.dataset.v===v));
+  document.querySelectorAll(".view").forEach(s=>s.classList.toggle("on", s.id==="view-"+v));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function resetAll(){
+  if(!confirm("Reset all progress? This clears every checkmark.")) return;
+  checked = {};
+  await saveState();
+  document.querySelectorAll(".item,.q,.proj").forEach(el=>el.classList.remove("checked"));
+  updateProgress();
+}
+
+/* ============================== INIT ============================== */
+(async function(){
+  await loadState();
+  renderPlan(); renderIv(); renderProj(); renderCheat();
+  updateProgress();
+  document.body.addEventListener("click", onClick);
+  document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>switchTab(t.dataset.v)));
+  document.getElementById("reset").addEventListener("click", resetAll);
+})();
+</script>
+</body>
+</html>
