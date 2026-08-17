@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JS Interview — 7 Day Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0C; --sur:#131419; --sur2:#1A1C23; --sur3:#22252E;
+  --line:#282B34; --line2:#3A3E4A;
+  --tx:#F3F4F6; --tx2:#A6ACB8; --tx3:#6E7480;
+  --ac:#8B92F8; --ac-ink:#0B0B1F; --ac-soft:#1B1D3A; --ac-line:#3D4185;
+  --ok:#4ADE80; --ok-soft:#12301F; --ok-line:#256B42; --ok-ink:#0A0A0C;
+  --fd:"Sora",ui-sans-serif,system-ui,sans-serif;
+  --fb:"Manrope",ui-sans-serif,system-ui,sans-serif;
+  --fm:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --side:296px;
+}
+html[data-theme="light"]{
+  --bg:#F4F4F1; --sur:#FFFFFF; --sur2:#FAFAF7; --sur3:#EFEFEA;
+  --line:#E3E3DD; --line2:#C9C9C1;
+  --tx:#111216; --tx2:#585D68; --tx3:#8A8F99;
+  --ac:#4F46E5; --ac-ink:#FFFFFF; --ac-soft:#EEEFFE; --ac-line:#C2C5F7;
+  --ok:#16A34A; --ok-soft:#E3F6E9; --ok-line:#8ED2A6; --ok-ink:#FFFFFF;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:var(--bg); color:var(--tx);
+  font-family:var(--fb); font-size:17px; line-height:1.65; font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--fd); letter-spacing:-.02em; margin:0}
+code{
+  font-family:var(--fm); font-size:.86em; font-weight:500; color:var(--ac);
+  background:var(--ac-soft); border:1px solid var(--ac-line); border-radius:5px;
+  padding:1px 6px; white-space:nowrap;
+}
+button{font-family:var(--fm); cursor:pointer; border:0; background:none; color:inherit}
+:focus-visible{outline:3px solid var(--ac); outline-offset:3px}
+
+/* ============ top scroll bar ============ */
+#topbar{position:fixed; top:0; left:0; height:3px; background:var(--ac); width:0; z-index:60; transition:width .2s}
+
+/* ============ sidebar ============ */
+.side{
+  position:fixed; top:0; left:0; bottom:0; width:var(--side); z-index:50;
+  background:var(--sur); border-right:1px solid var(--line);
+  display:flex; flex-direction:column; overflow-y:auto;
+}
+.brand{display:flex; align-items:center; gap:14px; padding:26px 24px 22px}
+.logo{
+  width:52px; height:52px; background:var(--ac); border-radius:8px;
+  display:grid; place-items:end; padding:0 8px 6px 0;
+  font-family:var(--fm); font-weight:700; font-size:21px; color:var(--ac-ink); flex:0 0 auto;
+}
+.brand h1{font-size:19px; font-weight:700; line-height:1.25}
+.brand p{margin:2px 0 0; font-family:var(--fm); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--tx3)}
+
+.ring-wrap{display:flex; align-items:center; gap:18px; padding:0 24px 24px; border-bottom:1px solid var(--line)}
+.ring{position:relative; width:96px; height:96px; flex:0 0 auto}
+.ring svg{transform:rotate(-90deg)}
+.ring-track{stroke:var(--sur3)}
+.ring-fill{stroke:var(--ac); transition:stroke-dashoffset .5s ease, stroke .3s}
+.ring-fill.full{stroke:var(--ok)}
+.ring-num{
+  position:absolute; inset:0; display:grid; place-content:center; text-align:center;
+  font-family:var(--fd); font-weight:700; font-size:25px; letter-spacing:-.03em;
+}
+.ring-meta p{margin:0; font-family:var(--fm); font-size:12px; color:var(--tx3); line-height:1.9}
+.ring-meta b{color:var(--tx); font-size:15px; font-weight:500}
+.ring-meta .saved{color:var(--ok); font-size:11px; margin-top:6px; line-height:1.4}
+
+.nav{padding:18px 14px; flex:1}
+.nav-cap{font-family:var(--fm); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--tx3); padding:0 10px 12px}
+.dayrow{
+  display:grid; grid-template-columns:34px 1fr auto; gap:12px; align-items:center;
+  width:100%; text-align:left; padding:11px 10px; border-radius:9px; margin-bottom:2px;
+  transition:background .15s;
+}
+.dayrow:hover{background:var(--sur2)}
+.dayrow.active{background:var(--sur3)}
+.dnum{
+  width:34px; height:34px; border-radius:7px; background:var(--sur3); color:var(--tx2);
+  display:grid; place-items:center; font-family:var(--fm); font-size:13px; font-weight:700;
+  transition:background .25s,color .25s;
+}
+.dayrow.active .dnum{background:var(--ac); color:var(--ac-ink)}
+.dayrow.done .dnum{background:var(--ok); color:var(--ok-ink)}
+.dmeta{min-width:0}
+.dname{font-family:var(--fb); font-size:15px; font-weight:600; color:var(--tx); display:block}
+.dbar{height:4px; background:var(--sur3); border-radius:2px; margin-top:7px; overflow:hidden}
+.dbar i{display:block; height:100%; width:0; background:var(--ac); transition:width .35s ease,background .3s}
+.dayrow.done .dbar i{background:var(--ok)}
+.dpct{font-family:var(--fm); font-size:13px; font-weight:500; color:var(--tx3); min-width:38px; text-align:right}
+.dayrow.done .dpct{color:var(--ok)}
+
+.side-foot{padding:16px 20px 24px; border-top:1px solid var(--line); display:flex; gap:8px; flex-wrap:wrap}
+.side-foot button{
+  font-size:12px; color:var(--tx2); border:1px solid var(--line2); border-radius:7px; padding:9px 13px;
+  transition:color .15s,border-color .15s;
+}
+.side-foot button:hover{color:var(--tx); border-color:var(--ac)}
+
+/* ============ main ============ */
+.main{margin-left:var(--side); padding:0 0 120px}
+.inner{max-width:820px; margin:0 auto; padding:0 40px}
+
+.hero{padding:88px 0 64px}
+.kicker{
+  display:inline-flex; align-items:center; gap:10px; font-family:var(--fm); font-size:12px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--ac);
+  background:var(--ac-soft); border:1px solid var(--ac-line); border-radius:999px; padding:7px 16px; margin-bottom:26px;
+}
+.hero h2{font-size:clamp(40px,5.6vw,62px); font-weight:700; line-height:1.02; letter-spacing:-.035em}
+.hero h2 em{font-style:normal; color:var(--ac)}
+.hero p{font-size:19px; color:var(--tx2); margin:24px 0 0; max-width:56ch; line-height:1.6}
+.stats{display:flex; gap:44px; margin-top:44px; flex-wrap:wrap}
+.stat b{display:block; font-family:var(--fd); font-size:34px; font-weight:700; letter-spacing:-.03em; line-height:1}
+.stat span{font-family:var(--fm); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--tx3)}
+
+/* ============ day cards ============ */
+.day{
+  background:var(--sur); border:1px solid var(--line); border-radius:16px;
+  padding:36px 38px; margin-bottom:22px; scroll-margin-top:28px;
+}
+.day.done{border-color:var(--ok-line)}
+.dhead{display:flex; gap:20px; align-items:flex-start}
+.dbadge{
+  width:60px; height:60px; flex:0 0 auto; border-radius:11px; background:var(--ac);
+  color:var(--ac-ink); font-family:var(--fm); font-weight:700; font-size:22px;
+  display:grid; place-items:center; transition:background .3s;
+}
+.day.done .dbadge{background:var(--ok); color:var(--ok-ink)}
+.dtitle{flex:1; min-width:0}
+.chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:11px}
+.chip{
+  font-family:var(--fm); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--tx2); background:var(--sur2); border:1px solid var(--line); border-radius:5px; padding:4px 9px;
+}
+.chip.time{color:var(--ac); background:var(--ac-soft); border-color:var(--ac-line)}
+.day h3{font-size:29px; font-weight:600; line-height:1.15}
+.lede{font-size:17px; color:var(--tx2); margin:12px 0 0; max-width:58ch}
+.dscore{text-align:right; flex:0 0 auto}
+.dscore b{display:block; font-family:var(--fd); font-size:26px; font-weight:700; letter-spacing:-.03em; line-height:1}
+.dscore span{font-family:var(--fm); font-size:12px; color:var(--tx3)}
+.day.done .dscore b{color:var(--ok)}
+
+.block{margin-top:34px}
+.block-lbl{
+  display:flex; align-items:center; gap:14px; margin:0 0 14px;
+  font-family:var(--fm); font-size:12.5px; font-weight:500; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--tx2);
+}
+.block-lbl::after{content:""; flex:1; height:1px; background:var(--line)}
+.block-lbl em{font-style:normal; color:var(--ac); letter-spacing:.04em; text-transform:none; font-size:12px}
+
+.task{
+  display:flex; gap:15px; align-items:flex-start; padding:11px 14px; margin:0 -14px;
+  border-radius:10px; cursor:pointer; transition:background .15s;
+}
+.task:hover{background:var(--sur2)}
+.task input{position:absolute; opacity:0; width:0; height:0}
+.mark{
+  flex:0 0 auto; width:23px; height:23px; margin-top:2px; border-radius:6px;
+  border:2px solid var(--line2); background:transparent;
+  display:grid; place-items:center; transition:background .18s,border-color .18s;
+}
+.mark svg{width:13px; height:13px; opacity:0; transform:scale(.5); transition:opacity .18s,transform .18s}
+.task:hover .mark{border-color:var(--ac)}
+.task input:checked + .mark{background:var(--ok); border-color:var(--ok)}
+.task input:checked + .mark svg{opacity:1; transform:scale(1)}
+.ttext{font-size:16.5px; line-height:1.6; color:var(--tx)}
+
+.note{
+  margin-top:30px; padding:20px 24px; background:var(--ac-soft);
+  border:1px solid var(--ac-line); border-radius:12px; font-size:15.5px; color:var(--tx2);
+}
+.note b{color:var(--tx); font-weight:600}
+.jot{margin-top:24px}
+.jot label{
+  display:block; font-family:var(--fm); font-size:12px; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--tx3); margin-bottom:9px;
+}
+textarea{
+  width:100%; min-height:82px; resize:vertical; background:var(--bg); color:var(--tx);
+  border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+  font-family:var(--fm); font-size:14px; line-height:1.7;
+}
+textarea:hover{border-color:var(--line2)}
+textarea::placeholder{color:var(--tx3)}
+
+/* ============ reference ============ */
+.ref{margin-top:76px}
+.ref > h3{font-size:32px; font-weight:700; letter-spacing:-.03em}
+.ref > p{font-size:17px; color:var(--tx2); margin:12px 0 34px; max-width:56ch}
+.grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(238px,1fr)); gap:16px}
+.rd{background:var(--sur); border:1px solid var(--line); border-radius:14px; padding:24px}
+.rd-n{font-family:var(--fm); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ac)}
+.rd h4{font-size:19px; font-weight:600; margin:10px 0 10px}
+.rd p{margin:0; font-size:15px; color:var(--tx2); line-height:1.6}
+.rules{list-style:none; padding:0; margin:44px 0 0}
+.rules li{
+  display:grid; grid-template-columns:52px 1fr; gap:18px; align-items:start;
+  padding:22px 0; border-top:1px solid var(--line); font-size:16.5px; color:var(--tx2);
+}
+.rules b{font-family:var(--fm); font-size:17px; font-weight:700; color:var(--ac)}
+.warn{
+  margin:0 0 30px; padding:16px 20px; border-radius:11px; background:var(--ac-soft);
+  border:1px solid var(--ac-line); font-family:var(--fm); font-size:13.5px; color:var(--tx2);
+}
+[hidden]{display:none !important}
+
+@media (max-width:1040px){
+  :root{--side:0px}
+  .side{position:static; width:auto; border-right:0; border-bottom:1px solid var(--line)}
+  .main{margin-left:0}
+  .inner{padding:0 24px}
+  .nav{padding:18px 10px}
+  .hero{padding:56px 0 44px}
+}
+@media (max-width:640px){
+  body{font-size:16px}
+  .day{padding:26px 20px; border-radius:14px}
+  .dhead{flex-wrap:wrap; gap:14px}
+  .dscore{text-align:left}
+  .day h3{font-size:24px}
+  .task{padding:11px 10px; margin:0 -10px}
+  .stats{gap:28px}
+  .ring-wrap{padding:0 20px 20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div id="topbar"></div>
+
+<aside class="side">
+  <div class="brand">
+    <div class="logo">JS</div>
+    <div>
+      <h1>Interview Plan</h1>
+      <p>7 days &middot; 31 hours</p>
+    </div>
+  </div>
+
+  <div class="ring-wrap">
+    <div class="ring">
+      <svg width="96" height="96" viewBox="0 0 96 96" aria-hidden="true">
+        <circle class="ring-track" cx="48" cy="48" r="41" fill="none" stroke-width="7"></circle>
+        <circle class="ring-fill" id="ring" cx="48" cy="48" r="41" fill="none" stroke-width="7"
+                stroke-linecap="round" stroke-dasharray="257.6" stroke-dashoffset="257.6"></circle>
+      </svg>
+      <div class="ring-num" id="ringNum">0%</div>
+    </div>
+    <div class="ring-meta">
+      <p><b id="doneN">0</b> of <b id="allN">68</b></p>
+      <p>tasks complete</p>
+      <p class="saved" id="saved">not saved yet</p>
+    </div>
+  </div>
+
+  <nav class="nav" id="nav" aria-label="Days">
+    <p class="nav-cap">the week</p>
+  </nav>
+
+  <div class="side-foot">
+    <button id="theme">theme</button>
+    <button id="export">export</button>
+    <button id="reset">reset</button>
+  </div>
+</aside>
+
+<div class="main">
+  <div class="inner">
+    <header class="hero">
+      <span class="kicker">Mon&ndash;Fri 3 hrs &middot; Sat&ndash;Sun full days</span>
+      <h2>The syllabus is <em>finite</em>. That's the whole point.</h2>
+      <p>Every question a JavaScript interview can ask fits on one page. Work down the stack, tick as you go, and log what tripped you up.</p>
+      <div class="stats">
+        <div class="stat"><b>7</b><span>days</span></div>
+        <div class="stat"><b>31</b><span>hours</span></div>
+        <div class="stat"><b>68</b><span>tasks</span></div>
+        <div class="stat"><b>4</b><span>rounds</span></div>
+      </div>
+    </header>
+
+    <p class="warn" id="warn" hidden>Progress can't save in this preview. Download the file and open it from your machine &mdash; ticks then persist indefinitely, with no expiry.</p>
+
+    <main id="days"></main>
+
+    <section class="ref">
+      <h3>How the rounds actually run</h3>
+      <p>Each round is a gate. The interviewer's mind is usually made up before the next one starts.</p>
+      <div class="grid">
+        <div class="rd">
+          <span class="rd-n">round 01</span>
+          <h4>Opening act</h4>
+          <p>What is JavaScript, <code>var</code> vs <code>let</code>, hoisting, closures, IIFE, <code>==</code> vs <code>===</code>, ES6. Concise, or rejected.</p>
+        </div>
+        <div class="rd">
+          <span class="rd-n">round 02</span>
+          <h4>Can't ignore</h4>
+          <p>Output-based questions, the small programs, simple polyfills. Never complex &mdash; the interviewer has to be able to do it too.</p>
+        </div>
+        <div class="rd">
+          <span class="rd-n">round 03</span>
+          <h4>Discussion</h4>
+          <p>Promises and every variation, async/await, callbacks, event loop, <code>this</code>, prototypes, debounce, throttle, delegation.</p>
+        </div>
+        <div class="rd">
+          <span class="rd-n">round 04</span>
+          <h4>Eliminator</h4>
+          <p>Storage trade-offs, DOM APIs, performance, security loopholes, custom events, vanilla DOM builds.</p>
+        </div>
+      </div>
+      <ul class="rules">
+        <li><b>01</b><span>Your interviewer is an employee who left their own work to be here, and may have taken ten interviews already today.</span></li>
+        <li><b>02</b><span>You can answer 20% correctly and get selected. You can answer everything and still get rejected. Connection is the variable.</span></li>
+        <li><b>03</b><span>Treat every question as a conversation, not a test. Think out loud &mdash; silence during a machine coding round reads as nothing happening.</span></li>
+        <li><b>04</b><span>Admit unknowns fast: "I haven't worked on this, I'll look into it after the call." Then reason from first principles.</span></li>
+        <li><b>05</b><span>Some questions are domain-specific and unpreparable. Expect one. Even the best batsmen get out.</span></li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<script>
+const PLAN = [
+  { id:"d1", day:"Monday", short:"Mon", hours:"3 hrs", round:"Round 1",
+    title:"Fundamentals, data types, opening act",
+    lede:"The first five minutes decide whether the interview continues. Most of today is phrasing, not learning.",
+    blocks:[
+      { label:"Language fundamentals, the JS way", mins:"60 min", tasks:[
+        "Three ways to declare a variable, and how each behaves differently",
+        "The <code>function</code> keyword and every way a function can be called",
+        "Every loop and the purpose of each: <code>for</code>, <code>while</code>, <code>do-while</code>, <code>forEach</code>, <code>for...of</code>, <code>for...in</code>",
+        "Classes in JS, and why they behave differently from other languages" ]},
+      { label:"Data types", mins:"45 min", tasks:[
+        "Primitives vs non-primitives &mdash; non-primitives work on references",
+        "Prove it: pass an object into a function and mutate it" ]},
+      { label:"Opening-act answers, memorise then say aloud", mins:"75 min", tasks:[
+        "\"What is JavaScript?\" &rarr; single-threaded, non-blocking, asynchronous, concurrent. Be ready to defend every word",
+        "<code>var</code> vs <code>let</code> in exactly three points: no block scope vs <em>creates</em> block scope; attaches to <code>window</code> vs doesn't; initialised as <code>undefined</code> vs temporal dead zone",
+        "Hoisting: the term isn't in the spec. Two phases &mdash; parsing sets up scope and defaults, execution runs with full information",
+        "<code>[] == []</code> &mdash; the answer and the reason",
+        "<code>==</code> does type conversion, <code>===</code> does not" ]}
+    ],
+    note:"<b>Record every answer.</b> If one runs past 30 seconds, cut it. Extra words are what get you rejected in this round, not missing knowledge." },
+
+  { id:"d2", day:"Tuesday", short:"Tue", hours:"3 hrs", round:"Round 1",
+    title:"The four pillars",
+    lede:"Hoisting, closure, currying, IIFE. These belong at your fingertips, not in your notes.",
+    blocks:[
+      { label:"Concepts", mins:"75 min", tasks:[
+        "Parsing phase vs execution phase &mdash; what JS knows before a single line runs",
+        "Closure = a function with some preserved values. That is the whole definition",
+        "IIFE &mdash; the purpose is creating a private scope instantly",
+        "Currying &mdash; what it is, and why JS allows it at all" ]},
+      { label:"Code it", mins:"105 min", tasks:[
+        "Infinite currying: <code>sum(1)(2)(3)()</code>",
+        "Counter with private state via closure",
+        "Module pattern with an IIFE",
+        "Find one closure and one hoisting case in your own codebase &mdash; you use both without noticing" ]}
+    ],
+    note:"The real gap is exactly this: you already <b>use</b> these every day but can't explain the reason behind them. Today closes it." },
+
+  { id:"d3", day:"Wednesday", short:"Wed", hours:"3 hrs", round:"Rounds 1&ndash;2",
+    title:"Coercion, built-ins, ES6, modules",
+    lede:"It is 2026 and they still ask about ES6. Have the full list ready to recite.",
+    blocks:[
+      { label:"JS-specific behaviour", mins:"60 min", tasks:[
+        "Type coercion rules, and the <code>==</code> conversion table",
+        "Built-in methods per data type &mdash; array methods, string methods",
+        "Functional programming: <code>map</code>, <code>filter</code>, <code>reduce</code>" ]},
+      { label:"ES6, the never-ending question", mins:"75 min", tasks:[
+        "Write out the full ES6 list: arrow functions, <code>Symbol</code>, spread, optional chaining, iterators, modules, destructuring, template literals, classes, <code>Promise</code>, <code>let</code>/<code>const</code>, <code>Map</code>/<code>Set</code>",
+        "Compile the post-ES6 list &mdash; one or two headline features per year since" ]},
+      { label:"Modules and page setup", mins:"45 min", tasks:[
+        "ES modules vs CommonJS, and how the module graph resolves",
+        "Every way to import and export",
+        "Every way to add JS to a page, and the trade-offs of each",
+        "Strict mode &mdash; what it actually changes" ]}
+    ],
+    note:"Spread and optional chaining feel too basic to revise. They get asked anyway, and a vague answer here costs you the round." },
+
+  { id:"d4", day:"Thursday", short:"Thu", hours:"3 hrs", round:"Round 3",
+    title:"Objects, prototypes, <code>this</code>",
+    lede:"Prototypes are not an advanced topic. They are the default nature of the language.",
+    blocks:[
+      { label:"Object creation and prototypes", mins:"105 min", tasks:[
+        "How object creation actually works in JS",
+        "The prototype chain, and why it is fundamental rather than advanced",
+        "<code>__proto__</code> vs <code>prototype</code>",
+        "Classes as prototype sugar; what <code>new</code> does, step by step" ]},
+      { label:"Execution context and <code>this</code>", mins:"75 min", tasks:[
+        "Execution context &mdash; creation and execution",
+        "<code>this</code> in a normal function vs <code>this</code> in an arrow function",
+        "<code>call</code>, <code>apply</code>, <code>bind</code> &mdash; write all three polyfills" ]}
+    ],
+    note:"Say it in one line when asked: <b>prototypes are how JavaScript works</b>, and classes are syntax on top. Then wait for the follow-up." },
+
+  { id:"d5", day:"Friday", short:"Fri", hours:"3 hrs", round:"Round 3",
+    title:"Async JavaScript and the event loop",
+    lede:"Round-three territory. Expect a full discussion, not a definition.",
+    blocks:[
+      { label:"Async primitives", mins:"90 min", tasks:[
+        "Callbacks, <code>setTimeout</code>, <code>setInterval</code>",
+        "Promises and every variation: <code>all</code>, <code>allSettled</code>, <code>race</code>, <code>any</code>",
+        "<code>async</code>/<code>await</code>, and how it desugars into <code>then</code>",
+        "Generator functions" ]},
+      { label:"Event loop", mins:"90 min", tasks:[
+        "Call stack, task queue, microtask vs macrotask",
+        "Twenty output-ordering drills &mdash; predict before you run",
+        "Narrate one snippet out loud, queue by queue, in under 90 seconds" ]}
+    ],
+    note:"This is the one topic where interviewers go a level deeper than the textbook answer. Know the internals, not just the diagram." },
+
+  { id:"d6", day:"Saturday", short:"Sat", hours:"full day", round:"Rounds 2&ndash;4",
+    title:"Machine coding: programs, polyfills, promises",
+    lede:"Exactly the problems that get asked, plus the genuinely hard category.",
+    blocks:[
+      { label:"Block 1 &mdash; the named programs", mins:"2 hrs", tasks:[
+        "Flatten an array",
+        "Character count in a string",
+        "Move all zeros to the right",
+        "Bracket pair check",
+        "<code>EventEmitter</code> &mdash; on, off, emit, once" ]},
+      { label:"Block 2 &mdash; polyfills, simple ones only", mins:"2 hrs", tasks:[
+        "<code>map</code>, <code>filter</code>, <code>reduce</code>, <code>forEach</code>, <code>flat</code>",
+        "Debounce and throttle",
+        "Event delegation demo" ]},
+      { label:"Block 3 &mdash; the hard category", mins:"2.5 hrs", tasks:[
+        "Promise from scratch &mdash; <code>then</code>, <code>catch</code>, <code>finally</code>, <code>resolve</code>, <code>reject</code>",
+        "<code>Promise.all</code> polyfill",
+        "Execute promises in series, in parallel, and in batches" ]},
+      { label:"Block 4 &mdash; the rarely-used stuff", mins:"1.5 hrs", tasks:[
+        "<code>Map</code>, <code>WeakMap</code>, <code>Set</code>, <code>WeakSet</code> &mdash; hard only because you never reach for them",
+        "Event loop internals, one level below the standard answer" ]}
+    ],
+    note:"<b>Talk while you type, all day.</b> A candidate once finished every requirement in the spec and still got rejected &mdash; he sat in total silence for the full hour." },
+
+  { id:"d7", day:"Sunday", short:"Sun", hours:"full day", round:"Round 4",
+    title:"DOM, events, browser APIs, vanilla build",
+    lede:"The eliminator round, and the part most React developers have skipped entirely.",
+    blocks:[
+      { label:"Block 1 &mdash; DOM and observers", mins:"2 hrs", tasks:[
+        "Add, remove, update and read DOM elements &mdash; no framework",
+        "<code>fetch</code> and the other DOM APIs",
+        "<code>MutationObserver</code>, <code>IntersectionObserver</code>, <code>ResizeObserver</code>" ]},
+      { label:"Block 2 &mdash; events", mins:"1.5 hrs", tasks:[
+        "Bubbling, capturing, propagation, delegation",
+        "Dispatch a custom event",
+        "Event types: mouse, keyboard, window, document" ]},
+      { label:"Block 3 &mdash; browser APIs and storage", mins:"1.5 hrs", tasks:[
+        "<code>window</code>, <code>screen</code>, <code>navigator</code>, <code>location</code>, <code>history</code> &mdash; React Router is built on the History API",
+        "localStorage, sessionStorage, cookies, IndexedDB, and the trade-offs between them" ]},
+      { label:"Block 4 &mdash; build it in vanilla", mins:"2 hrs", tasks:[
+        "To-do app in pure vanilla JS, narrating out loud the entire time",
+        "Animate something with pure JS, no library" ]},
+      { label:"Block 5 &mdash; close out", mins:"1 hr", tasks:[
+        "Performance discussion points, and JS security loopholes",
+        "Rapid-fire Monday's opening-act answers cold, no notes",
+        "Rehearse the line for what you don't know: \"I haven't worked on this &mdash; I'll look into it after this call\"" ]}
+    ],
+    note:"Three years in React means vanilla DOM is your likeliest gap, and \"build a to-do in vanilla JS\" is a real ask. Don't compress this day." }
+];
+
+const TICK = '<svg viewBox="0 0 13 13" fill="none" stroke="var(--ok-ink)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M1.6 7 4.8 10.2 11.4 2.8"/></svg>';
+
+const store = (function(){
+  var mem = {}, live = true;
+  try { localStorage.setItem("__t","1"); localStorage.removeItem("__t"); } catch(e){ live = false; }
+  return {
+    live: live,
+    get: function(k){ try { return live ? localStorage.getItem(k) : (mem[k] || null); } catch(e){ return mem[k] || null; } },
+    set: function(k,v){ try { live ? localStorage.setItem(k,v) : (mem[k]=v); } catch(e){ mem[k]=v; } }
+  };
+})();
+
+const KEY = "js7d.v2";
+let state = { tasks:{}, jots:{}, savedAt:null };
+try {
+  const raw = JSON.parse(store.get(KEY) || "{}");
+  state.tasks = raw.tasks || {};
+  state.jots  = raw.jots  || {};
+  state.savedAt = raw.savedAt || null;
+} catch(e){}
+
+const savedEl = () => document.getElementById("saved");
+function showSaved(){
+  const el = savedEl();
+  if (!el) return;
+  if (!store.live){ el.textContent = "storage unavailable"; el.style.color = "var(--tx3)"; return; }
+  if (!state.savedAt){ el.textContent = "nothing saved yet"; el.style.color = "var(--tx3)"; return; }
+  const d = new Date(state.savedAt);
+  el.textContent = "saved " + d.toLocaleDateString(undefined,{day:"numeric",month:"short"})
+    + " at " + d.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
+  el.style.color = "var(--ok)";
+}
+function save(){
+  state.savedAt = Date.now();
+  store.set(KEY, JSON.stringify(state));
+  showSaved();
+}
+
+const daysEl = document.getElementById("days");
+const navEl  = document.getElementById("nav");
+const ids = {};
+
+PLAN.forEach(function(d, di){
+  const list = [];
+  const card = document.createElement("section");
+  card.className = "day";
+  card.id = d.id;
+
+  let h = '<div class="dhead"><div class="dbadge">' + String(di+1).padStart(2,"0") + '</div>'
+    + '<div class="dtitle"><div class="chips"><span class="chip">' + d.day + '</span>'
+    + '<span class="chip time">' + d.hours + '</span><span class="chip">' + d.round + '</span></div>'
+    + '<h3>' + d.title + '</h3><p class="lede">' + d.lede + '</p></div>'
+    + '<div class="dscore"><b id="p-' + d.id + '">0%</b><span id="c-' + d.id + '">0/0</span></div></div>';
+
+  d.blocks.forEach(function(b, bi){
+    h += '<div class="block"><p class="block-lbl">' + b.label + '<em>' + b.mins + '</em></p>';
+    b.tasks.forEach(function(t, ti){
+      const id = d.id + "." + bi + "." + ti;
+      list.push(id);
+      h += '<label class="task"><input type="checkbox" data-id="' + id + '"'
+        + (state.tasks[id] ? " checked" : "") + '>'
+        + '<span class="mark" aria-hidden="true">' + TICK + '</span>'
+        + '<span class="ttext">' + t + '</span></label>';
+    });
+    h += '</div>';
+  });
+
+  h += '<p class="note">' + d.note + '</p>'
+    + '<div class="jot"><label for="j-' + d.id + '">What tripped you up today</label>'
+    + '<textarea id="j-' + d.id + '" data-jot="' + d.id + '" placeholder="Log every wrong answer here. Sunday\u2019s close-out block runs on this list.">'
+    + (state.jots[d.id] || "") + '</textarea></div>';
+
+  card.innerHTML = h;
+  daysEl.appendChild(card);
+  ids[d.id] = list;
+
+  const row = document.createElement("button");
+  row.className = "dayrow";
+  row.type = "button";
+  row.dataset.day = d.id;
+  row.innerHTML = '<span class="dnum">' + String(di+1).padStart(2,"0") + '</span>'
+    + '<span class="dmeta"><span class="dname">' + d.short + '</span>'
+    + '<span class="dbar"><i></i></span></span>'
+    + '<span class="dpct">0%</span>';
+  row.addEventListener("click", function(){
+    document.getElementById(d.id).scrollIntoView({ block:"start" });
+  });
+  navEl.appendChild(row);
+});
+
+const all = Object.keys(ids).reduce((a,k) => a.concat(ids[k]), []);
+const ring = document.getElementById("ring");
+const CIRC = 2 * Math.PI * 41;
+document.getElementById("allN").textContent = all.length;
+
+function paint(){
+  let done = 0;
+  PLAN.forEach(function(d){
+    const list = ids[d.id];
+    const n = list.filter(i => state.tasks[i]).length;
+    const p = Math.round(n / list.length * 100);
+    done += n;
+    document.getElementById("p-" + d.id).textContent = p + "%";
+    document.getElementById("c-" + d.id).textContent = n + "/" + list.length;
+    const row = navEl.querySelector('[data-day="' + d.id + '"]');
+    row.querySelector(".dbar i").style.width = p + "%";
+    row.querySelector(".dpct").textContent = p + "%";
+    row.classList.toggle("done", n === list.length);
+    document.getElementById(d.id).classList.toggle("done", n === list.length);
+  });
+  const p = Math.round(done / all.length * 100);
+  document.getElementById("ringNum").textContent = p + "%";
+  document.getElementById("doneN").textContent = done;
+  ring.style.strokeDashoffset = CIRC * (1 - p/100);
+  ring.classList.toggle("full", p === 100);
+}
+
+daysEl.addEventListener("change", function(e){
+  if (e.target.type !== "checkbox") return;
+  const id = e.target.dataset.id;
+  if (e.target.checked) state.tasks[id] = 1; else delete state.tasks[id];
+  save(); paint();
+});
+daysEl.addEventListener("input", function(e){
+  if (!e.target.dataset.jot) return;
+  state.jots[e.target.dataset.jot] = e.target.value;
+  save();
+});
+
+const bar = document.getElementById("topbar");
+function onScroll(){
+  const h = document.documentElement;
+  const max = h.scrollHeight - h.clientHeight;
+  bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
+  let cur = PLAN[0].id;
+  PLAN.forEach(function(d){
+    if (document.getElementById(d.id).getBoundingClientRect().top <= 160) cur = d.id;
+  });
+  navEl.querySelectorAll(".dayrow").forEach(function(r){
+    r.classList.toggle("active", r.dataset.day === cur);
+  });
+}
+window.addEventListener("scroll", onScroll, { passive:true });
+
+const root = document.documentElement;
+root.dataset.theme = store.get("js7d.theme") || "dark";
+document.getElementById("theme").addEventListener("click", function(){
+  root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+  store.set("js7d.theme", root.dataset.theme);
+});
+
+document.getElementById("reset").addEventListener("click", function(){
+  if (!confirm("Clear every tick and every note?")) return;
+  state = { tasks:{}, jots:{}, savedAt:null };
+  save();
+  document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+  document.querySelectorAll("textarea").forEach(t => t.value = "");
+  paint();
+});
+
+document.getElementById("export").addEventListener("click", function(){
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type:"application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "js7d-progress.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+if (!store.live) document.getElementById("warn").hidden = false;
+paint();
+showSaved();
+onScroll();
+</script>
+</body>
+</html>
