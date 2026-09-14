@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Job Tracker — 5 a day</title>
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --ink:#15222e;
+  --ink-2:#4a5a68;
+  --ink-3:#7a8b99;
+  --paper:#edf0f2;
+  --surface:#ffffff;
+  --surface-2:#f7f9fa;
+  --line:#dde3e7;
+  --line-2:#c8d2d9;
+  --pine:#1b6e5f;
+  --pine-soft:#e3f0ec;
+  --amber:#b5720a;
+  --amber-soft:#fbf0dc;
+  --red:#bf3a2e;
+  --red-soft:#fbe7e4;
+  --blue:#2c5fa8;
+  --blue-soft:#e6eef9;
+  --violet:#5b4ba8;
+  color-scheme:light;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 1px 2px rgba(21,34,46,.06), 0 6px 18px -12px rgba(21,34,46,.22);
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    color-scheme:dark;
+    --ink:#e8edf0; --ink-2:#a7b6c1; --ink-3:#7e8f9c;
+    --paper:#10171d; --surface:#161f27; --surface-2:#1b262f;
+    --line:#26333d; --line-2:#334450;
+    --pine:#4bb89f; --pine-soft:#12302b;
+    --amber:#dda53f; --amber-soft:#332715;
+    --red:#e8776a; --red-soft:#331d1a;
+    --blue:#7aa9e8; --blue-soft:#15243a;
+    --violet:#9c8ee0;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 6px 18px -12px rgba(0,0,0,.6);
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{margin:0; font-weight:600; letter-spacing:-.01em}
+p{margin:0}
+button,input,select,textarea{font:inherit; color:inherit}
+input,select,textarea{
+  background:var(--surface); color:var(--ink);
+  border:1px solid var(--line-2); border-radius:var(--radius-sm);
+  padding:8px 10px; font-family:inherit; max-width:100%;
+}
+input[type="checkbox"],input[type="radio"]{
+  width:16px; height:16px; padding:0; border:0; background:none; accent-color:var(--pine); flex:0 0 auto;
+}
+input[type="date"]{min-width:140px}
+td input,td select{font-size:13px; padding:6px 8px}
+a{color:var(--blue)}
+:focus-visible{outline:2px solid var(--blue); outline-offset:2px; border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important; transition:none!important}}
+
+/* ---------- shell ---------- */
+.app{display:flex; min-height:100vh}
+.sidebar{
+  width:224px; flex:0 0 224px; background:var(--surface);
+  border-right:1px solid var(--line); padding:20px 12px;
+  display:flex; flex-direction:column; gap:4px;
+  position:sticky; top:0; height:100vh; overflow-y:auto;
+}
+.brand{padding:4px 10px 18px; display:flex; align-items:baseline; gap:8px}
+.brand b{font-family:var(--serif); font-size:20px; font-weight:600; letter-spacing:-.02em}
+.brand span{font-size:12px; color:var(--ink-3)}
+.navitem{
+  display:flex; align-items:center; gap:10px; width:100%;
+  padding:9px 10px; border:0; background:none; border-radius:var(--radius-sm);
+  cursor:pointer; text-align:left; color:var(--ink-2); font-size:14.5px;
+}
+.navitem:hover{background:var(--surface-2); color:var(--ink)}
+.navitem.active{background:var(--ink); color:var(--surface); font-weight:500}
+.navitem .ico{width:18px; text-align:center; font-size:14px}
+.navitem .pill{margin-left:auto; background:var(--red); color:#fff; font-size:11px; font-weight:700; border-radius:20px; padding:1px 7px}
+.navitem.active .pill{background:var(--surface); color:var(--ink)}
+.sidefoot{margin-top:auto; padding:12px 10px 0; border-top:1px solid var(--line); font-size:11.5px; color:var(--ink-3); line-height:1.45}
+
+.main{flex:1; min-width:0; display:flex; flex-direction:column}
+.topbar{
+  display:flex; align-items:center; gap:12px; padding:14px 24px;
+  border-bottom:1px solid var(--line); background:var(--surface); position:sticky; top:0; z-index:20;
+}
+.topbar h1{font-size:18px; flex:1; min-width:0}
+.hamburger{display:none; border:1px solid var(--line); background:var(--surface); border-radius:var(--radius-sm); padding:6px 10px; cursor:pointer}
+.content{padding:24px; max-width:1080px; width:100%}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  border:1px solid var(--line-2); background:var(--surface); color:var(--ink);
+  padding:8px 13px; border-radius:var(--radius-sm); cursor:pointer; font-size:14px;
+  transition:background .12s ease, border-color .12s ease;
+}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--ink); border-color:var(--ink); color:var(--surface); font-weight:500}
+.btn.primary:hover{opacity:.9; background:var(--ink)}
+.btn.danger{color:var(--red); border-color:var(--red)}
+.btn.danger:hover{background:var(--red-soft)}
+.btn.sm{padding:5px 9px; font-size:13px}
+.btn.ghost{border-color:transparent; background:none}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn[disabled]{opacity:.5; cursor:not-allowed}
+.btn.on{background:var(--pine); border-color:var(--pine); color:#fff}
+.btn.on:hover{background:var(--pine)}
+
+/* ---------- cards ---------- */
+.card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow)}
+.grid{display:grid; gap:14px}
+.stat-row{display:grid; grid-template-columns:1.35fr 1fr 1fr 1fr; gap:14px; align-items:stretch}
+.stat{padding:14px 16px}
+.stat .label{font-size:12.5px; color:var(--ink-2); display:flex; align-items:center; gap:6px}
+.stat .num{font-family:var(--serif); font-size:34px; line-height:1.1; margin-top:6px; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+.stat .sub{font-size:12.5px; color:var(--ink-3); margin-top:4px}
+
+/* hero: the five slots */
+.hero{padding:18px 20px 20px; border-color:var(--line-2)}
+.hero .head{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.hero .count{font-family:var(--serif); font-size:52px; line-height:1; letter-spacing:-.03em; font-variant-numeric:tabular-nums}
+.hero .count small{font-size:24px; color:var(--ink-3)}
+.slots{display:flex; gap:8px; margin:16px 0 10px; flex-wrap:wrap}
+.slot{
+  flex:1 1 0; min-width:44px; height:52px; border-radius:var(--radius-sm);
+  border:1.5px dashed var(--line-2); display:flex; align-items:center; justify-content:center;
+  color:var(--ink-3); font-size:13px; background:var(--surface-2);
+}
+.slot.filled{border-style:solid; border-color:var(--pine); background:var(--pine); color:#fff; font-weight:600}
+.slot.extra{border-style:solid; border-color:var(--pine); background:var(--pine-soft); color:var(--pine); font-weight:600}
+.bar{height:8px; border-radius:20px; background:var(--surface-2); border:1px solid var(--line); overflow:hidden}
+.bar > i{display:block; height:100%; background:var(--pine); border-radius:20px; transition:width .25s ease}
+.bar.amber > i{background:var(--amber)}
+.bar.red > i{background:var(--red)}
+.blocks{font-family:var(--mono); font-size:13px; color:var(--ink-2); margin-top:8px; letter-spacing:1px}
+
+/* chips + badges */
+.chip{display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:600; padding:3px 9px; border-radius:20px; white-space:nowrap}
+.chip.green{background:var(--pine-soft); color:var(--pine)}
+.chip.amber{background:var(--amber-soft); color:var(--amber)}
+.chip.red{background:var(--red-soft); color:var(--red)}
+.chip.blue{background:var(--blue-soft); color:var(--blue)}
+.chip.grey{background:var(--surface-2); color:var(--ink-3); border:1px solid var(--line)}
+.dot{width:8px; height:8px; border-radius:50%; display:inline-block}
+
+/* sections */
+.section{margin-top:22px}
+.section > header{display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap}
+.section > header h2{font-size:15.5px}
+.section > header .hint{font-size:12.5px; color:var(--ink-3)}
+.section > header .spacer{flex:1}
+
+/* tables */
+.tablewrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+table{width:100%; border-collapse:collapse; font-size:14px}
+th{
+  text-align:left; font-weight:500; font-size:12px; color:var(--ink-3);
+  padding:10px 12px; border-bottom:1px solid var(--line); white-space:nowrap; background:var(--surface-2);
+}
+td{padding:11px 12px; border-bottom:1px solid var(--line); vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:var(--surface-2)}
+td.tight{white-space:nowrap}
+.jobcell{display:flex; flex-direction:column; gap:2px; min-width:150px}
+.jobcell b{font-weight:600}
+.jobcell span{font-size:12.5px; color:var(--ink-3)}
+.rowact{display:flex; gap:6px; justify-content:flex-end}
+
+/* day strip */
+.days{display:grid; grid-template-columns:repeat(7,1fr); gap:8px}
+.day{border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px 8px; text-align:center; background:var(--surface)}
+.day .dow{font-size:11.5px; color:var(--ink-3)}
+.day .n{font-family:var(--serif); font-size:22px; line-height:1.2; font-variant-numeric:tabular-nums}
+.day.hit{border-color:var(--pine); background:var(--pine-soft)}
+.day.hit .n{color:var(--pine)}
+.day.part{border-color:var(--amber); background:var(--amber-soft)}
+.day.part .n{color:var(--amber)}
+.day.miss{border-color:var(--line-2); background:var(--surface-2)}
+.day.miss .n{color:var(--red)}
+.day.today{box-shadow:0 0 0 2px var(--ink) inset}
+
+/* calendar */
+.cal{display:grid; grid-template-columns:repeat(7,1fr); gap:6px}
+.cal .head{font-size:11px; color:var(--ink-3); text-align:center; padding:2px 0}
+.cell{
+  aspect-ratio:1/1; border:1px solid var(--line); border-radius:var(--radius-sm);
+  background:var(--surface); display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:2px; cursor:pointer; padding:2px; min-height:42px;
+}
+.cell.blank{border:0; background:none; cursor:default}
+.cell .d{font-size:11px; color:var(--ink-3)}
+.cell .c{font-family:var(--serif); font-size:16px; font-variant-numeric:tabular-nums}
+.cell.hit{background:var(--pine); border-color:var(--pine)} .cell.hit .d,.cell.hit .c{color:#fff}
+.cell.part{background:var(--amber-soft); border-color:var(--amber)} .cell.part .c{color:var(--amber)}
+.cell.zero{background:var(--surface-2)}
+.cell.today{box-shadow:0 0 0 2px var(--ink) inset}
+.cell.future{opacity:.45; cursor:default}
+
+/* toolbar */
+.toolbar{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px}
+.toolbar input[type=search], .toolbar input[type=date], .toolbar select{
+  border:1px solid var(--line-2); background:var(--surface); border-radius:var(--radius-sm); padding:7px 10px; font-size:14px;
+}
+.toolbar input[type=search]{flex:1; min-width:170px}
+
+/* empty */
+.empty{padding:38px 22px; text-align:center}
+.empty .big{font-family:var(--serif); font-size:20px; margin-bottom:6px}
+.empty p{color:var(--ink-3); font-size:14px; max-width:42ch; margin:0 auto 14px}
+
+/* forms — spacing is owned by the containers, never by field margins */
+.field{display:flex; flex-direction:column; gap:6px; margin:0}
+.field label{font-size:12.5px; color:var(--ink-2)}
+.field input, .field select, .field textarea{
+  border:1px solid var(--line-2); background:var(--surface); color:var(--ink);
+  border-radius:var(--radius-sm); padding:9px 11px; width:100%; font-family:inherit;
+}
+.field textarea{resize:vertical; min-height:74px}
+.field input:disabled{background:var(--surface-2)}
+.field input:focus, .field select:focus, .field textarea:focus{border-color:var(--ink-3)}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.three{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px}
+.req{color:var(--red)}
+.check{display:flex; align-items:center; gap:8px; font-size:14px; margin:0; cursor:pointer}
+.check input{width:16px; height:16px; accent-color:var(--pine); flex:0 0 auto}
+
+.attachbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:12px 14px; margin-bottom:14px}
+.attachbar label{font-size:13px; color:var(--ink-2); white-space:nowrap}
+.attachbar select{flex:1; min-width:200px; border:1px solid var(--line-2); background:var(--surface); border-radius:var(--radius-sm); padding:8px 10px}
+@media (max-width:720px){.attachbar select{min-width:100%} .attachbar .btn{width:100%}}
+.formhint{font-size:12.5px; color:var(--ink-2); background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px 12px; margin:0}
+
+/* modal */
+.scrim{position:fixed; inset:0; background:rgba(15,25,33,.45); display:flex; align-items:flex-end; justify-content:center; z-index:60; padding:0}
+@media (min-width:721px){.scrim{align-items:center; padding:24px}}
+.scrim[hidden]{display:none}
+.modal{
+  background:var(--surface); width:100%; max-width:660px; max-height:92vh; overflow:auto;
+  border-radius:16px 16px 0 0; border:1px solid var(--line); display:flex; flex-direction:column;
+}
+@media (min-width:721px){.modal{border-radius:16px}}
+.modal > header{
+  position:sticky; top:0; background:var(--surface); border-bottom:1px solid var(--line);
+  padding:16px 18px; display:flex; align-items:center; gap:10px; z-index:2;
+}
+.modal > header h2{font-size:17px; flex:1}
+.modal .body{padding:18px}
+.modal > footer{
+  position:sticky; bottom:0; background:var(--surface); border-top:1px solid var(--line);
+  padding:12px 18px; display:flex; gap:10px; justify-content:flex-end;
+  padding-bottom:calc(12px + env(safe-area-inset-bottom));
+}
+/* stacked form sections */
+#jobForm{display:flex; flex-direction:column; gap:16px}
+.fold{border:1px solid var(--line); border-radius:var(--radius-sm); margin:0; background:var(--surface-2); overflow:hidden}
+.fold > summary{padding:12px 14px; cursor:pointer; font-size:14px; font-weight:500; list-style:none; display:flex; align-items:center; gap:8px}
+.fold > summary::-webkit-details-marker{display:none}
+.fold > summary::before{content:"+"; color:var(--ink-3); font-family:var(--mono)}
+.fold[open] > summary{border-bottom:1px solid var(--line)}
+.fold[open] > summary::before{content:"−"}
+.fold .inner{display:flex; flex-direction:column; gap:14px; padding:14px; background:none}
+#refList{display:flex; flex-direction:column; gap:12px}
+#refList:empty{display:none}
+.refrow{border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px; margin:0;
+  background:var(--surface); display:flex; flex-direction:column; gap:12px}
+.refrow .top{display:flex; justify-content:space-between; align-items:center; gap:8px; margin:0}
+.refrow .top b{font-size:13px; color:var(--ink-2); font-weight:500}
+.fold .inner > .btn{align-self:flex-start}
+
+/* toasts */
+.toasts{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(20px + env(safe-area-inset-bottom)); z-index:90; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none}
+.toast{background:var(--ink); color:var(--paper); padding:10px 16px; border-radius:20px; font-size:14px; box-shadow:var(--shadow); animation:pop .18s ease}
+@keyframes pop{from{opacity:0; transform:translateY(6px)}to{opacity:1; transform:none}}
+
+.srow .ctl{width:96px}
+
+/* settings rows */
+.srow{display:flex; gap:14px; align-items:center; padding:14px 16px; border-bottom:1px solid var(--line); flex-wrap:wrap}
+.srow:last-child{border-bottom:0}
+.srow .t{flex:1; min-width:180px}
+.srow .t b{display:block; font-weight:600; font-size:14.5px}
+.srow .t span{font-size:13px; color:var(--ink-3)}
+
+/* fab + bottom nav (mobile) */
+.fab{display:none}
+.bottomnav{display:none}
+.drawer-scrim{display:none}
+
+@media (max-width:900px){
+  .stat-row{grid-template-columns:1fr 1fr}
+  .stat-row .hero{grid-column:1 / -1}
+}
+@media (max-width:720px){
+  body{font-size:15px}
+  .app{display:block}
+  .sidebar{
+    position:fixed; z-index:80; left:0; top:0; height:100dvh; transform:translateX(-100%);
+    transition:transform .2s ease; width:250px; flex-basis:250px;
+  }
+  .sidebar.open{transform:none}
+  .drawer-scrim{display:none; position:fixed; inset:0; background:rgba(15,25,33,.45); z-index:70}
+  .drawer-scrim.open{display:block}
+  .hamburger{display:inline-flex}
+  .content{padding:16px 14px calc(96px + env(safe-area-inset-bottom))}
+  .topbar{padding:12px 14px}
+  .two,.three{grid-template-columns:1fr; gap:14px}
+  .stat-row{grid-template-columns:1fr 1fr; gap:10px}
+  .hero .count{font-size:44px}
+  .days{grid-template-columns:repeat(4,1fr)}
+  .fab{
+    display:flex; position:fixed; right:16px; bottom:calc(74px + env(safe-area-inset-bottom)); z-index:50;
+    border:0; background:var(--ink); color:var(--surface); width:56px; height:56px; border-radius:50%;
+    align-items:center; justify-content:center; font-size:26px; box-shadow:0 8px 20px -6px rgba(21,34,46,.5); cursor:pointer;
+  }
+  .bottomnav{
+    display:grid; grid-template-columns:repeat(5,1fr); position:fixed; bottom:0; left:0; right:0; z-index:50;
+    background:var(--surface); border-top:1px solid var(--line); padding-bottom:env(safe-area-inset-bottom);
+  }
+  .bottomnav button{
+    border:0; background:none; padding:9px 2px 10px; display:flex; flex-direction:column; align-items:center; gap:3px;
+    font-size:10.5px; color:var(--ink-3); cursor:pointer; position:relative;
+  }
+  .bottomnav button .ico{font-size:17px; line-height:1}
+  .bottomnav button.active{color:var(--ink); font-weight:600}
+  .bottomnav .pill{position:absolute; top:4px; right:calc(50% - 20px); background:var(--red); color:#fff; font-size:9px; font-weight:700; border-radius:10px; padding:0 5px}
+  table{font-size:13.5px}
+  td,th{padding:9px 10px}
+}
+@media print{.sidebar,.topbar,.fab,.bottomnav{display:none}}
+</style>
+</head>
+<body>
+<div class="drawer-scrim" id="drawerScrim"></div>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><b>Job Tracker</b><span>5 a day</span></div>
+    <nav id="nav"></nav>
+    <div class="sidefoot">
+      Saved in this browser only.<br>Kept for 100 days.
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger" aria-label="Open menu">☰</button>
+      <h1 id="viewTitle">Dashboard</h1>
+      <button class="btn primary" data-action="new-job">+ Add job</button>
+    </header>
+    <main class="content" id="view"></main>
+  </div>
+</div>
+
+<button class="fab" data-action="new-job" aria-label="Add job">+</button>
+<nav class="bottomnav" id="bottomnav"></nav>
+
+<!-- job modal -->
+<div class="scrim" id="jobScrim" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="jobModalTitle">
+    <header>
+      <div style="flex:1; min-width:0">
+        <h2 id="jobModalTitle">Add job</h2>
+        <div id="jobModalSub" style="font-size:12.5px; color:var(--ink-3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis"></div>
+      </div>
+      <button class="btn ghost" data-action="close-job" aria-label="Close">✕</button>
+    </header>
+    <div class="body">
+      <form id="jobForm" autocomplete="off">
+        <div class="field">
+          <label for="f_title">Job title <span class="req">*</span></label>
+          <input id="f_title" name="title" required placeholder="Senior Frontend Engineer">
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="f_company">Company <span class="req">*</span></label>
+            <input id="f_company" name="company" required placeholder="Acme">
+          </div>
+          <div class="field">
+            <label for="f_date">Date applied <span class="req">*</span></label>
+            <input id="f_date" name="dateApplied" type="date" required>
+          </div>
+        </div>
+        <div class="two">
+          <div class="field">
+            <label for="f_status">Status</label>
+            <select id="f_status" name="status"></select>
+          </div>
+          <div class="field">
+            <label for="f_url">Job link</label>
+            <input id="f_url" name="url" type="url" placeholder="https://">
+          </div>
+        </div>
+
+        <p class="formhint">Referrals, recruiter, hiring manager and their follow-up dates below are all saved with this job.</p>
+
+        <details class="fold" id="foldRef">
+          <summary>Referrals <span id="refCount" class="chip grey"></span></summary>
+          <div class="inner">
+            <div id="refList"></div>
+            <button type="button" class="btn sm" data-action="add-ref">+ Add referral person</button>
+          </div>
+        </details>
+
+        <details class="fold" id="foldRec">
+          <summary>Recruiter / HR</summary>
+          <div class="inner">
+            <div class="two">
+              <div class="field"><label for="f_rec_name">Name</label><input id="f_rec_name" name="rec_name"></div>
+              <div class="field"><label for="f_rec_li">LinkedIn</label><input id="f_rec_li" name="rec_linkedin" placeholder="linkedin.com/in/…"></div>
+            </div>
+            <div class="two">
+              <div class="field"><label for="f_rec_email">Email</label><input id="f_rec_email" name="rec_email" type="email"></div>
+              <div class="field"><label for="f_rec_method">Reached out by</label><select id="f_rec_method" name="rec_method"></select></div>
+            </div>
+            <label class="check"><input type="checkbox" id="f_rec_contacted" name="rec_contacted"> Recruiter contacted</label>
+            <div class="field"><label for="f_rec_follow">Follow up on</label><input id="f_rec_follow" name="rec_followUp" type="date"></div>
+          </div>
+        </details>
+
+        <details class="fold" id="foldMgr">
+          <summary>Hiring / technical manager</summary>
+          <div class="inner">
+            <div class="two">
+              <div class="field"><label for="f_mgr_name">Name</label><input id="f_mgr_name" name="mgr_name"></div>
+              <div class="field"><label for="f_mgr_li">LinkedIn</label><input id="f_mgr_li" name="mgr_linkedin" placeholder="linkedin.com/in/…"></div>
+            </div>
+            <div class="two">
+              <div class="field"><label for="f_mgr_email">Email</label><input id="f_mgr_email" name="mgr_email" type="email"></div>
+              <div class="field"><label for="f_mgr_method">Reached out by</label><select id="f_mgr_method" name="mgr_method"></select></div>
+            </div>
+            <label class="check"><input type="checkbox" id="f_mgr_contacted" name="mgr_contacted"> Manager contacted</label>
+            <div class="field"><label for="f_mgr_follow">Follow up on</label><input id="f_mgr_follow" name="mgr_followUp" type="date"></div>
+          </div>
+        </details>
+
+        <details class="fold" id="foldNotes">
+          <summary>Notes</summary>
+          <div class="inner">
+            <div class="field"><textarea id="f_notes" name="notes" rows="3" placeholder="Interview rounds, salary range, anything worth remembering"></textarea></div>
+          </div>
+        </details>
+      </form>
+    </div>
+    <footer>
+      <button class="btn" data-action="close-job">Cancel</button>
+      <button class="btn primary" data-action="save-job">Save job</button>
+    </footer>
+  </div>
+</div>
+
+<!-- confirm modal -->
+<div class="scrim" id="confirmScrim" hidden>
+  <div class="modal" style="max-width:420px" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <header><h2 id="confirmTitle">Are you sure?</h2></header>
+    <div class="body">
+      <p id="confirmMsg" style="color:var(--ink-2)"></p>
+      <div class="field" id="confirmTypeWrap" style="margin-top:14px; display:none">
+        <label for="confirmType">Type <b id="confirmWord"></b> to confirm</label>
+        <input id="confirmType" autocomplete="off">
+      </div>
+    </div>
+    <footer>
+      <button class="btn" data-action="confirm-no">Cancel</button>
+      <button class="btn danger" data-action="confirm-yes" id="confirmYes">Delete</button>
+    </footer>
+  </div>
+</div>
+
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(function () {
+'use strict';
+
+/* ============ constants ============ */
+var KEY = 'jobTrackerData';
+var RETENTION_DAYS = 100;
+var STATUSES = ['Applied', 'Interview', 'Rejected', 'Offer', 'Closed'];
+var REF_STATUSES = ['Not Asked', 'Asked', 'Received', 'No Response'];
+var METHODS = ['LinkedIn', 'Email', 'Call'];
+var VIEWS = [
+  { id: 'dashboard',  label: 'Dashboard',        ico: '◎' },
+  { id: 'today',      label: 'Today',            ico: '☀' },
+  { id: 'jobs',       label: 'All jobs',         ico: '▤' },
+  { id: 'referrals',  label: 'Referrals',        ico: '⇄' },
+  { id: 'recruiters', label: 'Recruiters',       ico: '☎' },
+  { id: 'managers',   label: 'Hiring managers',  ico: '★' },
+  { id: 'followups',  label: 'Follow-ups',       ico: '⏰' },
+  { id: 'stats',      label: 'Statistics',       ico: '▲' },
+  { id: 'settings',   label: 'Settings',         ico: '⚙' }
+];
+var MOBILE_NAV = ['dashboard', 'today', 'jobs', 'followups'];
+var DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+/* ============ small helpers ============ */
+function $(sel, root) { return (root || document).querySelector(sel); }
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+function iso(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function today() { return iso(new Date()); }
+function parseD(s) {
+  var p = String(s || '').split('-');
+  return new Date(+p[0] || 1970, (+p[1] || 1) - 1, +p[2] || 1);
+}
+function addDays(d, n) { var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
+function dayDiff(a, b) { return Math.round((parseD(b).getTime() - parseD(a).getTime()) / 86400000); }
+function fmt(s) {
+  if (!s) return '—';
+  return parseD(s).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+}
+function fmtLong(s) {
+  if (!s) return '—';
+  return parseD(s).toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+}
+function fmtTime(ts) {
+  if (!ts) return 'never';
+  var d = new Date(ts);
+  return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) + ', ' +
+         d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function uid() { return 'j' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function nonEmpty(s) { return !!(s && String(s).trim()); }
+function cmpAsc(a, b) { a = a || ''; b = b || ''; return a < b ? -1 : a > b ? 1 : 0; }
+function cmpDesc(a, b) { return -cmpAsc(a, b); }
+function href(u) {
+  if (!nonEmpty(u)) return '';
+  return /^https?:\/\//i.test(u) ? u : 'https://' + u;
+}
+function mondayOf(d) {
+  var x = new Date(d.getTime());
+  var w = (x.getDay() + 6) % 7;
+  return addDays(x, -w);
+}
+
+/* ============ state ============ */
+var data = null;
+var storageOK = true;
+var state = {
+  view: 'dashboard',
+  search: '',
+  fStatus: '',
+  fFrom: '',
+  fTo: '',
+  sort: 'newest',
+  cal: new Date(),
+  editing: null,
+  refDraft: []
+};
+var confirmResolve = null;
+
+function blankData() {
+  return {
+    version: 1,
+    settings: { dailyTarget: 5, retentionDays: RETENTION_DAYS },
+    jobs: [],
+    lastSaved: null,
+    createdAt: new Date().toISOString()
+  };
+}
+function normJob(j) {
+  var n = {
+    id: j.id || uid(),
+    title: j.title || '',
+    company: j.company || '',
+    url: j.url || '',
+    dateApplied: j.dateApplied || today(),
+    status: STATUSES.indexOf(j.status) > -1 ? j.status : 'Applied',
+    notes: j.notes || '',
+    referrals: [],
+    recruiter: {},
+    manager: {},
+    createdAt: j.createdAt || new Date().toISOString(),
+    updatedAt: j.updatedAt || j.createdAt || new Date().toISOString()
+  };
+  var refs = Array.isArray(j.referrals) ? j.referrals : [];
+  n.referrals = refs.map(function (r) {
+    return {
+      id: r.id || uid(),
+      name: r.name || '',
+      linkedin: r.linkedin || '',
+      status: REF_STATUSES.indexOf(r.status) > -1 ? r.status : 'Not Asked',
+      followUp: r.followUp || ''
+    };
+  });
+  ['recruiter', 'manager'].forEach(function (k) {
+    var s = j[k] || {};
+    n[k] = {
+      name: s.name || '',
+      linkedin: s.linkedin || '',
+      email: s.email || '',
+      contacted: !!s.contacted,
+      method: METHODS.indexOf(s.method) > -1 ? s.method : '',
+      followUp: s.followUp || ''
+    };
+  });
+  return n;
+}
+function normData(raw) {
+  var d = blankData();
+  if (raw && typeof raw === 'object') {
+    if (raw.settings && +raw.settings.dailyTarget > 0) d.settings.dailyTarget = Math.min(50, Math.round(+raw.settings.dailyTarget));
+    if (Array.isArray(raw.jobs)) d.jobs = raw.jobs.map(normJob);
+    d.lastSaved = raw.lastSaved || null;
+    d.createdAt = raw.createdAt || d.createdAt;
+  }
+  return d;
+}
+
+/* ============ storage ============ */
+function probeStorage() {
+  try {
+    localStorage.setItem('__jt', '1');
+    localStorage.removeItem('__jt');
+    return true;
+  } catch (e) { return false; }
+}
+function load() {
+  storageOK = probeStorage();
+  var raw = null;
+  if (storageOK) {
+    try { raw = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { raw = null; }
+  }
+  data = normData(raw);
+  var removed = purge();
+  if (removed) toast('🧹 ' + removed + ' record' + (removed > 1 ? 's' : '') + ' past 100 days removed');
+}
+function purge() {
+  var cutoff = iso(addDays(new Date(), -RETENTION_DAYS));
+  var before = data.jobs.length;
+  data.jobs = data.jobs.filter(function (j) {
+    var upd = (j.updatedAt || '').slice(0, 10);
+    var crt = (j.createdAt || '').slice(0, 10);
+    var newest = [j.dateApplied, upd, crt].sort().pop();
+    return newest >= cutoff;
+  });
+  var removed = before - data.jobs.length;
+  if (removed) save();
+  return removed;
+}
+function save() {
+  data.lastSaved = new Date().toISOString();
+  if (!storageOK) return false;
+  try {
+    localStorage.setItem(KEY, JSON.stringify(data));
+    return true;
+  } catch (e) {
+    storageOK = false;
+    toast('⚠️ Could not save — browser storage is full or blocked');
+    return false;
+  }
+}
+function commit(message) {
+  save();
+  render();
+  if (message) toast(message);
+}
+
+/* ============ derived data ============ */
+function target() { return data.settings.dailyTarget || 5; }
+function countsByDate() {
+  var m = {};
+  data.jobs.forEach(function (j) { m[j.dateApplied] = (m[j.dateApplied] || 0) + 1; });
+  return m;
+}
+function countOn(d) {
+  var n = 0;
+  data.jobs.forEach(function (j) { if (j.dateApplied === d) n++; });
+  return n;
+}
+function countBetween(from, to) {
+  var n = 0;
+  data.jobs.forEach(function (j) { if (j.dateApplied >= from && j.dateApplied <= to) n++; });
+  return n;
+}
+function lastNDays(n) {
+  var out = [], now = new Date();
+  for (var i = n - 1; i >= 0; i--) {
+    var d = addDays(now, -i), s = iso(d);
+    out.push({ date: s, dow: DOW[(d.getDay() + 6) % 7], count: countOn(s), isToday: s === today() });
+  }
+  return out;
+}
+function dayClass(c, dateStr) {
+  var t = target();
+  if (c >= t) return 'hit';
+  if (c > 0) return 'part';
+  return dateStr <= today() ? 'miss' : '';
+}
+function statusChip(c) {
+  var t = target();
+  if (c >= t) return '<span class="chip green">🟢 Target complete</span>';
+  if (c > 0) return '<span class="chip amber">🟡 In progress</span>';
+  return '<span class="chip red">🔴 Not started</span>';
+}
+function blockBar(c, t) {
+  var filled = Math.min(t, c), out = '';
+  for (var i = 0; i < t; i++) out += i < filled ? '█' : '░';
+  return out + '  ' + c + ' / ' + t;
+}
+function refSummary(job) {
+  var r = job.referrals;
+  if (!r.length) return { label: 'Not asked', cls: 'grey', icon: '⚪' };
+  if (r.some(function (x) { return x.status === 'Received'; })) return { label: 'Received', cls: 'green', icon: '🟢' };
+  if (r.some(function (x) { return x.status === 'Asked'; })) return { label: 'Asked', cls: 'amber', icon: '🟡' };
+  if (r.every(function (x) { return x.status === 'No Response'; })) return { label: 'No response', cls: 'grey', icon: '⚪' };
+  return { label: 'Not asked', cls: 'red', icon: '🔴' };
+}
+function statusCls(s) {
+  return { Applied: 'blue', Interview: 'amber', Offer: 'green', Rejected: 'red', Closed: 'grey' }[s] || 'grey';
+}
+function followUps() {
+  var out = [];
+  data.jobs.forEach(function (j) {
+    j.referrals.forEach(function (r) {
+      if (r.followUp && r.status !== 'Received') {
+        out.push({ jobId: j.id, date: r.followUp, who: r.name || 'Referral contact', role: 'Referral', job: j });
+      }
+    });
+    if (j.recruiter.followUp) out.push({ jobId: j.id, date: j.recruiter.followUp, who: j.recruiter.name || 'Recruiter', role: 'Recruiter', job: j });
+    if (j.manager.followUp) out.push({ jobId: j.id, date: j.manager.followUp, who: j.manager.name || 'Hiring manager', role: 'Manager', job: j });
+  });
+  out.sort(function (a, b) { return cmpAsc(a.date, b.date); });
+  var t = today();
+  return {
+    overdue: out.filter(function (x) { return x.date < t; }),
+    dueToday: out.filter(function (x) { return x.date === t; }),
+    upcoming: out.filter(function (x) { return x.date > t; }),
+    all: out
+  };
+}
+function nextFollowUp(job) {
+  var ds = [];
+  job.referrals.forEach(function (r) { if (r.followUp && r.status !== 'Received') ds.push(r.followUp); });
+  if (job.recruiter.followUp) ds.push(job.recruiter.followUp);
+  if (job.manager.followUp) ds.push(job.manager.followUp);
+  if (!ds.length) return null;
+  ds.sort();
+  var overdue = ds.filter(function (d) { return d < today(); });
+  return overdue.length ? overdue[0] : ds[0];
+}
+function stats() {
+  var t = target(), tdy = today(), now = new Date();
+  var mon = iso(mondayOf(now)), sun = iso(addDays(mondayOf(now), 6));
+  var mStart = iso(new Date(now.getFullYear(), now.getMonth(), 1));
+  var yStart = iso(new Date(now.getFullYear(), 0, 1));
+  var dates = data.jobs.map(function (j) { return j.dateApplied; }).sort();
+  var first = dates.length ? dates[0] : tdy;
+  if (first > tdy) first = tdy;
+  var span = Math.max(1, Math.min(2000, dayDiff(first, tdy) + 1));
+  var hit = 0, missed = 0;
+  if (data.jobs.length) {
+    var counts = countsByDate();
+    for (var i = 0; i < span; i++) {
+      var d = iso(addDays(parseD(first), i));
+      if ((counts[d] || 0) >= t) hit++; else missed++;
+    }
+  }
+  var refsReceived = 0, recContacted = 0, mgrContacted = 0;
+  data.jobs.forEach(function (j) {
+    j.referrals.forEach(function (r) { if (r.status === 'Received') refsReceived++; });
+    if (j.recruiter.contacted) recContacted++;
+    if (j.manager.contacted) mgrContacted++;
+  });
+  return {
+    total: data.jobs.length,
+    todayCount: countOn(tdy),
+    week: countBetween(mon, sun),
+    weekTarget: t * 7,
+    month: countBetween(mStart, tdy),
+    year: countBetween(yStart, tdy),
+    avg: data.jobs.length ? (data.jobs.length / span) : 0,
+    span: span,
+    hit: hit,
+    missed: missed,
+    refsReceived: refsReceived,
+    recContacted: recContacted,
+    mgrContacted: mgrContacted,
+    interviews: data.jobs.filter(function (j) { return j.status === 'Interview'; }).length,
+    offers: data.jobs.filter(function (j) { return j.status === 'Offer'; }).length
+  };
+}
+
+/* ============ toasts ============ */
+function toast(msg) {
+  var box = $('#toasts');
+  var el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  box.appendChild(el);
+  setTimeout(function () {
+    el.style.opacity = '0';
+    el.style.transition = 'opacity .2s';
+    setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 220);
+  }, 2400);
+}
+
+/* ============ confirm ============ */
+function confirmAction(opts) {
+  return new Promise(function (resolve) {
+    confirmResolve = resolve;
+    $('#confirmTitle').textContent = opts.title || 'Are you sure?';
+    $('#confirmMsg').textContent = opts.message || '';
+    $('#confirmYes').textContent = opts.confirmText || 'Delete';
+    var wrap = $('#confirmTypeWrap'), input = $('#confirmType');
+    if (opts.requireWord) {
+      wrap.style.display = '';
+      $('#confirmWord').textContent = opts.requireWord;
+      input.value = '';
+      input.dataset.word = opts.requireWord;
+    } else {
+      wrap.style.display = 'none';
+      input.dataset.word = '';
+    }
+    $('#confirmScrim').hidden = false;
+    setTimeout(function () { (opts.requireWord ? input : $('#confirmYes')).focus(); }, 30);
+  });
+}
+function closeConfirm(result) {
+  $('#confirmScrim').hidden = true;
+  if (confirmResolve) { confirmResolve(result); confirmResolve = null; }
+}
+
+/* ============ navigation ============ */
+function go(view) {
+  state.view = view;
+  closeDrawer();
+  window.scrollTo(0, 0);
+  render();
+}
+function renderNav() {
+  var due = followUps();
+  var badge = due.overdue.length + due.dueToday.length;
+  $('#nav').innerHTML = VIEWS.map(function (v) {
+    var pill = (v.id === 'followups' && badge) ? '<span class="pill">' + badge + '</span>' : '';
+    return '<button class="navitem' + (state.view === v.id ? ' active' : '') + '" data-go="' + v.id + '">' +
+      '<span class="ico">' + v.ico + '</span>' + esc(v.label) + pill + '</button>';
+  }).join('');
+  $('#bottomnav').innerHTML = MOBILE_NAV.map(function (id) {
+    var v = VIEWS.filter(function (x) { return x.id === id; })[0];
+    var pill = (id === 'followups' && badge) ? '<span class="pill">' + badge + '</span>' : '';
+    var short = v.label === 'Follow-ups' ? 'Follow-ups' : (v.label === 'All jobs' ? 'Jobs' : v.label);
+    return '<button class="' + (state.view === id ? 'active' : '') + '" data-go="' + id + '">' +
+      pill + '<span class="ico">' + v.ico + '</span>' + esc(short) + '</button>';
+  }).join('') + '<button data-action="open-drawer"><span class="ico">≡</span>More</button>';
+  var cur = VIEWS.filter(function (v) { return v.id === state.view; })[0];
+  $('#viewTitle').textContent = cur ? cur.label : '';
+}
+function openDrawer() { $('#sidebar').classList.add('open'); $('#drawerScrim').classList.add('open'); }
+function closeDrawer() { $('#sidebar').classList.remove('open'); $('#drawerScrim').classList.remove('open'); }
+
+/* ============ shared fragments ============ */
+function emptyState(title, body, actionLabel, action) {
+  return '<div class="card empty"><div class="big">' + esc(title) + '</div><p>' + esc(body) + '</p>' +
+    (actionLabel ? '<button class="btn primary" data-action="' + action + '">' + esc(actionLabel) + '</button>' : '') + '</div>';
+}
+function jobCell(j) {
+  var link = nonEmpty(j.url)
+    ? '<a href="' + esc(href(j.url)) + '" target="_blank" rel="noopener">' + esc(j.title || 'Untitled') + '</a>'
+    : esc(j.title || 'Untitled');
+  return '<div class="jobcell"><b>' + link + '</b><span>' + esc(j.company) + '</span></div>';
+}
+function contactCell(c) {
+  if (!nonEmpty(c.name) && !c.contacted) return '<span style="color:var(--ink-3)">—</span>';
+  var who = nonEmpty(c.name) ? esc(c.name) : 'Unnamed';
+  var mark = c.contacted
+    ? '<span class="chip green">✓ ' + esc(c.method || 'Contacted') + '</span>'
+    : '<span class="chip grey">Not contacted</span>';
+  return '<div class="jobcell"><b>' + who + '</b>' + mark + '</div>';
+}
+function followCell(j) {
+  var d = nextFollowUp(j);
+  if (!d) return '<span style="color:var(--ink-3)">—</span>';
+  if (d < today()) return '<span class="chip red">🔴 ' + fmt(d) + '</span>';
+  if (d === today()) return '<span class="chip amber">Today</span>';
+  return '<span class="chip blue">' + fmt(d) + '</span>';
+}
+
+/* ============ views ============ */
+function renderDashboard() {
+  var s = stats(), t = target(), f = followUps();
+  var due = f.overdue.length + f.dueToday.length;
+  var slots = '';
+  for (var i = 0; i < Math.max(t, s.todayCount); i++) {
+    slots += i < t
+      ? '<div class="slot' + (i < s.todayCount ? ' filled' : '') + '">' + (i < s.todayCount ? '✓' : (i + 1)) + '</div>'
+      : '<div class="slot extra">+1</div>';
+  }
+  var pct = Math.min(100, Math.round(s.todayCount / t * 100));
+  var barCls = s.todayCount >= t ? '' : (s.todayCount > 0 ? 'amber' : 'red');
+
+  var html = '<div class="stat-row">' +
+    '<section class="card hero">' +
+      '<div class="head"><div>' +
+        '<div class="label" style="font-size:12.5px;color:var(--ink-2)">🎯 Today\'s applications</div>' +
+        '<div class="count">' + s.todayCount + '<small> / ' + t + '</small></div>' +
+      '</div>' + statusChip(s.todayCount) + '</div>' +
+      '<div class="slots">' + slots + '</div>' +
+      '<div class="bar ' + barCls + '"><i style="width:' + pct + '%"></i></div>' +
+      '<div class="blocks">' + blockBar(s.todayCount, t) + '</div>' +
+    '</section>' +
+    '<section class="card stat"><div class="label">📈 Total applications</div><div class="num">' + s.total + '</div><div class="sub">since you started</div></section>' +
+    '<section class="card stat"><div class="label">🔥 This week</div><div class="num">' + s.week + '<span style="font-size:18px;color:var(--ink-3)"> / ' + s.weekTarget + '</span></div>' +
+      '<div class="bar" style="margin-top:8px"><i style="width:' + Math.min(100, Math.round(s.week / s.weekTarget * 100)) + '%"></i></div></section>' +
+    '<section class="card stat"><div class="label">🔔 Follow-ups</div><div class="num">' + due + '</div>' +
+      '<div class="sub">' + (due ? f.overdue.length + ' overdue · ' + f.dueToday.length + ' today' : 'nothing due') + '</div></section>' +
+  '</div>';
+
+  html += '<section class="section"><header><h2>Quick add</h2><span class="hint">Title, company, date. Everything else later.</span></header>' +
+    '<div class="card" style="padding:14px">' +
+      '<div class="three">' +
+        '<div class="field"><label for="qaTitle">Job title</label><input id="qaTitle" placeholder="Frontend Engineer"></div>' +
+        '<div class="field"><label for="qaCompany">Company</label><input id="qaCompany" placeholder="Acme"></div>' +
+        '<div class="field"><label for="qaDate">Date applied</label><input id="qaDate" type="date" value="' + today() + '"></div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">' +
+        '<button class="btn primary" data-action="quick-add">Save job</button>' +
+        '<button class="btn" data-action="new-job">Add with full details</button>' +
+      '</div>' +
+    '</div></section>';
+
+  var days = lastNDays(7);
+  html += '<section class="section"><header><h2>Last 7 days</h2><div class="spacer"></div>' +
+    '<span class="hint">' + days.filter(function (d) { return d.count >= t; }).length + ' of 7 days on target</span></header>' +
+    '<div class="days">' + days.map(function (d) {
+      return '<div class="day ' + dayClass(d.count, d.date) + (d.isToday ? ' today' : '') + '">' +
+        '<div class="dow">' + d.dow + '</div><div class="n">' + d.count + '</div>' +
+        '<div class="dow">/ ' + t + '</div></div>';
+    }).join('') + '</div></section>';
+
+  html += renderCalendar();
+
+  html += '<p style="margin-top:20px;font-size:12.5px;color:var(--ink-3)">Your data is stored locally in this browser and retained for 100 days.</p>';
+  return html;
+}
+
+function renderCalendar() {
+  var base = state.cal, t = target(), counts = countsByDate();
+  var y = base.getFullYear(), m = base.getMonth();
+  var first = new Date(y, m, 1);
+  var offset = (first.getDay() + 6) % 7;
+  var dim = new Date(y, m + 1, 0).getDate();
+  var cells = '';
+  for (var i = 0; i < offset; i++) cells += '<div class="cell blank"></div>';
+  var monthTotal = 0;
+  for (var d = 1; d <= dim; d++) {
+    var ds = iso(new Date(y, m, d));
+    var c = counts[ds] || 0;
+    monthTotal += c;
+    var cls = c >= t ? 'hit' : (c > 0 ? 'part' : (ds > today() ? 'future' : 'zero'));
+    cells += '<div class="cell ' + cls + (ds === today() ? ' today' : '') + '" data-day="' + ds + '" title="' + fmtLong(ds) + ': ' + c + '">' +
+      '<div class="d">' + d + '</div><div class="c">' + (c || '·') + '</div></div>';
+  }
+  return '<section class="section"><header><h2>' + MONTHS[m] + ' ' + y + '</h2>' +
+    '<span class="hint">' + monthTotal + ' applications</span><div class="spacer"></div>' +
+    '<button class="btn sm" data-action="cal-prev">‹</button>' +
+    '<button class="btn sm" data-action="cal-today">This month</button>' +
+    '<button class="btn sm" data-action="cal-next">›</button></header>' +
+    '<div class="card" style="padding:12px">' +
+      '<div class="cal">' + DOW.map(function (d) { return '<div class="head">' + d[0] + '</div>'; }).join('') + cells + '</div>' +
+    '</div></section>';
+}
+
+function renderToday() {
+  var t = target(), tdy = today();
+  var jobs = data.jobs.filter(function (j) { return j.dateApplied === tdy; })
+    .sort(function (a, b) { return cmpDesc(a.createdAt, b.createdAt); });
+  var pct = Math.min(100, Math.round(jobs.length / t * 100));
+  var html = '<section class="card hero"><div class="head"><div>' +
+    '<div style="font-size:12.5px;color:var(--ink-2)">' + fmtLong(tdy) + '</div>' +
+    '<div class="count">' + jobs.length + '<small> / ' + t + '</small></div>' +
+    '<div style="font-size:13px;color:var(--ink-3);margin-top:2px">' +
+      (jobs.length >= t ? 'Done for today. Anything more is a bonus.' : (t - jobs.length) + ' to go') + '</div>' +
+    '</div>' + statusChip(jobs.length) + '</div>' +
+    '<div class="bar ' + (jobs.length >= t ? '' : jobs.length ? 'amber' : 'red') + '" style="margin-top:14px"><i style="width:' + pct + '%"></i></div>' +
+    '<div class="blocks">' + blockBar(jobs.length, t) + '</div></section>';
+
+  html += '<section class="section"><header><h2>Applied today</h2><div class="spacer"></div>' +
+    '<button class="btn primary" data-action="new-job">+ Add job</button></header>';
+  html += jobs.length ? jobsTable(jobs) : emptyState(
+    'No applications today.',
+    'Your daily target is ' + t + ' applications. Add your first job.',
+    '+ Add job', 'new-job');
+  return html + '</section>';
+}
+
+function jobsTable(jobs) {
+  var rows = jobs.map(function (j) {
+    var rs = refSummary(j);
+    return '<tr>' +
+      '<td class="tight">' + fmt(j.dateApplied) + '</td>' +
+      '<td>' + jobCell(j) + '</td>' +
+      '<td class="tight"><span class="chip ' + statusCls(j.status) + '">' + esc(j.status) + '</span></td>' +
+      '<td class="tight"><span class="chip ' + rs.cls + '">' + rs.icon + ' ' + rs.label + '</span></td>' +
+      '<td>' + contactCell(j.recruiter) + '</td>' +
+      '<td>' + contactCell(j.manager) + '</td>' +
+      '<td class="tight">' + followCell(j) + '</td>' +
+      '<td class="tight"><div class="rowact">' +
+        '<button class="btn sm" data-action="edit" data-id="' + j.id + '">Edit</button>' +
+        '<button class="btn sm danger" data-action="delete" data-id="' + j.id + '">Delete</button>' +
+      '</div></td></tr>';
+  }).join('');
+  return '<div class="card tablewrap"><table><thead><tr>' +
+    '<th>Date</th><th>Job</th><th>Status</th><th>Referral</th><th>Recruiter</th><th>Manager</th><th>Follow-up</th><th></th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+}
+
+function filteredJobs() {
+  var q = state.search.trim().toLowerCase();
+  var list = data.jobs.filter(function (j) {
+    if (state.fStatus && j.status !== state.fStatus) return false;
+    if (state.fFrom && j.dateApplied < state.fFrom) return false;
+    if (state.fTo && j.dateApplied > state.fTo) return false;
+    if (!q) return true;
+    var hay = [j.title, j.company, j.notes, j.recruiter.name, j.manager.name]
+      .concat(j.referrals.map(function (r) { return r.name; })).join(' ').toLowerCase();
+    return hay.indexOf(q) > -1;
+  });
+  list.sort(function (a, b) {
+    var byDate = state.sort === 'newest' ? cmpDesc(a.dateApplied, b.dateApplied) : cmpAsc(a.dateApplied, b.dateApplied);
+    if (byDate !== 0) return byDate;
+    return state.sort === 'newest' ? cmpDesc(a.createdAt, b.createdAt) : cmpAsc(a.createdAt, b.createdAt);
+  });
+  return list;
+}
+
+function renderJobs() {
+  var list = filteredJobs();
+  var active = state.search || state.fStatus || state.fFrom || state.fTo;
+  var html = '<div class="toolbar">' +
+    '<input type="search" id="q" placeholder="Search job, company or person" value="' + esc(state.search) + '" data-change="search">' +
+    '<select data-change="fStatus"><option value="">Any status</option>' +
+      STATUSES.map(function (s) { return '<option' + (state.fStatus === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') +
+    '</select>' +
+    '<input type="date" data-change="fFrom" value="' + esc(state.fFrom) + '" aria-label="From date">' +
+    '<input type="date" data-change="fTo" value="' + esc(state.fTo) + '" aria-label="To date">' +
+    '<select data-change="sort"><option value="newest"' + (state.sort === 'newest' ? ' selected' : '') + '>Newest first</option>' +
+      '<option value="oldest"' + (state.sort === 'oldest' ? ' selected' : '') + '>Oldest first</option></select>' +
+    (active ? '<button class="btn" data-action="clear-filters">Clear filters</button>' : '') +
+    '</div>';
+  html += '<p style="font-size:13px;color:var(--ink-3);margin-bottom:10px">' + list.length + ' of ' + data.jobs.length + ' applications</p>';
+  html += list.length ? jobsTable(list) : (data.jobs.length
+    ? emptyState('Nothing matches those filters.', 'Try a different search or clear the filters.', 'Clear filters', 'clear-filters')
+    : emptyState('No jobs yet.', 'Track every application here. Your daily target is ' + target() + '.', '+ Add job', 'new-job'));
+  return html;
+}
+
+function jobOptionLabel(j) {
+  return (j.title || 'Untitled') + ' \u00b7 ' + j.company + ' \u00b7 ' + fmt(j.dateApplied);
+}
+function sortedJobs() {
+  return data.jobs.slice().sort(function (a, b) {
+    return cmpDesc(a.dateApplied, b.dateApplied) || cmpDesc(a.createdAt, b.createdAt);
+  });
+}
+function attachBar(kind, label) {
+  if (!data.jobs.length) return '';
+  return '<div class="card attachbar">' +
+    '<label for="attachSel">Add to job</label>' +
+    '<select id="attachSel">' + sortedJobs().map(function (j) {
+      return '<option value="' + j.id + '">' + esc(jobOptionLabel(j)) + '</option>';
+    }).join('') + '</select>' +
+    '<button class="btn primary" data-action="attach" data-kind="' + kind + '">' + esc(label) + '</button>' +
+    '</div>';
+}
+function pendingJobs(kind) {
+  return data.jobs.filter(function (j) {
+    if (kind === 'ref') return j.referrals.length === 0;
+    var c = j[kind === 'rec' ? 'recruiter' : 'manager'];
+    return !nonEmpty(c.name) && !c.contacted && !nonEmpty(c.email) && !nonEmpty(c.linkedin) && !nonEmpty(c.followUp);
+  }).sort(function (a, b) { return cmpDesc(a.dateApplied, b.dateApplied) || cmpDesc(a.createdAt, b.createdAt); });
+}
+function pendingList(kind, noun, action) {
+  var jobs = pendingJobs(kind);
+  if (!jobs.length) return '';
+  return '<details class="fold" style="margin-top:18px"><summary>' + jobs.length + ' job' + (jobs.length > 1 ? 's' : '') +
+    ' with no ' + noun + ' yet</summary><div class="inner tablewrap"><table><tbody>' +
+    jobs.map(function (j) {
+      return '<tr><td class="tight">' + fmt(j.dateApplied) + '</td><td>' + jobCell(j) + '</td>' +
+        '<td class="tight"><div class="rowact"><button class="btn sm" data-action="attach-row" data-kind="' + kind + '" data-id="' + j.id + '">' +
+        esc(action) + '</button></div></td></tr>';
+    }).join('') + '</tbody></table></div></details>';
+}
+
+function renderReferrals() {
+  var rows = [];
+  data.jobs.forEach(function (j) {
+    j.referrals.forEach(function (r) { rows.push({ j: j, r: r }); });
+  });
+  rows.sort(function (a, b) { return cmpDesc(a.j.dateApplied, b.j.dateApplied) || cmpDesc(a.j.createdAt, b.j.createdAt); });
+  if (!data.jobs.length) {
+    return emptyState('No jobs yet.',
+      'A referral belongs to an application. Add the job first, then record who you asked.',
+      '+ Add job', 'new-job');
+  }
+  var icon = { 'Received': '🟢', 'Asked': '🟡', 'Not Asked': '🔴', 'No Response': '⚪' };
+  var cls = { 'Received': 'green', 'Asked': 'amber', 'Not Asked': 'red', 'No Response': 'grey' };
+  var html = attachBar('ref', '+ Add referral person');
+  if (!rows.length) {
+    html += emptyState('No referral contacts yet.',
+      'Pick a job above and add the person you asked. You can add several people to the same job.', '', '');
+  } else {
+    var body = rows.map(function (x) {
+      var r = x.r, j = x.j;
+      var name = nonEmpty(r.linkedin)
+        ? '<a href="' + esc(href(r.linkedin)) + '" target="_blank" rel="noopener">' + esc(r.name || 'Contact') + '</a>'
+        : esc(r.name || 'Contact');
+      return '<tr>' +
+        '<td>' + jobCell(j) + '</td>' +
+        '<td>' + name + '</td>' +
+        '<td class="tight"><span class="chip ' + cls[r.status] + '">' + icon[r.status] + ' ' + esc(r.status) + '</span></td>' +
+        '<td class="tight"><select data-change="ref-status" data-id="' + j.id + '" data-rid="' + r.id + '">' +
+          REF_STATUSES.map(function (s) { return '<option' + (r.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') +
+        '</select></td>' +
+        '<td class="tight"><input type="date" value="' + esc(r.followUp) + '" data-change="ref-follow" data-id="' + j.id + '" data-rid="' + r.id + '"></td>' +
+        '<td class="tight"><div class="rowact">' +
+          '<button class="btn sm" data-action="attach-row" data-kind="ref" data-id="' + j.id + '">+ Person</button>' +
+          '<button class="btn sm" data-action="edit" data-section="ref" data-id="' + j.id + '">Open job</button>' +
+        '</div></td></tr>';
+    }).join('');
+    html += '<div class="card tablewrap"><table><thead><tr><th>Job</th><th>Person</th><th>Status</th><th>Change</th><th>Follow-up</th><th></th></tr></thead>' +
+      '<tbody>' + body + '</tbody></table></div>';
+  }
+  return html + pendingList('ref', 'referral', '+ Add referral');
+}
+
+function contactView(kind) {
+  var isRec = kind === 'recruiter';
+  var short = isRec ? 'rec' : 'mgr';
+  var label = isRec ? 'recruiter' : 'hiring manager';
+  if (!data.jobs.length) {
+    return emptyState('No jobs yet.',
+      'A ' + label + ' belongs to an application. Add the job first, then record who you reached out to.',
+      '+ Add job', 'new-job');
+  }
+  var jobs = data.jobs.filter(function (j) {
+    var c = j[kind];
+    return nonEmpty(c.name) || c.contacted || nonEmpty(c.email) || nonEmpty(c.linkedin) || nonEmpty(c.followUp);
+  }).sort(function (a, b) { return cmpDesc(a.dateApplied, b.dateApplied) || cmpDesc(a.createdAt, b.createdAt); });
+
+  var html = attachBar(short, '+ Add ' + label);
+  if (!jobs.length) {
+    html += emptyState('No ' + label + ' outreach yet.',
+      'Pick a job above and add the ' + label + ', then track whether you have reached out.', '', '');
+    return html + pendingList(short, label, '+ Add ' + label);
+  }
+  var body = jobs.map(function (j) {
+    var c = j[kind];
+    var name = nonEmpty(c.linkedin)
+      ? '<a href="' + esc(href(c.linkedin)) + '" target="_blank" rel="noopener">' + esc(c.name || 'Contact') + '</a>'
+      : esc(c.name || 'Contact');
+    var mail = nonEmpty(c.email) ? '<span style="font-size:12.5px;color:var(--ink-3)">' + esc(c.email) + '</span>' : '';
+    var methods = METHODS.map(function (m) {
+      return '<button class="btn sm' + (c.method === m ? ' on' : '') + '" data-action="set-method" data-kind="' + kind + '" data-id="' + j.id + '" data-m="' + m + '">' +
+        m + (c.method === m ? ' ✓' : '') + '</button>';
+    }).join(' ');
+    var fu = c.followUp
+      ? (c.followUp < today() ? '<span class="chip red">🔴 Follow-up due ' + fmt(c.followUp) + '</span>'
+        : c.followUp === today() ? '<span class="chip amber">Due today</span>'
+        : '<span class="chip blue">' + fmt(c.followUp) + '</span>')
+      : '<span style="color:var(--ink-3)">—</span>';
+    return '<tr>' +
+      '<td>' + jobCell(j) + '</td>' +
+      '<td><div class="jobcell"><b>' + name + '</b>' + mail + '</div></td>' +
+      '<td><div class="rowact" style="justify-content:flex-start;flex-wrap:wrap">' + methods + '</div></td>' +
+      '<td class="tight"><button class="btn sm' + (c.contacted ? ' on' : '') + '" data-action="toggle-contacted" data-kind="' + kind + '" data-id="' + j.id + '">' +
+        (c.contacted ? '✓ Contacted' : 'Mark contacted') + '</button></td>' +
+      '<td class="tight">' + fu + '<br><input type="date" style="margin-top:5px" value="' + esc(c.followUp) + '" data-change="contact-follow" data-kind="' + kind + '" data-id="' + j.id + '"></td>' +
+      '<td class="tight"><div class="rowact"><button class="btn sm" data-action="edit" data-section="' + short + '" data-id="' + j.id + '">Open job</button></div></td>' +
+      '</tr>';
+  }).join('');
+  html += '<div class="card tablewrap"><table><thead><tr><th>Job</th><th>' +
+    (isRec ? 'Recruiter' : 'Manager') + '</th><th>Contact method</th><th>Contacted?</th><th>Follow-up</th><th></th></tr></thead>' +
+    '<tbody>' + body + '</tbody></table></div>';
+  return html + pendingList(short, label, '+ Add ' + label);
+}
+
+function renderFollowups() {
+  var f = followUps();
+  if (!f.all.length) return emptyState('No follow-ups due 🎉', 'Add a follow-up date to a referral, recruiter or manager and it will show up here.', '', '');
+  function group(title, items, cls) {
+    if (!items.length) return '';
+    var sectionOf = { Referral: 'ref', Recruiter: 'rec', Manager: 'mgr' };
+    var body = items.map(function (x) {
+      return '<tr data-action="edit" data-section="' + sectionOf[x.role] + '" data-id="' + x.jobId + '" style="cursor:pointer">' +
+        '<td><b>' + esc(x.who) + '</b></td>' +
+        '<td class="tight"><span class="chip grey">' + x.role + '</span></td>' +
+        '<td>' + jobCell(x.job) + '</td>' +
+        '<td class="tight"><span class="chip ' + cls + '">' + fmt(x.date) + '</span></td>' +
+        '</tr>';
+    }).join('');
+    return '<section class="section"><header><h2>' + title + '</h2><span class="hint">' + items.length + '</span></header>' +
+      '<div class="card tablewrap"><table><thead><tr><th>Person</th><th>Role</th><th>Job</th><th>Date</th></tr></thead><tbody>' + body + '</tbody></table></div></section>';
+  }
+  return (f.overdue.length || f.dueToday.length ? '' : '<p style="font-size:14px;color:var(--ink-3);margin-bottom:6px">Nothing due today. 🎉</p>') +
+    group('🔴 Overdue', f.overdue, 'red') +
+    group('🟡 Due today', f.dueToday, 'amber') +
+    group('🔵 Upcoming', f.upcoming, 'blue');
+}
+
+function renderStats() {
+  var s = stats();
+  function box(label, value, sub) {
+    return '<section class="card stat"><div class="label">' + label + '</div><div class="num">' + value + '</div>' +
+      (sub ? '<div class="sub">' + sub + '</div>' : '') + '</section>';
+  }
+  var html = '<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">' +
+    box('Total applications', s.total, 'all time') +
+    box('This week', s.week, 'target ' + s.weekTarget) +
+    box('This month', s.month, '') +
+    box('This year', s.year, '') +
+    box('Average per day', s.avg.toFixed(1), 'over ' + s.span + ' day' + (s.span > 1 ? 's' : '')) +
+    box('Days on target', s.hit, 'hit ' + target() + '+') +
+    box('Days missed', s.missed, 'below ' + target()) +
+    box('Referrals received', s.refsReceived, '') +
+    box('Recruiters contacted', s.recContacted, '') +
+    box('Hiring managers contacted', s.mgrContacted, '') +
+    box('Interviews', s.interviews, '') +
+    box('Offers', s.offers, '') +
+    '</div>';
+
+  var days = lastNDays(14);
+  var max = Math.max(target(), Math.max.apply(null, days.map(function (d) { return d.count; })));
+  html += '<section class="section"><header><h2>Last 14 days</h2></header><div class="card" style="padding:16px">' +
+    '<div style="display:flex;align-items:flex-end;gap:6px;height:130px">' +
+    days.map(function (d) {
+      var h = Math.max(3, Math.round(d.count / max * 110));
+      var col = d.count >= target() ? 'var(--pine)' : d.count ? 'var(--amber)' : 'var(--line-2)';
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end" title="' + fmtLong(d.date) + ': ' + d.count + '">' +
+        '<span style="font-size:11px;color:var(--ink-3)">' + d.count + '</span>' +
+        '<div style="width:100%;height:' + h + 'px;background:' + col + ';border-radius:4px"></div>' +
+        '<span style="font-size:10px;color:var(--ink-3)">' + d.date.slice(8) + '</span></div>';
+    }).join('') + '</div></div></section>';
+
+  var byStatus = {};
+  data.jobs.forEach(function (j) { byStatus[j.status] = (byStatus[j.status] || 0) + 1; });
+  html += '<section class="section"><header><h2>By status</h2></header><div class="card tablewrap"><table><tbody>' +
+    STATUSES.map(function (st) {
+      var n = byStatus[st] || 0;
+      var pct = s.total ? Math.round(n / s.total * 100) : 0;
+      return '<tr><td style="width:120px"><span class="chip ' + statusCls(st) + '">' + st + '</span></td>' +
+        '<td><div class="bar"><i style="width:' + pct + '%;background:var(--ink)"></i></div></td>' +
+        '<td class="tight" style="width:80px;text-align:right">' + n + ' · ' + pct + '%</td></tr>';
+    }).join('') + '</tbody></table></div></section>';
+  return html;
+}
+
+function renderSettings() {
+  var s = stats();
+  return '<section class="card">' +
+    '<div class="srow"><div class="t"><b>Daily target</b><span>How many applications count as a finished day.</span></div>' +
+      '<input class="ctl" type="number" min="1" max="50" value="' + target() + '" data-change="target"></div>' +
+    '<div class="srow"><div class="t"><b>Local storage</b><span>' + (storageOK ? 'Active in this browser' : 'Blocked — data will not persist') + '</span></div>' +
+      '<span class="chip ' + (storageOK ? 'green' : 'red') + '">' + (storageOK ? 'Active' : 'Unavailable') + '</span></div>' +
+    '<div class="srow"><div class="t"><b>Data retention</b><span>Records are removed when both the applied date and the last edit are more than 100 days old.</span></div>' +
+      '<span class="chip grey">100 days</span></div>' +
+    '<div class="srow"><div class="t"><b>Last saved</b><span>' + fmtTime(data.lastSaved) + '</span></div>' +
+      '<span class="chip grey">' + s.total + ' jobs</span></div>' +
+    '</section>' +
+
+    '<section class="section"><header><h2>Backup</h2><span class="hint">Nothing leaves this browser unless you export it.</span></header>' +
+    '<div class="card">' +
+      '<div class="srow"><div class="t"><b>Export backup</b><span>Download everything as a JSON file.</span></div>' +
+        '<button class="btn" data-action="export-json">Export JSON</button></div>' +
+      '<div class="srow"><div class="t"><b>Import backup</b><span>Restore from a JSON file you exported earlier.</span></div>' +
+        '<button class="btn" data-action="import-json">Import JSON</button></div>' +
+      '<div class="srow"><div class="t"><b>Export to Excel</b><span>Jobs, referrals, recruiters, managers and statistics as separate sheets.</span></div>' +
+        '<button class="btn primary" data-action="export-excel">📥 Export to Excel</button></div>' +
+    '</div></section>' +
+
+    '<section class="section"><header><h2>Danger zone</h2></header>' +
+    '<div class="card"><div class="srow"><div class="t"><b>Clear all data</b><span>Deletes every job, referral and contact from this browser. Export a backup first.</span></div>' +
+      '<button class="btn danger" data-action="clear-all">Clear all data</button></div></div></section>';
+}
+
+/* ============ render ============ */
+function render() {
+  renderNav();
+  var html = '';
+  switch (state.view) {
+    case 'dashboard':  html = renderDashboard(); break;
+    case 'today':      html = renderToday(); break;
+    case 'jobs':       html = renderJobs(); break;
+    case 'referrals':  html = renderReferrals(); break;
+    case 'recruiters': html = contactView('recruiter'); break;
+    case 'managers':   html = contactView('manager'); break;
+    case 'followups':  html = renderFollowups(); break;
+    case 'stats':      html = renderStats(); break;
+    case 'settings':   html = renderSettings(); break;
+  }
+  $('#view').innerHTML = html;
+}
+
+/* ============ job modal ============ */
+function fillSelect(el, options, value, placeholder) {
+  el.innerHTML = (placeholder ? '<option value="">' + placeholder + '</option>' : '') +
+    options.map(function (o) { return '<option' + (o === value ? ' selected' : '') + '>' + o + '</option>'; }).join('');
+}
+function refRowHTML(r, i) {
+  return '<div class="refrow" data-rid="' + r.id + '">' +
+    '<div class="top"><b>Person ' + (i + 1) + '</b>' +
+      '<button type="button" class="btn sm ghost" data-action="del-ref" data-rid="' + r.id + '">Remove</button></div>' +
+    '<div class="two">' +
+      '<div class="field"><label>Name</label><input data-ref="name" value="' + esc(r.name) + '" placeholder="Who you asked"></div>' +
+      '<div class="field"><label>LinkedIn</label><input data-ref="linkedin" value="' + esc(r.linkedin) + '" placeholder="linkedin.com/in/…"></div>' +
+    '</div>' +
+    '<div class="two">' +
+      '<div class="field"><label>Status</label><select data-ref="status">' +
+        REF_STATUSES.map(function (s) { return '<option' + (r.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') +
+      '</select></div>' +
+      '<div class="field"><label>Follow up on</label><input data-ref="followUp" type="date" value="' + esc(r.followUp) + '"></div>' +
+    '</div></div>';
+}
+function drawRefs() {
+  $('#refList').innerHTML = state.refDraft.map(refRowHTML).join('');
+  var c = $('#refCount');
+  c.textContent = state.refDraft.length ? state.refDraft.length + ' added' : '';
+  c.style.display = state.refDraft.length ? '' : 'none';
+}
+function syncRefDraft() {
+  var rows = $('#refList').querySelectorAll('.refrow');
+  Array.prototype.forEach.call(rows, function (row) {
+    var r = state.refDraft.filter(function (x) { return x.id === row.dataset.rid; })[0];
+    if (!r) return;
+    ['name', 'linkedin', 'status', 'followUp'].forEach(function (f) {
+      var el = row.querySelector('[data-ref="' + f + '"]');
+      if (el) r[f] = el.value;
+    });
+  });
+}
+function openJob(id, section, addNew) {
+  var j = id ? data.jobs.filter(function (x) { return x.id === id; })[0] : null;
+  state.editing = j ? j.id : null;
+  state.refDraft = j ? j.referrals.map(function (r) { return Object.assign({}, r); }) : [];
+  $('#jobModalTitle').textContent = j ? 'Edit job' : 'Add job';
+  $('#jobModalSub').textContent = j ? (j.title + ' \u00b7 ' + j.company + ' \u00b7 applied ' + fmt(j.dateApplied)) : 'New application';
+  fillSelect($('#f_status'), STATUSES, j ? j.status : 'Applied', null);
+  fillSelect($('#f_rec_method'), METHODS, j ? j.recruiter.method : '', 'Not set');
+  fillSelect($('#f_mgr_method'), METHODS, j ? j.manager.method : '', 'Not set');
+  $('#f_title').value = j ? j.title : '';
+  $('#f_company').value = j ? j.company : '';
+  $('#f_date').value = j ? j.dateApplied : today();
+  $('#f_url').value = j ? j.url : '';
+  $('#f_notes').value = j ? j.notes : '';
+  ['rec:recruiter', 'mgr:manager'].forEach(function (p) {
+    var a = p.split(':'), pre = a[0], k = a[1], c = j ? j[k] : {};
+    $('#f_' + pre + '_name').value = c.name || '';
+    $('#f_' + pre + '_li').value = c.linkedin || '';
+    $('#f_' + pre + '_email').value = c.email || '';
+    $('#f_' + pre + '_contacted').checked = !!c.contacted;
+    $('#f_' + pre + '_follow').value = c.followUp || '';
+  });
+  drawRefs();
+  var anyRef = state.refDraft.length > 0;
+  $('#foldRef').open = anyRef;
+  $('#foldRec').open = !!(j && (nonEmpty(j.recruiter.name) || j.recruiter.contacted));
+  $('#foldMgr').open = !!(j && (nonEmpty(j.manager.name) || j.manager.contacted));
+  $('#foldNotes').open = !!(j && nonEmpty(j.notes));
+  if (section === 'ref') {
+    if (addNew || !state.refDraft.length) {
+      state.refDraft.push({ id: uid(), name: '', linkedin: '', status: 'Not Asked', followUp: '' });
+      drawRefs();
+    }
+    $('#foldRef').open = true;
+  }
+  if (section === 'rec') $('#foldRec').open = true;
+  if (section === 'mgr') $('#foldMgr').open = true;
+  $('#jobScrim').hidden = false;
+  setTimeout(function () {
+    var focusEl = null, scrollEl = null;
+    if (section === 'ref') {
+      var rows = $('#refList').querySelectorAll('.refrow');
+      var last = rows[rows.length - 1];
+      focusEl = last ? last.querySelector('[data-ref="name"]') : null;
+      scrollEl = last;
+    } else if (section === 'rec') {
+      focusEl = $('#f_rec_name'); scrollEl = $('#foldRec');
+    } else if (section === 'mgr') {
+      focusEl = $('#f_mgr_name'); scrollEl = $('#foldMgr');
+    }
+    if (scrollEl && scrollEl.scrollIntoView) scrollEl.scrollIntoView({ block: 'center' });
+    (focusEl || $('#f_title')).focus();
+  }, 40);
+}
+function closeJob() {
+  $('#jobScrim').hidden = true;
+  state.editing = null;
+  state.refDraft = [];
+}
+function saveJob() {
+  syncRefDraft();
+  var title = $('#f_title').value.trim();
+  var company = $('#f_company').value.trim();
+  var date = $('#f_date').value;
+  if (!title || !company || !date) {
+    toast('Job title, company and date applied are required');
+    (!title ? $('#f_title') : !company ? $('#f_company') : $('#f_date')).focus();
+    return;
+  }
+  var existing = state.editing ? data.jobs.filter(function (x) { return x.id === state.editing; })[0] : null;
+  var j = existing || normJob({});
+  j.title = title;
+  j.company = company;
+  j.dateApplied = date;
+  j.status = $('#f_status').value;
+  j.url = $('#f_url').value.trim();
+  j.notes = $('#f_notes').value.trim();
+  j.referrals = state.refDraft.filter(function (r) {
+    return nonEmpty(r.name) || nonEmpty(r.linkedin) || nonEmpty(r.followUp) || r.status !== 'Not Asked';
+  });
+  [['rec', 'recruiter'], ['mgr', 'manager']].forEach(function (p) {
+    j[p[1]] = {
+      name: $('#f_' + p[0] + '_name').value.trim(),
+      linkedin: $('#f_' + p[0] + '_li').value.trim(),
+      email: $('#f_' + p[0] + '_email').value.trim(),
+      contacted: $('#f_' + p[0] + '_contacted').checked,
+      method: $('#f_' + p[0] + '_method').value,
+      followUp: $('#f_' + p[0] + '_follow').value
+    };
+  });
+  j.updatedAt = new Date().toISOString();
+  if (!existing) data.jobs.push(j);
+  closeJob();
+  commit(existing ? '✅ Job updated' : '✅ Job added');
+}
+function quickAdd() {
+  var title = $('#qaTitle').value.trim();
+  var company = $('#qaCompany').value.trim();
+  var date = $('#qaDate').value || today();
+  if (!title || !company) { toast('Add a job title and company'); return; }
+  var j = normJob({ title: title, company: company, dateApplied: date });
+  data.jobs.push(j);
+  commit('✅ Job added');
+}
+
+/* ============ backup / export ============ */
+function download(filename, blob) {
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+}
+function exportJSON() {
+  download('job-tracker-backup-' + today() + '.json',
+    new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+  toast('📥 Backup exported');
+}
+function validBackup(obj) {
+  if (!obj || typeof obj !== 'object' || !Array.isArray(obj.jobs)) return false;
+  return obj.jobs.every(function (j) {
+    return j && typeof j === 'object' && typeof j.title === 'string' && typeof j.company === 'string' && typeof j.dateApplied === 'string';
+  });
+}
+function importJSON(file) {
+  var reader = new FileReader();
+  reader.onload = function () {
+    var obj;
+    try { obj = JSON.parse(reader.result); }
+    catch (e) { toast('⚠️ That file is not valid JSON'); return; }
+    if (!validBackup(obj)) { toast('⚠️ That file is not a Job Tracker backup'); return; }
+    var proceed = data.jobs.length
+      ? confirmAction({
+          title: 'Replace current data?',
+          message: 'Importing replaces your ' + data.jobs.length + ' saved job' + (data.jobs.length > 1 ? 's' : '') +
+                   ' with ' + obj.jobs.length + ' from the backup. This cannot be undone.',
+          confirmText: 'Replace data'
+        })
+      : Promise.resolve(true);
+    proceed.then(function (ok) {
+      if (!ok) return;
+      data = normData(obj);
+      purge();
+      commit('✅ Backup restored — ' + data.jobs.length + ' jobs');
+    });
+  };
+  reader.onerror = function () { toast('⚠️ Could not read that file'); };
+  reader.readAsText(file);
+}
+
+function sheetData() {
+  var s = stats();
+  var jobs = [['Job Title', 'Company', 'Job URL', 'Date Applied', 'Status', 'Notes']];
+  var refs = [['Job', 'Company', 'Referral Person', 'LinkedIn', 'Status', 'Follow-up Date']];
+  var recs = [['Job', 'Company', 'Recruiter', 'LinkedIn', 'Email', 'Contacted', 'Outreach Method', 'Follow-up Date']];
+  var mgrs = [['Job', 'Company', 'Manager', 'LinkedIn', 'Email', 'Contacted', 'Outreach Method', 'Follow-up Date']];
+  var sorted = data.jobs.slice().sort(function (a, b) { return cmpDesc(a.dateApplied, b.dateApplied) || cmpDesc(a.createdAt, b.createdAt); });
+  sorted.forEach(function (j) {
+    jobs.push([j.title, j.company, j.url, j.dateApplied, j.status, j.notes]);
+    j.referrals.forEach(function (r) { refs.push([j.title, j.company, r.name, r.linkedin, r.status, r.followUp]); });
+    if (nonEmpty(j.recruiter.name) || j.recruiter.contacted || nonEmpty(j.recruiter.email)) {
+      recs.push([j.title, j.company, j.recruiter.name, j.recruiter.linkedin, j.recruiter.email, j.recruiter.contacted ? 'Yes' : 'No', j.recruiter.method, j.recruiter.followUp]);
+    }
+    if (nonEmpty(j.manager.name) || j.manager.contacted || nonEmpty(j.manager.email)) {
+      mgrs.push([j.title, j.company, j.manager.name, j.manager.linkedin, j.manager.email, j.manager.contacted ? 'Yes' : 'No', j.manager.method, j.manager.followUp]);
+    }
+  });
+  var st = [
+    ['Metric', 'Value'],
+    ['Exported on', today()],
+    ['Daily target', target()],
+    ['Total applications', s.total],
+    ['Applications today', s.todayCount],
+    ['Applications this week', s.week],
+    ['Applications this month', s.month],
+    ['Applications this year', s.year],
+    ['Average per day', +s.avg.toFixed(2)],
+    ['Days target completed', s.hit],
+    ['Days target missed', s.missed],
+    ['Total referrals received', s.refsReceived],
+    ['Recruiters contacted', s.recContacted],
+    ['Hiring managers contacted', s.mgrContacted],
+    ['Interviews', s.interviews],
+    ['Offers', s.offers]
+  ];
+  return [
+    { name: 'Jobs', rows: jobs },
+    { name: 'Referrals', rows: refs },
+    { name: 'Recruiters', rows: recs },
+    { name: 'Hiring Managers', rows: mgrs },
+    { name: 'Statistics', rows: st }
+  ];
+}
+function loadXLSX() {
+  return new Promise(function (resolve, reject) {
+    if (window.XLSX) return resolve(window.XLSX);
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = function () { window.XLSX ? resolve(window.XLSX) : reject(); };
+    s.onerror = function () { reject(); };
+    document.head.appendChild(s);
+    setTimeout(function () { if (!window.XLSX) reject(); }, 6000);
+  });
+}
+function xmlEsc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' }[c];
+  });
+}
+function excelFallback(sheets) {
+  var xml = '<?xml version="1.0"?>\n<?mso-application progid="Excel.Sheet"?>\n' +
+    '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
+  sheets.forEach(function (sh) {
+    xml += '<Worksheet ss:Name="' + xmlEsc(sh.name) + '"><Table>';
+    sh.rows.forEach(function (row) {
+      xml += '<Row>';
+      row.forEach(function (cell) {
+        var num = typeof cell === 'number';
+        xml += '<Cell><Data ss:Type="' + (num ? 'Number' : 'String') + '">' + xmlEsc(cell) + '</Data></Cell>';
+      });
+      xml += '</Row>';
+    });
+    xml += '</Table></Worksheet>';
+  });
+  xml += '</Workbook>';
+  download('job-tracker-' + today() + '.xls', new Blob([xml], { type: 'application/vnd.ms-excel' }));
+}
+function exportExcel() {
+  if (!data.jobs.length) { toast('Nothing to export yet'); return; }
+  var sheets = sheetData();
+  toast('Building your workbook…');
+  loadXLSX().then(function (XLSX) {
+    var wb = XLSX.utils.book_new();
+    sheets.forEach(function (sh) {
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sh.rows), sh.name);
+    });
+    XLSX.writeFile(wb, 'job-tracker-' + today() + '.xlsx');
+    toast('📥 Export complete');
+  }).catch(function () {
+    excelFallback(sheets);
+    toast('📥 Exported as .xls — the online Excel library did not load, so this file opens in Excel but has no formatting');
+  });
+}
+
+/* ============ events ============ */
+document.addEventListener('click', function (e) {
+  var goEl = e.target.closest('[data-go]');
+  if (goEl) { go(goEl.dataset.go); return; }
+  var el = e.target.closest('[data-action]');
+  if (!el) return;
+  var a = el.dataset.action;
+  var id = el.dataset.id;
+  var job = id ? data.jobs.filter(function (x) { return x.id === id; })[0] : null;
+
+  switch (a) {
+    case 'new-job': openJob(null); break;
+    case 'close-job': closeJob(); break;
+    case 'save-job': saveJob(); break;
+    case 'edit': if (job) openJob(job.id, el.dataset.section || null); break;
+    case 'attach':
+      var sel = $('#attachSel');
+      if (sel && sel.value) openJob(sel.value, el.dataset.kind, true);
+      break;
+    case 'attach-row':
+      if (job) openJob(job.id, el.dataset.kind, true);
+      break;
+    case 'quick-add': quickAdd(); break;
+    case 'open-drawer': openDrawer(); break;
+    case 'go-jobs': go('jobs'); break;
+    case 'clear-filters':
+      state.search = ''; state.fStatus = ''; state.fFrom = ''; state.fTo = ''; render(); break;
+    case 'cal-prev': state.cal = new Date(state.cal.getFullYear(), state.cal.getMonth() - 1, 1); render(); break;
+    case 'cal-next': state.cal = new Date(state.cal.getFullYear(), state.cal.getMonth() + 1, 1); render(); break;
+    case 'cal-today': state.cal = new Date(); render(); break;
+    case 'add-ref':
+      syncRefDraft();
+      state.refDraft.push({ id: uid(), name: '', linkedin: '', status: 'Not Asked', followUp: '' });
+      drawRefs();
+      break;
+    case 'del-ref':
+      syncRefDraft();
+      state.refDraft = state.refDraft.filter(function (r) { return r.id !== el.dataset.rid; });
+      drawRefs();
+      break;
+    case 'delete':
+      if (!job) break;
+      confirmAction({
+        title: 'Delete this application?',
+        message: job.title + ' at ' + job.company + ' will be removed, along with its referrals and contacts.',
+        confirmText: 'Delete job'
+      }).then(function (ok) {
+        if (!ok) return;
+        data.jobs = data.jobs.filter(function (x) { return x.id !== job.id; });
+        commit('🗑️ Job deleted');
+      });
+      break;
+    case 'toggle-contacted':
+      if (!job) break;
+      var c = job[el.dataset.kind];
+      c.contacted = !c.contacted;
+      if (c.contacted && !c.method) c.method = 'LinkedIn';
+      job.updatedAt = new Date().toISOString();
+      commit(c.contacted ? '✅ Marked as contacted' : '✅ Updated');
+      break;
+    case 'set-method':
+      if (!job) break;
+      var ct = job[el.dataset.kind];
+      ct.method = ct.method === el.dataset.m ? '' : el.dataset.m;
+      if (ct.method) ct.contacted = true;
+      job.updatedAt = new Date().toISOString();
+      commit('✅ Outreach updated');
+      break;
+    case 'export-json': exportJSON(); break;
+    case 'import-json': $('#importFile').click(); break;
+    case 'export-excel': exportExcel(); break;
+    case 'clear-all':
+      confirmAction({
+        title: 'Clear all data?',
+        message: 'Every job, referral and contact stored in this browser will be deleted. Export a backup first if you might want it back.',
+        confirmText: 'Clear everything',
+        requireWord: 'DELETE'
+      }).then(function (ok) {
+        if (!ok) return;
+        data = blankData();
+        commit('🗑️ All data cleared');
+      });
+      break;
+    case 'confirm-yes':
+      var input = $('#confirmType');
+      if (input.dataset.word && input.value.trim().toUpperCase() !== input.dataset.word) {
+        toast('Type ' + input.dataset.word + ' to confirm');
+        return;
+      }
+      closeConfirm(true);
+      break;
+    case 'confirm-no': closeConfirm(false); break;
+  }
+});
+
+document.addEventListener('change', function (e) {
+  var el = e.target.closest('[data-change]');
+  if (!el) return;
+  var k = el.dataset.change;
+  var job = el.dataset.id ? data.jobs.filter(function (x) { return x.id === el.dataset.id; })[0] : null;
+
+  if (k === 'search' || k === 'fStatus' || k === 'fFrom' || k === 'fTo' || k === 'sort') {
+    state[k] = el.value;
+    render();
+    var q = $('#q');
+    if (k === 'search' && q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
+    return;
+  }
+  if (k === 'target') {
+    var v = Math.max(1, Math.min(50, Math.round(+el.value || 5)));
+    data.settings.dailyTarget = v;
+    commit('✅ Daily target set to ' + v);
+    return;
+  }
+  if (!job) return;
+  if (k === 'ref-status' || k === 'ref-follow') {
+    var r = job.referrals.filter(function (x) { return x.id === el.dataset.rid; })[0];
+    if (!r) return;
+    if (k === 'ref-status') r.status = el.value; else r.followUp = el.value;
+    job.updatedAt = new Date().toISOString();
+    commit('✅ Referral updated');
+    return;
+  }
+  if (k === 'contact-follow') {
+    job[el.dataset.kind].followUp = el.value;
+    job.updatedAt = new Date().toISOString();
+    commit('✅ Follow-up saved');
+  }
+});
+
+var searchTimer = null;
+document.addEventListener('input', function (e) {
+  if (e.target.id !== 'q') return;
+  state.search = e.target.value;
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(function () {
+    render();
+    var q = $('#q');
+    if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
+  }, 220);
+});
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    if (!$('#confirmScrim').hidden) closeConfirm(false);
+    else if (!$('#jobScrim').hidden) closeJob();
+    else closeDrawer();
+  }
+  if (e.key === 'Enter' && !$('#confirmScrim').hidden) {
+    e.preventDefault();
+    $('#confirmYes').click();
+  }
+  if ((e.key === 'n' || e.key === 'N') && !e.metaKey && !e.ctrlKey && !e.altKey) {
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (tag !== 'input' && tag !== 'textarea' && tag !== 'select' && $('#jobScrim').hidden) {
+      e.preventDefault();
+      openJob(null);
+    }
+  }
+});
+
+$('#jobScrim').addEventListener('click', function (e) { if (e.target === this) closeJob(); });
+$('#confirmScrim').addEventListener('click', function (e) { if (e.target === this) closeConfirm(false); });
+$('#hamburger').addEventListener('click', openDrawer);
+$('#drawerScrim').addEventListener('click', closeDrawer);
+$('#jobForm').addEventListener('submit', function (e) { e.preventDefault(); saveJob(); });
+$('#importFile').addEventListener('change', function () {
+  if (this.files && this.files[0]) importJSON(this.files[0]);
+  this.value = '';
+});
+window.addEventListener('storage', function (e) {
+  if (e.key === KEY) { load(); render(); }
+});
+
+/* ============ boot ============ */
+load();
+render();
+})();
+
+</script>
+</body>
+</html>
