@@ -356,7 +356,47 @@ const T=[
 ['x9','X','Analytics dashboard (B2B SaaS)',2,'s','Closest to your B2B SaaS work. Best first pick for a buffer slot.','Widget architecture, per-widget loading, big tables, exports, permissions','—',['How do you stop one slow widget blocking the page?','How do you handle a 1M-row export?']]
 ];
 const TIER={c:'core',s:'stretch',k:'skip'};
-const TOPICS=T.map(r=>({id:r[0],track:r[1],title:r[2],hrs:r[3],tier:TIER[r[4]],why:r[5],concepts:r[6],build:r[7],qs:r[8],url:r[9]?GUIDE+r[9]:GUIDE,exact:!!r[9]}));
+// Exact pages on allahabadi.dev found for each topic. card = the FSD guide's own page; article = the site's blog post on the same topic.
+const SITE='https://allahabadi.dev/';
+const LINKS={
+ b1:['blogs/frontend/critical-rendering-path/crux/','article'],
+ b2:['blogs/frontend/reflow-vs-repaint/','article'],
+ b3:['blogs/css/css-transform-explained/','article'],
+ b4:['blogs/css/css-stacking-context-and-z-index/','article'],
+ b6:['blogs/networking/http-protocol-explained/','article'],
+ b7:['blogs/frontend/hero-image-three-attributes-instant-load/','article'],
+ j2:['frontend-system-design/javascript-asynchrony/request-animation-frame/','card'],
+ j3:['blogs/frontend/optimize-inp-interaction-to-next-paint/','article'],
+ j4:['blogs/dsa-interview-questions/promise-all-polyfill-javascript/','article'],
+ j5:['blogs/dsa-interview-questions/implement-throttle-javascript/','article'],
+ j6:['blogs/frontend/web-vs-shared-vs-service-worker/','article'],
+ i5:['blogs/frontend/html-inert-attribute-accessibility-guide/','article'],
+ c2:['frontend-system-design/components/virtualized-list/','card'],
+ c3:['frontend-system-design/components/virtualized-list/','card'],
+ c6:['frontend-system-design/components/command-palette/','card'],
+ c7:['frontend-system-design/components/rich-text-editor/','card'],
+ c11:['frontend-system-design/components/dropdown-menu/','card'],
+ r1:['blogs/frontend/hydration-explained-react-server-components/','article'],
+ r2:['blogs/frontend/hydration-explained-react-server-components/','article'],
+ r4:['frontend-system-design/rendering-strategies/react-server-components/','card'],
+ r5:['frontend-system-design/rendering-strategies/islands-and-partial-hydration/','card'],
+ r6:['frontend-system-design/rendering-strategies/islands-and-partial-hydration/','card'],
+ r7:['blogs/frontend/optimize-ttfb-speed-up-server-response/','article'],
+ s5:['frontend-system-design/state-data/optimistic-ui/','card'],
+ s7:['backend-system-design/patterns/server-sent-events/','article'],
+ s8:['frontend-system-design/state-data/offline-first/','card'],
+ p1:['webinar/webvitals-part-1/','article'],
+ p3:['frontend-system-design/performance/image-loading/','card'],
+ p4:['blogs/frontend/font-loading-masterclass/','article'],
+ p6:['blogs/frontend/hydration-explained-react-server-components/','article'],
+ p7:['blogs/frontend/dom-size-interactivity-performance/','article'],
+ a1:['frontend-system-design/application-architecture/choosing-an-architecture/','card'],
+ x4:['frontend-system-design/case-studies/shopping-cart-checkout/','card']
+};
+// For topics with no page found yet: a site search on the guide for that exact topic.
+const searchTerm=t=>t.replace(/\(.*?\)/g,'').split(':')[0].replace(/[&/]/g,' ').trim();
+const siteSearch=t=>'https://www.google.com/search?q='+encodeURIComponent('site:allahabadi.dev '+searchTerm(t));
+const TOPICS=T.map(r=>{const L=LINKS[r[0]];return {id:r[0],track:r[1],title:r[2],hrs:r[3],tier:TIER[r[4]],why:r[5],concepts:r[6],build:r[7],qs:r[8],url:L?SITE+L[0]:siteSearch(r[2]),kind:L?L[1]:'search'}});
 const TOPIC=Object.fromEntries(TOPICS.map(t=>[t.id,t]));
 const CORE=TOPICS.filter(t=>t.tier==='core');
 const STAGES=[['read','Read'],['notes','Notes'],['build','Build'],['explain','Explain']];
@@ -575,8 +615,8 @@ function topicCard(t,opts={}){
        <div><div class="eyebrow">Build</div><p>${t.build==='—'?'Nothing to build. A diagram in your notes is enough.':esc(t.build)}</p></div>
      </div>
      <div><div class="eyebrow">You can explain it when you can answer</div><ol>${t.qs.map(q=>`<li>${esc(q)}</li>`).join('')}</ol></div>
-     <div><div class="eyebrow">Study link</div>
-       <div class="linkrow"><a class="btn primary" href="${esc(link)}" target="_blank" rel="noopener">Open ${st.link?'saved link':(t.exact?'card':'guide')} ↗</a>
+     <div><div class="eyebrow">Study link · ${st.link?'your saved page':({card:'exact guide page',article:'site article on this topic',search:'no exact page found yet: opens a site search'})[t.kind]}</div>
+       <div class="linkrow"><a class="btn primary" href="${esc(link)}" target="_blank" rel="noopener">${st.link?'Open your saved page':({card:'Open guide page',article:'Open the site’s article',search:'Find it on allahabadi.dev'})[t.kind]} ↗</a>
        <input id="link-${t.id}" data-link="${t.id}" type="url" placeholder="Paste this card’s exact URL from the guide" value="${esc(st.link||'')}" aria-label="Card link for ${esc(t.title)}"></div></div>
      <div><label class="eyebrow" for="note-${t.id}">Your notes</label><textarea id="note-${t.id}" data-note="${t.id}" placeholder="Key points, gotchas, the diagram in words…">${esc(st.note||'')}</textarea></div>
    </div></article>`;
