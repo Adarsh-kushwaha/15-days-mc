@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<title>FSD November Sprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: a code editor inside a browser window. Address bar = route, syntax-highlight hues = roadmap layers, amber = missed work */
+/* Single dark theme by choice, matching the Frontend Master components page: warm near-black, gold accent, pastel per-category hues on tinted cards */
+:root{
+  --bg:#15130f; --surface:#1d1a15; --raised:#26221b; --line:#37312a; --fg:#f1ece2; --muted:#a59c8c;
+  --accent:#e8c35a; --accent-ink:#1a1610; --warn:#ffb020; --warn-bg:#2b2112; --ok:#6fd49a; --ok-ink:#10160f; --idle:#2e2922;
+  --t-blue:#79aaf0; --t-cyan:#3ec9d6; --t-pink:#f28aa8; --t-orange:#f0a35a; --t-green:#6fd49a; --t-purple:#a9a4f5; --t-red:#f07a92; --t-amber:#b5d45a; --t-grey:#cdbfa5; --t-teal:#5fd0b8;
+  --glow:rgba(232,195,90,.10); --code-bg:#2e2716;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",sans-serif;
+  --f-body:"Geist","Inter","Segoe UI",Roboto,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.6 var(--f-body);background-image:radial-gradient(1100px 520px at 15% -160px,var(--glow),transparent 70%),radial-gradient(700px 380px at 95% 10%,rgba(240,163,90,.06),transparent 70%);background-repeat:no-repeat}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+a{color:var(--accent)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* browser chrome header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.chrome{display:flex;align-items:center;gap:12px;padding-block:10px 8px}
+.lights{display:flex;gap:6px;flex:none}
+.lights i{width:11px;height:11px;border-radius:50%;display:block}
+.lights i:nth-child(1){background:var(--t-red)}.lights i:nth-child(2){background:var(--t-amber)}.lights i:nth-child(3){background:var(--t-green)}
+.addr{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font:500 .78rem var(--f-mono);color:var(--muted);overflow:hidden;white-space:nowrap}
+.addr b{color:var(--fg);font-weight:500}
+.addr .lock{color:var(--ok)}
+.clock{flex:none;font:500 .78rem var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums;text-align:right;line-height:1.3}
+.clock b{color:var(--fg);display:block;font-weight:700}
+.topin{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding-block:6px 10px}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand h1{font:800 1.3rem/1.1 var(--f-display);margin:0;letter-spacing:-.03em;color:var(--accent)}
+.brand h1 span{color:var(--fg)!important}
+.brand h1 span{color:var(--accent)}
+.brand small{color:var(--muted);font:500 .74rem var(--f-mono)}
+.meter{flex:1 1 260px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.meter .row{display:flex;justify-content:space-between;gap:8px;font:500 .76rem var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.meter .row b{color:var(--fg)}
+.stack{display:flex;height:8px;border-radius:999px;overflow:hidden;background:var(--idle)}
+.stack span{display:block;height:100%}
+.sync{font:500 .7rem var(--f-mono);color:var(--muted)}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;margin-bottom:-1px}
+nav.tabs a{padding:8px 14px;text-decoration:none;color:var(--muted);font:600 .82rem var(--f-mono);white-space:nowrap;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;display:inline-flex;align-items:center;gap:6px}
+nav.tabs a:hover{color:var(--fg)}
+nav.tabs a[aria-current="page"]{background:var(--bg);color:var(--accent);border-color:var(--line)}
+.badge{background:var(--warn);color:var(--accent-ink);border-radius:999px;font:700 .68rem var(--f-mono);padding:0 6px;line-height:1.5}
+
+main{padding-block:26px 72px}
+h2{font:800 clamp(1.9rem,4.4vw,2.8rem)/1.05 var(--f-display);margin:0 0 8px;text-wrap:balance;letter-spacing:-.045em}
+h2 em{font-style:normal;color:var(--accent)}
+h3{font:700 1.05rem/1.3 var(--f-display);margin:0;text-wrap:balance}
+.lede{color:var(--muted);margin:0 0 20px;max-width:68ch}
+.lede b{color:var(--fg)}
+.eyebrow{font:500 .74rem var(--f-mono);color:var(--muted)}
+.eyebrow::before{content:"// ";opacity:.7}
+.chip{display:inline-flex;align-items:center;gap:6px;font:600 .72rem var(--f-body);padding:3px 11px;border-radius:999px;border:1px solid var(--line);white-space:nowrap;background:var(--raised);color:var(--fg)}
+.chip.full{border-color:var(--accent);color:var(--accent)}
+.chip.core{color:var(--ok);border-color:var(--ok)}
+.chip.stretch{color:var(--t-amber);border-color:var(--t-amber)}
+.chip.skip{color:var(--muted)}
+.chip.warn{color:var(--warn);border-color:var(--warn)}
+.dot{width:9px;height:9px;border-radius:3px;display:inline-block;flex:none}
+
+/* banners */
+.banner{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--warn);background:var(--warn-bg);border-radius:10px;padding:12px 14px;margin-bottom:18px}
+.banner .wd{width:10px;height:10px;border-radius:50%;background:var(--warn);margin-top:7px;flex:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--warn) 25%,transparent)}
+.banner p{margin:0}
+.banner b{font-family:var(--f-display)}
+.banner.okb{border-color:var(--ok);background:var(--surface)}
+.banner.okb .wd{background:var(--ok);box-shadow:none}
+
+/* Today */
+.dayhead{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+.daynav{display:flex;gap:6px}
+.btn{border:1px solid var(--line);background:var(--surface);padding:7px 13px;border-radius:8px;cursor:pointer;font:600 .84rem var(--f-body);text-decoration:none;display:inline-flex;align-items:center;gap:6px;color:var(--fg)}
+.btn:hover{border-color:var(--accent)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);border-radius:999px}
+code,.code{font:500 .85em var(--f-mono);background:var(--code-bg);color:var(--accent);padding:1px 6px;border-radius:5px}
+.btn.sm{padding:4px 10px;font-size:.78rem}
+.frame{display:flex;gap:3px;height:24px;margin:4px 0 18px}
+.frame span{flex-basis:0;border-radius:4px;position:relative}
+.frame span em{position:absolute;left:6px;top:3px;font:700 .66rem var(--f-mono);font-style:normal;color:var(--accent-ink);white-space:nowrap;overflow:hidden;right:2px;text-overflow:ellipsis}
+.callout{background:var(--surface);border:1px dashed var(--line);border-radius:10px;padding:12px 14px;margin-bottom:18px;font:500 .86rem/1.6 var(--f-mono);color:var(--muted)}
+.callout b{color:var(--fg)}
+
+.topic{--tc:var(--accent);background:linear-gradient(100deg,color-mix(in srgb,var(--tc) 13%,var(--surface)),var(--surface) 46%);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:border-color .15s}
+.topic .tmeta .tn{color:var(--tc);font-weight:700}
+.topic:hover{border-color:color-mix(in srgb,var(--tc) 55%,var(--line))}
+.topic>.th{display:grid;grid-template-columns:4px 1fr auto;gap:0 14px;align-items:stretch;cursor:pointer}
+.topic .tmain{padding:12px 0;min-width:0}
+.topic .tmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:5px;font:500 .74rem var(--f-mono);color:var(--muted)}
+.topic .tright{display:flex;align-items:center;gap:6px;padding-right:12px}
+.stages{display:flex;gap:4px}
+.stage{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:6px;padding:3px 8px;font:600 .7rem var(--f-mono);cursor:pointer;background:var(--bg);user-select:none;color:var(--muted)}
+.stage input{position:absolute;opacity:0;pointer-events:none}
+.stage.on{background:var(--ok);font-weight:700;border-color:var(--ok);color:var(--ok-ink)}
+.stage:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:1px}
+.tbody{border-top:1px solid var(--line);padding:14px 16px 16px 20px;display:grid;gap:14px;background:var(--surface)}
+.tbody[hidden]{display:none!important}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tgrid>div{min-width:0}
+.tbody p{margin:2px 0 0}
+.tbody ol{margin:4px 0 0;padding-left:20px}
+.tbody li{margin-bottom:4px}
+.linkrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.linkrow input{flex:1 1 220px;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 9px;font:.78rem var(--f-mono)}
+textarea{width:100%;min-height:80px;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:9px;resize:vertical;font:.88rem/1.5 var(--f-mono)}
+.caret{transition:transform .15s;color:var(--muted)}
+.topic.open .caret{transform:rotate(90deg)}
+
+.tasks{display:grid;gap:6px;margin-top:8px}
+.task{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.task input{margin-top:4px;accent-color:var(--ok);width:16px;height:16px;flex:none}
+.task.done span{text-decoration:line-through;color:var(--muted)}
+.task .k{font:600 .68rem var(--f-mono);color:var(--muted);display:block}
+
+/* Plan */
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:14px;font-size:.82rem;color:var(--muted)}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.calwrap{overflow-x:auto}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(118px,1fr));gap:6px;min-width:860px}
+.cal .dh{font:600 .72rem var(--f-mono);color:var(--muted);padding:0 4px}
+.cell{--tc:var(--muted);position:relative;background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 16%,var(--surface)),var(--surface) 62%);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px;min-height:138px;cursor:pointer;text-align:left;color:var(--fg)}
+.cell:hover{border-color:var(--accent)}
+.cell.full .f::after{content:"";}
+.cell.past{opacity:.82}
+.cell.today{outline:2px solid var(--accent);outline-offset:1px;opacity:1}
+.cell.missed{border-color:var(--warn)}
+.cell .d{display:flex;justify-content:space-between;font:600 .76rem var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted)}
+.cell .d b{color:var(--fg)}
+.cell .f{font:700 .84rem/1.25 var(--f-display)}
+.cell .bars{display:flex;gap:2px;margin-top:auto}
+.cell .bars i{height:5px;flex:1;border-radius:2px}
+.cell .pb{height:4px;background:var(--idle);border-radius:2px;overflow:hidden}
+.cell .pb b{display:block;height:100%;background:var(--ok)}
+.mdot{position:absolute;top:8px;right:8px;width:10px;height:10px;border-radius:50%;background:var(--warn);box-shadow:0 0 0 3px color-mix(in srgb,var(--warn) 25%,transparent)}
+.cell .mdot~.d span:last-child{margin-right:14px}
+
+/* Topics */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center}
+.filters input[type=search]{flex:1 1 200px;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 11px;font-family:var(--f-mono);font-size:.85rem}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{border:1px solid var(--line);background:var(--raised);padding:7px 14px;border-radius:999px;cursor:pointer;font:600 .8rem var(--f-body);color:var(--fg)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.track{margin-bottom:28px}
+.trackhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 14px;margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.trackhead h3{display:flex;align-items:center;gap:8px;font-size:1.15rem}
+.trackhead .sm{font:500 .76rem var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Catch-up */
+.miss{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.miss .mh{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}
+.miss ul{margin:0;padding-left:18px}
+.miss li{margin-bottom:3px}
+.miss .st{font:500 .74rem var(--f-mono);color:var(--warn)}
+
+.empty{color:var(--muted)}
+@media (max-width:720px){
+  .tgrid{grid-template-columns:1fr}
+  .topic .tright{flex-direction:column;align-items:flex-end;justify-content:center;padding-block:8px}
+  .stage{padding:3px 5px}
+  .addr{display:none}
+  .chrome{justify-content:space-between}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<style>
+.chip.core{color:var(--ok);border-color:var(--ok)}
+.chip.stretch{color:var(--scripting);border-color:var(--scripting)}
+.chip.skip{color:var(--muted)}
+.why{border-left:3px solid var(--line);padding-left:10px;color:var(--fg)}
+.layers{display:grid;gap:0;margin:8px 0 28px}
+.layer{display:grid;grid-template-columns:44px 1fr;gap:0 14px}
+.layer .rail{display:flex;flex-direction:column;align-items:center}
+.layer .num{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font:700 .85rem var(--f-mono);color:var(--accent-ink);flex:none}
+.layer .line{flex:1;width:2px;background:var(--line);margin:4px 0}
+.layer:last-child .line{display:none}
+.layer .lbody{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:12px;min-width:0}
+.layer .lbody p{margin:4px 0 0;max-width:72ch}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-top:8px;font-size:.88rem}
+.kv dt{font:600 .7rem var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding-top:3px}
+.kv dd{margin:0;min-width:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;min-width:0}
+.panel h3{margin-bottom:8px}
+.panel ul{margin:0;padding-left:18px}
+.panel li{margin-bottom:8px}
+.panel li b{font-family:var(--f-display)}
+.panel.do{border-top:3px solid var(--ok)}
+.panel.dont{border-top:3px solid var(--t-red)}
+.panel{border-radius:14px!important}
+.pre{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-bottom:22px}
+.pre .panel{min-width:0}
+.big2{font:800 3rem/1 var(--f-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+@media (max-width:720px){.pre{grid-template-columns:1fr}}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.tiers .panel p{margin:4px 0 0;color:var(--muted)}
+.tiers .big{font:700 1.6rem var(--f-display);font-variant-numeric:tabular-nums}
+.sec{margin:34px 0 10px}
+.idea{border-bottom:1px solid var(--line);padding:10px 0}
+.idea:last-child{border-bottom:0}
+.idea p{margin:2px 0 0;color:var(--muted);max-width:72ch}
+@media (max-width:720px){.two,.tiers{grid-template-columns:1fr}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="chrome">
+      <div class="lights" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="addr" aria-hidden="true"><span class="lock">●</span><span>https://fsd-sprint.dev/<b id="addrpath">roadmap</b></span></div>
+      <div class="clock" id="clock" aria-live="off"><b>--:--</b>IST</div>
+    </div>
+    <div class="topin">
+      <div class="brand"><h1>&lt;FSD <span>Sprint</span> /&gt;</h1><small id="countdown">1–30 Nov 2026 · SDE II</small></div>
+      <div class="meter">
+        <div class="row"><span>Core progress · <b id="pct">0%</b></span><span id="stagecount">0 / 0 stages</span></div>
+        <div class="stack" id="stack" aria-hidden="true"></div>
+      </div>
+      <span class="sync" id="sync">saved on this device</span>
+    </div>
+    <nav class="tabs" aria-label="Views">
+      <a href="#today">Today</a><a href="#catchup">Catch up <span class="badge" id="missbadge" hidden>0</span></a><a href="#roadmap">Roadmap</a><a href="#plan">30-day plan</a><a href="#topics">All topics</a><a href="#extras">Mocks &amp; blog ideas</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="view"></main>
+
+<script>
+const GUIDE='https://allahabadi.dev/frontend-system-design/';
+const TRACKS=[
+ {id:'F',name:'Interview framework',color:'--t-grey',
+  why:'The round is scored on how you structure an answer, not on how many facts you know. Learning the frame first means you can sit an interview on day 1, and every later topic has a box to go into.',
+  needs:'Nothing',unlocks:'Every other layer: each topic maps to one RADIO letter',skip:'Memorizing someone else’s template word for word. Make it yours.'},
+ {id:'B',name:'How the browser runs it',color:'--t-blue',
+  why:'This is the physics of the frontend. Rendering strategies, performance and smooth components all come down to what the browser does with HTML, CSS and JS. Learn it before you try to optimize anything.',
+  needs:'Framework',unlocks:'Async JS, components, performance',skip:'Chromium source internals, GPU raster details, HTTP/3 packet formats.'},
+ {id:'J',name:'JavaScript asynchronicity',color:'--t-amber',
+  why:'Jank, race conditions, stale search results and frozen UIs are all event-loop problems. Every component you design later needs debounce, cancellation or yielding.',
+  needs:'Browser pipeline (the frame)',unlocks:'Components, real-time data, INP',skip:'Node.js event-loop phases, libuv, generator trivia.'},
+ {id:'I',name:'Building the interface',color:'--t-purple',
+  why:'Observers, event delegation and accessibility are the raw tools components are built from. Learning them once avoids re-learning them inside each component.',
+  needs:'Browser, async JS',unlocks:'Components',skip:'Every DOM API; forms you already ship at work.'},
+ {id:'C',name:'Components',color:'--t-green',
+  why:'Component design (LLD) is the most common SDE II round. It combines the three layers above into one answer: structure, state, API, performance and accessibility.',
+  needs:'Browser, async, interface APIs',unlocks:'Case studies are built from these components',skip:'Simple widgets (carousel, tabs, date picker, rating). You can reason those out live.'},
+ {id:'R',name:'Rendering strategies',color:'--t-cyan',
+  why:'After components, zoom out to the page: where does HTML get built? This choice drives SEO, first paint and hydration cost. It needs the browser pipeline to make sense.',
+  needs:'Browser pipeline',unlocks:'Performance, case-study architecture',skip:'Qwik/Astro internals, framework migration guides.'},
+ {id:'S',name:'State & data',color:'--t-orange',
+  why:'The “D” in RADIO. Most real bugs are data bugs: stale caches, duplicated state, lost messages. Studied after components so you know what the data is feeding.',
+  needs:'Components, async JS',unlocks:'Case studies (feed, chat, cart all hinge on this)',skip:'Redux Toolkit API surface, GraphQL server code, backend databases.'},
+ {id:'P',name:'Performance',color:'--t-red',
+  why:'The “O” in RADIO, and it cuts across everything. It comes after rendering and data because you can only optimize a system you understand. With that base it’s mostly naming levers and measuring.',
+  needs:'Browser, rendering, data',unlocks:'The optimization section of every answer',skip:'Bundler config keys, micro-benchmarks, obscure Lighthouse audits.'},
+ {id:'A',name:'Architecture & production',color:'--t-teal',
+  why:'Security, auth and microfrontends are what separate SDE II from SDE I. Studied late because they are short, and because microfrontends is already your strength to polish.',
+  needs:'Everything above',unlocks:'Senior-level depth in follow-up questions',skip:'CI/CD tooling details, i18n libraries, cloud infrastructure.'},
+ {id:'X',name:'Case studies',color:'--t-pink',
+  why:'HLD questions combine every layer: components, rendering, data, performance, security. They come last because they reuse everything; doing them early would mean learning ten things at once.',
+  needs:'All layers',unlocks:'Mock interviews',skip:'Backend capacity math (QPS, sharding). One line of awareness is enough in a frontend round.'}
+];
+// [id, track, title, hours, tier c/s/k, why, concepts, build, [q1,q2], url?]
+const T=[
+['f1','F','RADIO framework: Requirements → Architecture → Data → Interface → Optimizations',1.5,'c','Every answer is scored against this structure. Learn it first so you can handle an interview on day 1.','Clarifying questions, functional vs non-functional requirements, scoping out, time-boxing a 45-minute round','A one-page template you can redraw from memory in 2 minutes',['Walk me through how you start any frontend design question.','What non-functional requirements matter most on the client?']],
+['f2','F','Whiteboarding & talking trade-offs',1,'c','Interviewers grade reasoning more than diagrams. Saying trade-offs clearly is the SDE II signal.','Component diagram, data-flow arrows, “X over Y because Z”, handling pushback, choosing where to go deep','Record yourself designing a like button in 10 minutes',['The interviewer disagrees with your choice. How do you respond?','How do you decide where to go deep in 45 minutes?']],
+['b1','B','Critical rendering path: DOM, CSSOM, render tree',1.5,'c','Every performance and rendering answer traces back to this pipeline.','Parsing, render-blocking CSS, parser-blocking JS, preload scanner, first paint','Label each stage on a DevTools Performance trace',['What happens between typing a URL and first paint?','Why is CSS render-blocking and JS parser-blocking?']],
+['b2','B','Layout, reflow & layout thrashing',1,'c','Explains most jank you will debug, and why virtual lists use transform.','Forced synchronous layout, read/write batching, geometry properties','Thrash 1,000 elements, then fix with read-then-write',['Which JS reads force a layout?','How would you animate a list reorder without jank?']],
+['b3','B','Paint, layers & compositing',1,'c','Tells you which animations are free and which cost frames.','Compositor thread, transform/opacity, will-change, too many layers','Compare a left animation vs a transform animation in DevTools',['Why are transform and opacity cheap to animate?','When does will-change hurt?']],
+['b4','B','Stacking & formatting contexts',0.75,'s','Explains modal and popover z-index bugs. A quick read is enough.','z-index rules, BFC, containing blocks, position:fixed traps','—',['Why does my z-index:9999 not work?','What creates a new stacking context?']],
+['b5','B','Browser architecture: processes & threads',0.5,'s','Context for why scrolling stays smooth while JS is busy.','Browser/renderer/GPU processes, main vs compositor threads','—',['Why can scrolling stay smooth while JS is busy?','What runs on the main thread?']],
+['b6','B','Networking: DNS, TLS, HTTP/2 & 3, CDN',1.5,'c','Load time starts on the network. CDNs and HTTP/2 come up in every HLD answer.','Head-of-line blocking, multiplexing, connection reuse, edge caching','Compare a page’s waterfall over HTTP/1.1 and HTTP/2',['Why does domain sharding hurt on HTTP/2?','What does a CDN actually save you?']],
+['b7','B','Resource loading: async, defer, preload, priorities',1,'c','The concrete levers for LCP. You will cite them in every performance answer.','fetchpriority, preconnect, modulepreload, script execution order','Tune the LCP image and fonts of a sample page',['async vs defer vs type=module?','When would you preload vs prefetch?']],
+['j1','J','Event loop: call stack, tasks, microtasks',1.5,'c','Explains ordering bugs, race conditions and frozen UIs.','Task queue, microtask checkpoint, promise jobs, timer clamping','Solve 10 output-order puzzles cold',['Order of logs: setTimeout, Promise.then, queueMicrotask, sync code?','Can microtasks starve rendering?']],
+['j2','J','Rendering in the loop: rAF, idle callbacks, the frame',1,'c','Connects JS timing to frames. Base for debounce, smooth scrolling and INP.','Frame lifecycle, rAF timing, requestIdleCallback, 16ms budget','Progress bar driven by rAF instead of scroll events',['Where does rAF run in the frame?','What work belongs in requestIdleCallback?']],
+['j3','J','Long tasks & yielding to the main thread',1,'c','INP is a Core Web Vital. This is how you fix it.','50ms long tasks, scheduler.yield, chunking work','Chunk a 200ms loop and compare responsiveness',['How do you break up a long task?','How does INP relate to long tasks?']],
+['j4','J','Promises, AbortController & race conditions',1.5,'c','Every data-fetching component needs cancellation and stale-response handling.','all/allSettled/race/any, cancellation, stale responses, retry with backoff','fetchWithRetry + cancel-on-new-query',['How do you avoid showing stale search results?','Implement Promise.all from scratch.']],
+['j5','J','Debounce, throttle & rAF batching',0.75,'c','Asked directly, and used in autocomplete, scroll and resize handling.','Leading/trailing edges, drop vs queue, when each fits','Write debounce and throttle with tests',['Search box: debounce or throttle? Why?','What happens to calls inside a throttle window?']],
+['j6','J','Web Workers & off-main-thread work',0.75,'s','Good extension answer for heavy parsing. Rarely the main answer.','postMessage cost, transferables, what workers cannot touch','—',['What cannot run in a worker?','When is a worker not worth it?']],
+['i1','I','DOM APIs & efficient updates',0.5,'s','You already do this daily through React. Skim only.','DocumentFragment, batching writes, textContent vs innerHTML','—',['Why is innerHTML in a loop slow?','How does a framework batch DOM writes?']],
+['i2','I','Event model: capture, bubble, delegation, passive',1,'c','Delegation and passive listeners appear in every list, table and feed answer.','Event phases, closest(), stopPropagation pitfalls, passive scroll/touch','One listener handling 10k list items',['Why use event delegation?','What does passive:true change?']],
+['i3','I','Observers: Intersection, Resize, Mutation',1,'c','The modern way to do lazy loading and infinite scroll.','rootMargin, thresholds, sentinel pattern','Lazy images + infinite-scroll sentinel',['Why IntersectionObserver over scroll listeners?','How would you use ResizeObserver in a component?']],
+['i4','I','CSS architecture & containment',0.75,'s','content-visibility is a strong one-line optimization to mention.','contain, content-visibility, container queries, CSS-in-JS cost','—',['What does content-visibility:auto do?','When does CSS-in-JS runtime cost matter?']],
+['i5','I','Accessibility: semantics, ARIA, focus, keyboard',1.5,'c','A11y is an expected section of every component answer at SDE II.','Roles, aria-live, focus trap, roving tabindex, reduced motion','Make a custom listbox keyboard and screen-reader friendly',['How do you make a custom dropdown accessible?','When should you not use ARIA?']],
+['i6','I','Forms, validation & input UX',0.5,'k','You ship forms at work daily. Low return for interview prep.','Controlled vs uncontrolled, async validation','—',['Controlled vs uncontrolled at scale?','How do you validate a username asynchronously?']],
+['c1','C','Autocomplete / typeahead',2.5,'c','The single most asked component question.','Debounce, cache by query, AbortController, keyboard nav, combobox ARIA','React + TS autocomplete with an LRU cache',['How do you handle out-of-order responses?','What would you cache and for how long?']],
+['c2','C','Virtualized list',2.5,'c','The core of feeds, tables and chat. Proves you understand rendering cost.','Windowing math, overscan, variable heights, translateY, scroll restoration','100k rows at 60fps without a library',['How do you handle variable row heights?','How does Ctrl+F work with virtualization?'],'components/virtualized-list/'],
+['c3','C','Infinite scroll',1.5,'c','Pairs with virtualization in every feed question.','Sentinel, cursor pagination, dedupe, back-button restoration','Feed combining sentinel + virtualization',['Infinite scroll vs pagination: when each?','How do you restore scroll on back-navigation?']],
+['c4','C','Modal dialog',1.5,'c','Tests focus management and portals, both senior signals.','<dialog>, focus trap, inert, scroll lock, return focus','Accessible modal that can stack',['What happens to focus when a modal opens and closes?','Why render modals in a portal?']],
+['c5','C','Data table: sort, filter, paginate',2,'c','Common in B2B SaaS interviews and close to your daily work.','Client vs server operations, sticky headers, URL-synced filters','50k-row table with sort + filter in the URL',['When do you move sorting to the server?','How do you keep filters shareable?']],
+['c6','C','Command palette',1,'s','A variation on autocomplete. Skim after c1.','Global shortcut, fuzzy search, action registry','—',['How would you design the action registry?','How do you rank fuzzy results?']],
+['c7','C','Rich text editor',1.5,'s','Hard and rarely asked at SDE II. Read once for the vocabulary (OT, CRDT).','contenteditable vs own model, Selection API, undo stack','—',['Why keep your own document model?','OT vs CRDT in one minute?'],'components/rich-text-editor/'],
+['c8','C','File uploader: chunked & resumable',1.5,'c','A frequent HLD sub-problem: chunking, retries, progress.','Presigned URLs, chunking, retries, pause/resume, parallel limits','Uploader with progress and resume',['How do you resume a failed 2GB upload?','How many chunks in parallel, and why?']],
+['c9','C','Image carousel',0.5,'k','A simple widget you can reason out live.','Scroll snap, lazy slides, preloading neighbors','—',['How do you avoid loading all 50 images?','What ARIA does a carousel need?']],
+['c10','C','Tabs & accordion',0.5,'k','A simple widget you can reason out live.','Roving tabindex, lazy panels','—',['Mount all panels or lazy-load?','Keyboard behavior for tabs?']],
+['c11','C','Dropdown, popover & tooltip positioning',1,'s','Useful positioning logic but rarely the main question.','Collision detection, flipping, portals, dismiss rules','—',['How do you position a popover inside a scroll container?','Tooltip vs popover: the a11y difference?']],
+['c12','C','Toast & notification component',0.75,'s','Small, with easy talking points. Do it if ahead.','Queue, auto-dismiss, aria-live, imperative API','—',['How do you design a toast() API in React?','Which aria-live level and why?']],
+['c13','C','Date picker',0.5,'k','Rarely asked. Reason it out live if it comes up.','Grid navigation, locales, time zones','—',['How do you handle time zones?','When is the native date input enough?']],
+['c14','C','Nested comments',1.5,'c','Popular in Indian product-company rounds. Tests data modeling.','Tree vs flat normalized model, lazy replies, optimistic posting','Threaded comments from a flat store',['Store comments as a tree or flat?','How do you load deep threads lazily?']],
+['c15','C','Star rating / poll widget',0.5,'k','Too small to need preparation.','Radio-group semantics, optimistic vote','—',['Star rating with native inputs?','How do you prevent double votes?']],
+['r1','R','CSR vs SSR vs SSG vs ISR',1.5,'c','The first decision in any page-level design.','TTFB vs FCP vs interactivity, SEO, cacheability, per-route choice','Same page in all four modes in Next.js',['Which strategy for a product page? A dashboard?','What problem does ISR solve?']],
+['r2','R','Hydration & hydration mismatches',1,'c','Explains most Next.js production bugs and the real cost of SSR.','What hydration rebuilds, mismatch causes, the “visible but not clickable” gap','Reproduce and fix a Date.now() mismatch',['What exactly does hydration do?','Why can a page be visible but not clickable?']],
+['r3','R','Streaming SSR & Suspense',1,'c','How modern Next.js gets fast first paint. Builds on hydration.','Suspense boundaries, selective hydration, loading states','Stream a slow widget behind Suspense',['How does streaming improve perceived performance?','What is selective hydration?']],
+['r4','R','React Server Components',1.5,'c','Your stack is Next.js, so expect deep questions here.','Server vs client components, RSC payload, serialization boundary, server actions','Move a data-heavy component to RSC, compare bundle size',['RSC vs SSR: what is different?','What can’t cross the server/client boundary?']],
+['r5','R','Islands & partial hydration',0.5,'s','A good comparison point. One read.','Partial vs progressive hydration, no shared tree','—',['Islands vs partial hydration?','How do two islands share state?'],'rendering-strategies/islands-and-partial-hydration/'],
+['r6','R','Resumability',0.25,'k','Niche framework idea. Mention-level only.','Serialized listeners and state','—',['How is resumability different from hydration?','What does it cost?']],
+['r7','R','Edge rendering & CDN caching',0.5,'s','Useful for global apps. Secondary.','Edge functions, stale-while-revalidate, cache keys','—',['When render at the edge vs origin?','How do you cache a personalized page?']],
+['s1','S','State taxonomy: local, global, server, URL',1,'c','Choosing where state lives is the core of the “D” in RADIO.','Where each kind lives, colocation, single source of truth','Map every piece of state in your lab-booking portal',['How do you decide where state lives?','Context vs Zustand vs TanStack Query?']],
+['s2','S','URL as source of truth',0.5,'s','A quick idea that folds into s1 and data tables.','Search params, shareable state, history','—',['What state belongs in the URL?','How do you avoid history spam?']],
+['s3','S','Normalization & entity stores',1,'c','Needed when one entity appears in many places, as in feeds and comments.','Entities by id, selectors, updating once','Normalize a feed + comments response',['Why normalize client state?','How do you update a post shown in 3 lists?']],
+['s4','S','Server-state caching & invalidation',1.5,'c','Most real frontend data bugs are cache bugs.','stale-while-revalidate, query keys, staleTime, dedupe, prefetch','Mini SWR hook, then compare with TanStack Query',['How does stale-while-revalidate work?','How do you invalidate after a mutation?']],
+['s5','S','Optimistic updates & rollback',1,'c','Expected in every like, comment and cart interaction.','Snapshot, apply, reconcile, rollback, idempotency','Optimistic like with rollback',['When is optimistic UI dangerous?','How do you reconcile with the server response?']],
+['s6','S','Pagination: offset vs cursor',0.75,'c','Cursor pagination is the right answer for feeds and chat.','Concurrent inserts, stable ordering, prefetching','Cursor-paginated mock API + client',['Why cursor over offset for feeds?','How do you show “new posts” without shifting the list?']],
+['s7','S','Real-time: polling, SSE, WebSocket',1.5,'c','Chat, notifications and live dashboards all depend on it.','Heartbeats, reconnect with backoff, ordering, choosing per use case','WebSocket chat with reconnect',['SSE vs WebSocket: how do you choose?','How do you reconnect without losing messages?']],
+['s8','S','Offline & PWA basics',1,'s','Comes up as an extension question. Know the basics.','Service worker lifecycle, cache strategies, IndexedDB, sync queue','—',['Cache-first vs network-first: when?','How do users avoid getting stuck on an old service worker?']],
+['s9','S','API design: REST, GraphQL, BFF',1,'c','Defines the contract every design hangs on.','Over/under-fetching, BFF per client, batching, error contracts','Write the API contract for a news feed',['When would you add a BFF?','GraphQL trade-offs on the client?']],
+['p1','P','Core Web Vitals: LCP, INP, CLS',1.5,'c','The vocabulary interviewers use for performance.','What each measures, thresholds, field vs lab, common culprits','Audit one real page of yours and fix one metric',['How would you debug a poor INP?','What causes CLS and how do you prevent it?']],
+['p2','P','Bundle strategy: splitting, lazy loading',1,'c','The biggest load-time lever in React apps.','Route/component splitting, dynamic import, bundle analyzer','Cut a Next.js bundle and note the before/after',['How do you find what bloats a bundle?','Why might tree shaking fail?']],
+['p3','P','Images & media',0.75,'c','Images are usually the LCP element.','AVIF/WebP, srcset/sizes, lazy vs priority, fixed dimensions','—',['How do you make the LCP image load fast?','srcset vs picture?']],
+['p4','P','Fonts',0.5,'s','Small topic. Good for CLS answers.','font-display, preload, size-adjust','—',['How do custom fonts cause CLS?','When do you preload a font?']],
+['p5','P','Caching: HTTP headers, CDN, service worker',1,'c','A cache strategy appears in every HLD answer.','Cache-Control, ETag, hashed immutable assets, stale JS after deploy','Caching table for HTML, JS, images, API',['Why hash filenames?','How do you deploy without users running stale JS?']],
+['p6','P','Hydration cost & JS budget',0.5,'s','Strengthens rendering answers. Secondary.','Main-thread cost of JS, budgets in CI','—',['Why is JS costlier than images byte for byte?','How do you enforce a performance budget?']],
+['p7','P','DOM size & memory leaks',0.75,'s','Good follow-up material for SPAs.','Detached nodes, listeners, heap snapshots','—',['How do you find a memory leak in an SPA?','Why does DOM size hurt interactivity?']],
+['p8','P','Measuring: Lighthouse, RUM, PerformanceObserver',1,'c','Shows you work from data, not guesses.','Lab vs field, web-vitals library, sampling','Send web-vitals from a page to the console or an endpoint',['Lab vs field data: which do you trust?','How would you monitor performance in production?']],
+['a1','A','Microfrontends & Module Federation',1,'c','Your strongest real-world story. Polish it into a 3-minute answer.','Runtime vs build-time integration, shared deps, versioning, routing','Write up your own setup: problem, decision, trade-offs',['When are microfrontends a mistake?','How do you share React across remotes safely?']],
+['a2','A','Component library & design system',0.75,'s','Good senior talking point if you have time.','Tokens, theming, headless vs styled, versioning','—',['Headless vs styled components?','How do you ship a breaking change in a design system?']],
+['a3','A','Security: XSS, CSRF, CSP, clickjacking',1.5,'c','Security questions show up in senior rounds without warning.','Escaping, dangerouslySetInnerHTML, CSP, SameSite, frame-ancestors','Add a strict CSP to a Next.js app',['How do you prevent XSS in React apps?','What does SameSite protect against?']],
+['a4','A','Auth on the client: tokens, cookies, refresh',1,'c','Every app has login. Token storage is a classic trap question.','httpOnly cookies vs localStorage, refresh rotation, multi-tab logout','Diagram the refresh + logout-all-tabs flow',['Where do you store tokens and why?','How do you log a user out of every tab?']],
+['a5','A','Observability: errors & monitoring',0.5,'s','A short senior talking point.','Error boundaries, source maps, breadcrumbs','—',['How do you debug a prod-only error?','What would you log from the client?']],
+['a6','A','Testing strategy',0.5,'s','Asked occasionally. You likely know enough already.','Testing trophy, RTL, MSW, Playwright','—',['What do you unit-test vs e2e-test?','How do you test async UI reliably?']],
+['a7','A','i18n, feature flags & deployments',0.5,'k','Low interview return for this role.','Locale loading, flags, canary','—',['How do you ship a risky feature safely?','How do you lazy-load translations?']],
+['x1','X','News feed (Facebook / Twitter)',3,'c','The most asked HLD. Combines virtualization, pagination and optimistic UI.','Feed API, cursor pagination, virtualization, optimistic likes, new-posts banner, media','Full whiteboard, timed at 40 minutes',['Design the news feed end to end.','How do you show new posts without jumping the list?']],
+['x2','X','Chat app (WhatsApp / Slack)',3,'c','Tests real-time, ordering and offline: the hardest data problems.','WebSocket, ordering, delivery states, offline queue, unread counts','Full whiteboard, timed at 40 minutes',['How do you guarantee message order?','How do you sync after an hour offline?']],
+['x3','X','Pinterest masonry',2,'c','Layout plus virtualization with variable heights.','Masonry algorithm, variable-height virtualization, image placeholders','Whiteboard + a quick masonry layout function',['How do you lay out a masonry grid efficiently?','How do you avoid layout shift for images?']],
+['x4','X','E-commerce cart & checkout',2,'c','E-commerce is asked across Indian product companies.','Guest→user cart sync, inventory races, payment flow, idempotency, SEO pages','Full whiteboard, timed at 40 minutes',['How do you sync a guest cart after login?','What can go wrong at payment?']],
+['x5','X','Notification system',1.5,'s','Pick one stretch case study if you have buffer time.','Push vs pull, badge counts, cross-tab sync','—',['How do you keep the badge count right across tabs?','When do you ask for push permission?']],
+['x6','X','Collaborative editor (Google Docs)',2,'s','Hard. Do it only if your target companies build editors.','OT vs CRDT, presence, cursors, offline edits','—',['How do two users editing one paragraph converge?','How do you show other cursors?']],
+['x7','X','Video player (YouTube)',2,'s','Pick if targeting media or streaming companies.','HLS/DASH, adaptive bitrate, fast start','—',['How does adaptive bitrate work?','How do you start playback fast?']],
+['x8','X','Photo sharing & stories (Instagram)',1.5,'s','Pick if targeting social or consumer apps.','Upload pipeline, stories prefetch','—',['How do you make stories feel instant?','Where do you compress images?']],
+['x9','X','Analytics dashboard (B2B SaaS)',2,'s','Closest to your B2B SaaS work. Best first pick for a buffer slot.','Widget architecture, per-widget loading, big tables, exports, permissions','—',['How do you stop one slow widget blocking the page?','How do you handle a 1M-row export?']]
+];
+const TIER={c:'core',s:'stretch',k:'skip'};
+const TOPICS=T.map(r=>({id:r[0],track:r[1],title:r[2],hrs:r[3],tier:TIER[r[4]],why:r[5],concepts:r[6],build:r[7],qs:r[8],url:r[9]?GUIDE+r[9]:GUIDE,exact:!!r[9]}));
+const TOPIC=Object.fromEntries(TOPICS.map(t=>[t.id,t]));
+const CORE=TOPICS.filter(t=>t.tier==='core');
+const STAGES=[['read','Read'],['notes','Notes'],['build','Build'],['explain','Explain']];
+
+const MOCKS=[
+ {id:'mock1',t:'Mock 1: news feed (45 min, recorded)',date:'15'},
+ {id:'mock2',t:'Mock 2: chat app or autocomplete',date:'28'},
+ {id:'mock3',t:'Mock 3: a question you have not practiced',date:'29'}
+];
+const MOCKBY=Object.fromEntries(MOCKS.map(m=>[m.id,m]));
+const BLOGS=[
+ ['What shipping Module Federation for enterprise clients taught me','Your real decisions, failures and fixes. Nobody else can write this one.'],
+ ['Designing the frontend of a voice AI agent','Latency budgets, streaming text, interruptions, audio state. A rare topic with your own experience behind it.'],
+ ['I measured INP on a booking flow. Here is what moved it','Real before/after numbers from your lab-booking portal (no client data).'],
+ ['Teardown: how a popular Indian app’s search box behaves','Open DevTools on a real autocomplete (food delivery, travel), record requests and debounce, and critique it.'],
+ ['Designing for a ₹8,000 Android phone on 4G','Performance budgets for the Indian low-end device reality.'],
+ ['Rendering choices behind Baaza','Why your side project renders the way it does, and what you would change after this month.'],
+ ['Mistakes I made in my first frontend system design mock','An honest write-up after mock 1. Useful to readers and to you.'],
+ ['The questions I now ask before designing any frontend','Your own version of the requirements checklist, written in your words.']
+];
+
+// kind: leave | weekend | work. hrs = planned hours
+const D=[
+ ['01','weekend',4,'Kickoff: interview framework + how the browser paints',['f1','f2','b1'],[],[]],
+ ['02','work',1.5,'Event loop',['j1'],[],[]],
+ ['03','work',1.75,'The frame: rAF, debounce, throttle',['j2','j5'],[],[]],
+ ['04','work',2,'Layout and compositing',['b2','b3'],[],[]],
+ ['05','work',1.5,'Network',['b6'],[],['10 min: answer the f1 and b1 questions from memory']],
+ ['06','leave',4,'Loading, async control, long tasks',['b7','j4','j3'],[],['30 min: recall this week’s B and J questions']],
+ ['07','leave',4,'Interface tools: events, observers, a11y',['i2','i3','i5'],[],['30 min: recall yesterday’s questions']],
+ ['08','leave',4,'Components 1: autocomplete + modal',['c1','c4'],[],[]],
+ ['09','leave',4,'Components 2: virtual list + infinite scroll',['c2','c3'],[],[]],
+ ['10','leave',4,'Components 3: table + uploader',['c5','c8'],[],['30 min: explain c1–c4 out loud']],
+ ['11','leave',4,'Comments + rendering basics',['c14','r1','r2'],[],[]],
+ ['12','leave',4,'Streaming, RSC, state model',['r3','r4','s1'],[],['30 min: recall yesterday’s questions']],
+ ['13','leave',4,'Data layer: normalize, cache, optimistic',['s3','s4','s5'],[],['30 min: recall R questions']],
+ ['14','leave',4,'Pagination, real-time, API design',['s6','s7','s9'],[],['45 min: recall all S questions']],
+ ['15','leave',4,'First case study + first mock',['x1'],['mock1'],['Write your 5 weakest topics from the mock']],
+ ['16','work',1.5,'Core Web Vitals',['p1'],[],[]],
+ ['17','work',1.75,'Bundles and images',['p2','p3'],[],[]],
+ ['18','work',2,'Caching and measuring',['p5','p8'],[],[]],
+ ['19','work',1.5,'Security',['a3'],[],[]],
+ ['20','work',2,'Auth + your microfrontends story',['a4','a1'],[],[]],
+ ['21','weekend',4,'Chat app + revision',['x2'],[],['1h: answer every B and J question out loud, no notes']],
+ ['22','weekend',4,'Masonry + checkout',['x3','x4'],[],[]],
+ ['23','work',1.5,'Recall: components',[],[],['Explain c1, c2, c3, c4 in 3 minutes each','Redraw the autocomplete and virtual list diagrams']],
+ ['24','work',1.5,'Recall: rendering + state',[],[],['Answer all R and S questions out loud']],
+ ['25','work',1.5,'Recall: performance + architecture',[],[],['Answer all P and A questions out loud']],
+ ['26','work',1.5,'Rapid-fire: every core question',[],[],['Go through every core topic’s questions in one sitting','Mark anything shaky for the weekend']],
+ ['27','work',1.5,'Recall: case studies',[],[],['Redraw x1–x4 in 10 minutes each']],
+ ['28','weekend',4,'Mock 2 + weak spots',[],['mock2'],['2h: deep-dive the shakiest topics from your list','1h buffer: catch up, or one stretch topic']],
+ ['29','weekend',4,'Mock 3 + one stretch case study',[],['mock3'],['2h: one stretch case study (x9 analytics dashboard is closest to your work)','1h: fix what mock 3 exposed']],
+ ['30','work',1.5,'Final review',[],[],['Read your one-page cheat sheet','Redraw RADIO and one case study, then rest']]
+];
+const DAYS=D.map(r=>({date:'2026-11-'+r[0],kind:r[1],hrs:r[2],focus:r[3],topics:r[4],mocks:r[5],extra:r[6]}));
+const KIND={leave:'Leave · 4h',weekend:'Weekend · 4h',work:'After office'};
+
+const DOS=[
+ ['Write the question first.','Before reading a topic, read its “why” and two questions. You are reading to answer them, not to finish the page.'],
+ ['Draw before you code.','One diagram per topic: boxes, arrows, data flow. Interviews are whiteboards.'],
+ ['Say every choice as a trade-off.','“I chose X over Y because Z; the cost is W.” Practice that sentence until it is automatic.'],
+ ['Build the smallest thing that proves it.','A 50-line demo with DevTools open beats a polished app. Builds are for core topics only.'],
+ ['Use your real work as examples.','Microfrontends, the lab-booking portal and voicebots make your answers specific. Interviewers remember stories.'],
+ ['Recall before new material.','Start each session with 10 minutes answering yesterday’s questions without notes. This is what makes it stick.'],
+ ['Time-box every topic.','If a topic runs 50% over its hours, stop, note the gap, and move on. The plan has buffer on 28–29 Nov.'],
+ ['Record and watch your mocks.','You will hear the filler words and the missing trade-offs. Fix one thing per mock.']
+];
+const DONTS=[
+ ['Don’t tick Explain early.','Only tick it when you answer both questions out loud with no notes.'],
+ ['Don’t binge multiple sources.','One primary source per topic (the guide), plus MDN or web.dev only for a gap.'],
+ ['Don’t memorize code.','Memorize decisions and why. You can rewrite code; you cannot fake reasoning.'],
+ ['Don’t polish UI in builds.','No styling time. Unstyled demos are fine.'],
+ ['Don’t study stretch before core.','Stretch topics are for buffer slots after that week’s core is done.'],
+ ['Don’t double up after a missed day.','Skip that day’s extra recall instead and use the 28–29 Nov buffer. Doubling up breaks the next day too.'],
+ ['Don’t let blogs eat study time.','Blogs are optional and only on a leave day with energy left.'],
+ ['Don’t go into backend depth.','QPS, sharding and database choice are not what a frontend round scores.']
+];
+const NOTSTUDY=[
+ ['Backend capacity math','QPS estimates, sharding, database choice. One sentence of awareness is enough in a frontend round.'],
+ ['Framework source code','Know reconciliation and priorities as concepts. Don’t read React Fiber line by line.'],
+ ['Library API surfaces','Learn the pattern (server-state cache, store). Redux Toolkit or TanStack options are googleable.'],
+ ['Bundler configuration','Know what code splitting achieves, not webpack or Vite config keys.'],
+ ['Other frameworks','Skip Vue/Angular/Svelte comparisons. Go deep in React and Next.js, which is your stack.'],
+ ['Canvas, WebGL, WebRTC internals','Mention-level only unless a target role asks for them.'],
+ ['Simple widgets','Carousel, tabs, date picker, rating. You can reason these out live.'],
+ ['A second course on the same topic','It feels productive but repeats what you know. Use the time for recall.']
+];
+
+/* ---------- state ---------- */
+let S={topics:{},tasks:{}};
+const LS='fsd-sprint-v1';
+try{const v=JSON.parse(localStorage.getItem(LS)||'null'); if(v&&v.topics) S=v;}catch(e){}
+let dbRef=null, writing=false, pending=false, timer=null;
+const syncEl=document.getElementById('sync');
+function persist(){
+  try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}
+  if(!dbRef) return;
+  clearTimeout(timer); timer=setTimeout(flush,700); syncEl.textContent='saving…';
+}
+async function flush(){
+  if(writing){pending=true;return;}
+  writing=true;
+  try{await dbRef.set(JSON.parse(JSON.stringify(S))); syncEl.textContent='synced to your account';}
+  catch(e){syncEl.textContent=e&&e.code==='invalid_argument'?'read-only: saved on this device':'offline: saved on this device';}
+  writing=false; if(pending){pending=false;flush();}
+}
+(async()=>{
+  try{
+    const db=window.claude&&await window.claude.use('db');
+    if(!db) return;
+    dbRef=db.doc('tracker/state');
+    const to=setTimeout(()=>{syncEl.textContent='account sync slow: saved on this device'},10000);
+    let first=true;
+    dbRef.onSnapshot(snap=>{
+      if(snap.metadata.hasPendingWrites) return;
+      if(!snap.metadata.fromCache) clearTimeout(to);
+      if(snap.exists){const d=snap.data(); S={topics:{...(d.topics||{})},tasks:{...(d.tasks||{})}}; try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){} render();}
+      else if(first && !snap.metadata.fromCache && (Object.keys(S.topics).length||Object.keys(S.tasks).length)){flush();}
+      if(!snap.metadata.fromCache){first=false; syncEl.textContent='synced to your account';}
+    },()=>{clearTimeout(to);syncEl.textContent='saved on this device';});
+  }catch(e){}
+})();
+
+const tstate=id=>S.topics[id]||(S.topics[id]={});
+const stageDone=(id,k)=>!!(S.topics[id]&&S.topics[id][k]);
+const topicPct=id=>STAGES.filter(([k])=>stageDone(id,k)).length/STAGES.length;
+function dayItems(d){
+  const items=[];
+  d.topics.forEach(id=>STAGES.forEach(([k])=>items.push(stageDone(id,k))));
+  d.mocks.forEach(id=>items.push(!!S.tasks[id]));
+  d.extra.forEach((_,i)=>items.push(!!S.tasks[d.date+'-x'+i]));
+  return items;
+}
+const dayPct=d=>{const it=dayItems(d);return it.length?it.filter(Boolean).length/it.length:0};
+
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const trackOf=id=>TRACKS.find(t=>t.id===id);
+const cvar=n=>`var(${n})`;
+const fmtDate=iso=>new Date(iso+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short'});
+const dow=iso=>new Date(iso+'T00:00:00').toLocaleDateString('en-IN',{weekday:'short'});
+/* Time: read the browser clock, express it in IST (Asia/Kolkata) whatever the device's own zone */
+const TZ='Asia/Kolkata';
+const istDateFmt=new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'});
+const istTimeFmt=new Intl.DateTimeFormat('en-IN',{timeZone:TZ,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+const istLongFmt=new Intl.DateTimeFormat('en-IN',{timeZone:TZ,weekday:'short',day:'numeric',month:'short',year:'numeric'});
+function todayISO(){const p={};istDateFmt.formatToParts(new Date()).forEach(x=>p[x.type]=x.value);return `${p.year}-${p.month}-${p.day}`}
+const PRE='pre';
+function defaultDay(){const t=todayISO(); if(t<DAYS[0].date) return PRE; if(t>DAYS[DAYS.length-1].date) return DAYS[DAYS.length-1].date; return t;}
+let selDay=defaultDay();
+let lastDate=todayISO();
+function tick(){
+  const now=new Date();
+  const c=document.getElementById('clock');
+  if(c) c.innerHTML=`<b>${istTimeFmt.format(now)}</b>${istLongFmt.format(now)} · IST`;
+  const t=todayISO();
+  if(t!==lastDate){lastDate=t; selDay=defaultDay(); render();}
+}
+setInterval(tick,1000);
+
+/* Missed work: any unfinished item on a day before today (IST) */
+function dayMissing(d){
+  const out=[];
+  d.topics.forEach(id=>{const left=STAGES.filter(([k])=>!stageDone(id,k)).map(([,l])=>l); if(left.length) out.push({kind:'topic',id,label:TOPIC[id].title,left});});
+  d.mocks.forEach(id=>{if(!S.tasks[id]) out.push({kind:'task',id,label:MOCKBY[id].t});});
+  d.extra.forEach((x,i)=>{const id=d.date+'-x'+i; if(!S.tasks[id]) out.push({kind:'task',id,label:x});});
+  return out;
+}
+const pastDays=()=>DAYS.filter(d=>d.date<todayISO());
+const missedDays=()=>pastDays().map(d=>({d,items:dayMissing(d)})).filter(x=>x.items.length);
+let openTopics=new Set();
+let filt={q:'',tier:'core'};
+const safeUrl=u=>/^https?:\/\//i.test(u||'')?u:null;
+const sumH=a=>a.reduce((x,t)=>x+t.hrs,0);
+const fmtH=h=>(Math.round(h*4)/4).toString().replace(/\.0$/,'');
+
+function header(){
+  let done=0,tot=CORE.length*STAGES.length;
+  CORE.forEach(t=>STAGES.forEach(([k])=>{if(stageDone(t.id,k))done++}));
+  $('#pct').textContent=Math.round(done/tot*100)+'%';
+  $('#stagecount').textContent=`${done} / ${tot} core stages`;
+  $('#stack').innerHTML=TRACKS.map(tr=>{
+    let d=0; CORE.filter(t=>t.track===tr.id).forEach(t=>STAGES.forEach(([k])=>{if(stageDone(t.id,k))d++}));
+    return d?`<span style="flex:${d};background:${cvar(tr.color)}" title="${esc(tr.name)}"></span>`:'';
+  }).join('')+`<span style="flex:${tot-done};background:transparent"></span>`;
+  const t=todayISO(), cd=$('#countdown');
+  const until=Math.round((Date.parse(DAYS[0].date)-Date.parse(t))/864e5);
+  if(t<DAYS[0].date) cd.textContent=until===1?'Day 1 starts tomorrow · Sun 1 Nov':`Day 1 starts in ${until} days · Sun 1 Nov`;
+  else if(t>DAYS[29].date) cd.textContent='Sprint complete · keep revising';
+  else {const n=DAYS.findIndex(d=>d.date===t)+1; cd.textContent=`Day ${n} of 30 · ${30-n} days left`;}
+  const m=missedDays().reduce((a,x)=>a+x.items.length,0), b=$('#missbadge');
+  b.hidden=!m; b.textContent=m;
+  $('#addrpath').textContent=route()+(route()==='today'&&selDay!==PRE?'/'+selDay:'');
+}
+function missBanner(){
+  const md=missedDays(); if(!md.length) return pastDays().length?`<div class="banner okb"><span class="wd"></span><p><b>Nothing missed.</b> Every past day is complete.</p></div>`:'';
+  const n=md.reduce((a,x)=>a+x.items.length,0);
+  return `<div class="banner"><span class="wd"></span><p><b>You have ${n} unfinished item${n>1?'s':''} from ${md.length} past day${md.length>1?'s':''}.</b> Finish today’s plan first, then clear these from the buffer time. <a href="#catchup">See what you missed →</a></p></div>`;
+}
+
+function topicCard(t,opts={}){
+  const tr=trackOf(t.track), st=S.topics[t.id]||{};
+  const link=safeUrl(st.link)||t.url, open=openTopics.has(t.id);
+  return `<article class="topic${open?' open':''}" style="--tc:${cvar(tr.color)}">
+   <div class="th" data-toggle="${t.id}" role="button" tabindex="0" aria-expanded="${open}">
+     <span class="stripe" style="background:${cvar(tr.color)}"></span>
+     <div class="tmain"><h3>${esc(t.title)}</h3>
+       <div class="tmeta"><span class="tn">${t.id.toUpperCase()}</span><span class="chip ${t.tier}">${t.tier[0].toUpperCase()+t.tier.slice(1)}</span><span>${fmtH(t.hrs)}h</span>${opts.showTrack?`<span>· ${esc(tr.name)}</span>`:''}<span class="caret" aria-hidden="true">▸</span></div></div>
+     <div class="tright"><div class="stages">${STAGES.map(([k,l])=>`<label class="stage${st[k]?' on':''}" data-stop><input type="checkbox" data-stage="${t.id}:${k}" ${st[k]?'checked':''}>${l}</label>`).join('')}</div></div>
+   </div>
+   <div class="tbody" ${open?'':'hidden'}>
+     <div><div class="eyebrow">Why study this</div><p class="why">${esc(t.why)}</p></div>
+     <div class="tgrid">
+       <div><div class="eyebrow">Go deep on</div><p>${esc(t.concepts)}</p></div>
+       <div><div class="eyebrow">Build</div><p>${t.build==='—'?'Nothing to build. A diagram in your notes is enough.':esc(t.build)}</p></div>
+     </div>
+     <div><div class="eyebrow">You can explain it when you can answer</div><ol>${t.qs.map(q=>`<li>${esc(q)}</li>`).join('')}</ol></div>
+     <div><div class="eyebrow">Study link</div>
+       <div class="linkrow"><a class="btn primary" href="${esc(link)}" target="_blank" rel="noopener">Open ${st.link?'saved link':(t.exact?'card':'guide')} ↗</a>
+       <input id="link-${t.id}" data-link="${t.id}" type="url" placeholder="Paste this card’s exact URL from the guide" value="${esc(st.link||'')}" aria-label="Card link for ${esc(t.title)}"></div></div>
+     <div><label class="eyebrow" for="note-${t.id}">Your notes</label><textarea id="note-${t.id}" data-note="${t.id}" placeholder="Key points, gotchas, the diagram in words…">${esc(st.note||'')}</textarea></div>
+   </div></article>`;
+}
+function taskRow(id,label,kind){
+  const on=!!S.tasks[id];
+  return `<label class="task${on?' done':''}"><input type="checkbox" data-task="${id}" ${on?'checked':''}><span>${kind?`<span class="k">${esc(kind)}</span>`:''}${esc(label)}</span></label>`;
+}
+
+function viewRoadmap(){
+  const cnt=k=>TOPICS.filter(t=>t.tier===k);
+  const work=DAYS.filter(d=>d.kind==='work'), four=DAYS.filter(d=>d.kind!=='work');
+  return `<h2>The <em>roadmap</em> behind the month.</h2>
+   <p class="lede">How this month is built, what to study, what to leave out, and why the order matters. Read this once before 1 Nov and again whenever you feel lost.</p>
+
+   <div class="tiers">
+     <div class="panel"><span class="chip core">Core</span><div class="big">${cnt('core').length} topics</div><p>${fmtH(sumH(cnt('core')))}h. Scheduled day by day. These are what SDE II rounds ask most. Your progress bar counts only these.</p></div>
+     <div class="panel"><span class="chip stretch">Stretch</span><div class="big">${cnt('stretch').length} topics</div><p>Not scheduled. Pick from these only in buffer slots, after that week’s core is done.</p></div>
+     <div class="panel"><span class="chip skip">Skip</span><div class="big">${cnt('skip').length} topics</div><p>Low return for this interview. Listed so you know they exist and can stop worrying about them.</p></div>
+   </div>
+
+   <h3 class="sec">The time budget</h3>
+   <p class="lede">${four.length} days at 4 hours (leave and weekends) and ${work.length} office evenings at 1.5–2 hours: about ${Math.round(sumH(four)+sumH(work))} hours in total. Core topics take ${fmtH(sumH(cnt('core')))}h. The rest goes to three mocks, recall sessions and a buffer on 28–29 Nov. A 4-hour day runs like this: <b>1h read → 45m notes and a diagram → 1.5h small build → 45m answering the questions out loud.</b> An evening is <b>10m recall of yesterday → 60m read and notes → 20m answer out loud.</b></p>
+
+   <h3 class="sec">Why this order: each layer needs the one before it</h3>
+   <div class="layers">${TRACKS.map((tr,i)=>{
+     const ts=TOPICS.filter(t=>t.track===tr.id);
+     const core=ts.filter(t=>t.tier==='core');
+     const ds=DAYS.filter(d=>d.topics.some(id=>TOPIC[id].track===tr.id)).map(d=>+d.date.slice(8));
+     const when=ds.length?(ds[0]===ds[ds.length-1]?`${ds[0]} Nov`:`${ds[0]}–${ds[ds.length-1]} Nov`):'';
+     return `<div class="layer"><div class="rail"><span class="num" style="background:${cvar(tr.color)}">${i+1}</span><span class="line"></span></div>
+      <div class="lbody"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><h3>${esc(tr.name)}</h3><span class="eyebrow">${when} · ${core.length} core · ${fmtH(sumH(core))}h</span></div>
+      <p>${esc(tr.why)}</p>
+      <dl class="kv"><dt>Needs</dt><dd>${esc(tr.needs)}</dd><dt>Unlocks</dt><dd>${esc(tr.unlocks)}</dd><dt>Study</dt><dd>${core.map(t=>esc(t.title.split(':')[0])).join(' · ')}</dd><dt>Leave out</dt><dd>${esc(tr.skip)}</dd></dl></div></div>`;
+   }).join('')}</div>
+
+   <h3 class="sec">Do’s and don’ts</h3>
+   <div class="two">
+     <div class="panel do"><h3>Do</h3><ul>${DOS.map(([a,b])=>`<li><b>${esc(a)}</b> ${esc(b)}</li>`).join('')}</ul></div>
+     <div class="panel dont"><h3>Don’t</h3><ul>${DONTS.map(([a,b])=>`<li><b>${esc(a)}</b> ${esc(b)}</li>`).join('')}</ul></div>
+   </div>
+
+   <h3 class="sec">What not to study this month</h3>
+   <div class="panel"><ul>${NOTSTUDY.map(([a,b])=>`<li><b>${esc(a)}.</b> ${esc(b)}</li>`).join('')}</ul></div>
+
+   <h3 class="sec">How the four stages work</h3>
+   <div class="panel"><ul>
+     <li><b>Read.</b> The guide card (or the link you saved), aimed at the two questions.</li>
+     <li><b>Notes.</b> In your own words, in the notes box, with one diagram.</li>
+     <li><b>Build.</b> The small demo listed. For theory topics, the diagram counts.</li>
+     <li><b>Explain.</b> Both questions answered out loud, no notes, in about 2 minutes each.</li>
+   </ul></div>
+   <p style="margin-top:20px"><a class="btn primary" href="#today">Go to today’s plan →</a></p>`;
+}
+
+const PREP=[
+ ['pre-0','Read the Roadmap page once, top to bottom (15 min)'],
+ ['pre-1','Open the guide and bookmark it; skim its section list (10 min)'],
+ ['pre-2','Create an empty fsd-lab repo (Next.js + TypeScript) for the builds (15 min)'],
+ ['pre-3','Block 1 Nov in your calendar: 4 hours, phone away']
+];
+function viewPre(){
+  const t=todayISO(), until=Math.round((Date.parse(DAYS[0].date)-Date.parse(t))/864e5), d1=DAYS[0];
+  return `<div class="dayhead"><div>
+     <div class="eyebrow">today · before the sprint</div>
+     <h2>${fmtDate(t)}</h2>
+     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><span class="chip full">Prep day</span><span class="chip">~45 min</span></div>
+   </div>
+   <div class="daynav"><button class="btn" data-day="0">Preview Day 1 →</button></div></div>
+   <div class="pre">
+     <div class="panel"><div class="eyebrow">countdown</div><div class="big2">${until===1?'Tomorrow':until+' days'}</div><p class="lede" style="margin:6px 0 0">Day 1 is <b>${fmtDate(d1.date)}</b>: ${esc(d1.focus)}. Today is light. Set things up so tomorrow starts with studying, not setup.</p></div>
+     <div class="panel"><div class="eyebrow">tomorrow’s topics</div>${d1.topics.map(id=>`<p style="margin:6px 0 0;display:flex;gap:8px;align-items:baseline"><i class="dot" style="background:${cvar(trackOf(TOPIC[id].track).color)}"></i><span>${esc(TOPIC[id].title)} <span class="eyebrow" style="display:inline">${fmtH(TOPIC[id].hrs)}h</span></span></p>`).join('')}</div>
+   </div>
+   <div class="eyebrow">to do today</div>
+   <div class="tasks">${PREP.map(([id,l])=>taskRow(id,l,'')).join('')}</div>`;
+}
+function viewToday(){
+  if(selDay===PRE) return viewPre();
+  const i=DAYS.findIndex(d=>d.date===selDay), d=DAYS[i];
+  const t=todayISO(), pct=Math.round(dayPct(d)*100), isToday=d.date===t, past=d.date<t;
+  const miss=past?dayMissing(d):[];
+  const status=isToday?'<span class="chip" style="border-color:var(--accent);color:var(--accent)">Today</span>':past?(miss.length?'<span class="chip warn">● Missed items</span>':'<span class="chip core">✓ Complete</span>'):'<span class="chip">Upcoming</span>';
+  const frame=d.topics.map(id=>{const tp=TOPIC[id];return `<span style="flex-grow:${tp.hrs};background:${cvar(trackOf(tp.track).color)}" title="${esc(tp.title)}"><em>${fmtH(tp.hrs)}h</em></span>`}).join('');
+  return `${isToday?missBanner():''}
+   ${past&&miss.length?`<div class="banner"><span class="wd"></span><p><b>This day is behind.</b> ${miss.length} item${miss.length>1?'s are':' is'} still open below. Complete them in a buffer slot rather than doubling up an evening.</p></div>`:''}
+   <div class="dayhead"><div>
+     <div class="eyebrow">day ${i+1} of 30</div>
+     <h2>${fmtDate(d.date)}</h2>
+     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${status}<span class="chip ${d.kind==='work'?'':'full'}">${KIND[d.kind]}</span><span class="chip">${fmtH(d.hrs)}h planned</span><span class="chip">${pct}% done</span></div>
+   </div>
+   <div class="daynav"><button class="btn" data-day="${i-1}" ${i===0&&t>=DAYS[0].date?'disabled':''}>← Prev</button><button class="btn" data-day="today">Today</button><button class="btn" data-day="${i+1}" ${i===29?'disabled':''}>Next →</button></div></div>
+   <p class="lede" style="margin-bottom:8px"><b>${esc(d.focus)}</b></p>
+   ${frame?`<div class="frame" aria-hidden="true">${frame}</div>`:''}
+   <div class="callout">${d.kind==='work'?'<b>Evening:</b> 10 min recall of yesterday’s questions → 60 min read and notes → 20 min answering today’s questions out loud.':'<b>4-hour day:</b> 1h read → 45m notes and a diagram → 1.5h small build (core topics only) → 45m answering the questions out loud.'}</div>
+   ${d.topics.length?`<div class="eyebrow" style="margin-bottom:8px">Topics · open one to see why it’s here</div>${d.topics.map(id=>topicCard(TOPIC[id],{showTrack:true})).join('')}`:''}
+   ${d.mocks.length||d.extra.length?`<div class="eyebrow" style="margin:18px 0 0">${d.topics.length?'Also today':'Today'}</div><div class="tasks">${d.mocks.map(id=>taskRow(id,MOCKBY[id].t,'Mock')).join('')}${d.extra.map((x,j)=>taskRow(d.date+'-x'+j,x,'Recall')).join('')}</div>`:''}`;
+}
+
+function viewPlan(){
+  const head=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<div class="dh">${x}</div>`).join('');
+  const cells=DAYS.map(d=>{
+    const p=Math.round(dayPct(d)*100);
+    const bars=d.topics.map(id=>`<i style="background:${cvar(trackOf(TOPIC[id].track).color)}"></i>`).join('');
+    const t=todayISO(), past=d.date<t, missed=past&&dayMissing(d).length>0;
+    const tc=d.topics.length?cvar(trackOf(TOPIC[d.topics[0]].track).color):(d.mocks.length?'var(--accent)':'var(--muted)');
+    return `<button style="--tc:${tc}" class="cell ${d.kind==='work'?'work':'full'}${d.date===t?' today':''}${past?' past':''}${missed?' missed':''}" data-goto="${d.date}" aria-label="${fmtDate(d.date)}: ${esc(d.focus)}, ${p}% done${missed?', has missed items':''}">
+      ${missed?'<span class="mdot" title="Missed items"></span>':''}
+      <span class="d"><span><b>${d.date.slice(8)}</b> ${dow(d.date)}${past&&!missed?' ✓':''}</span><span>${fmtH(d.hrs)}h</span></span>
+      <span class="f">${esc(d.focus)}</span>
+      <span class="bars">${bars||`<i style="background:var(--idle)"></i>`}</span>
+      <span class="pb"><b style="width:${p}%"></b></span></button>`;
+  }).join('');
+  return `<h2><em>30 days</em> of frontend system design.</h2>
+   <p class="lede">Each card is tinted by the roadmap layer it covers; the hour count shows 4h days (leave and weekends) vs office evenings. A <b>yellow dot</b> marks a past day with unfinished items. Today has a blue outline. Click any day to open it.</p>
+   ${missBanner()}
+   <div class="legend">${TRACKS.map(t=>`<span><i class="dot" style="background:${cvar(t.color)}"></i>${esc(t.name)}</span>`).join('')}</div>
+   <div class="calwrap"><div class="cal">${head}${cells}</div></div>`;
+}
+
+function viewTopics(){
+  const q=filt.q.toLowerCase();
+  const list=TOPICS.filter(t=>(filt.tier==='all'||t.tier===filt.tier)&&(!q||(t.title+' '+t.concepts+' '+t.why).toLowerCase().includes(q)));
+  return `<h2><em>${TOPICS.length} topics</em>, ranked by what gets asked.</h2>
+   <p class="lede">Every topic with its reason, depth, build and questions. Core is scheduled. Stretch is for buffer time. Skip is listed so you can stop worrying about it.</p>
+   <div class="filters"><input type="search" id="q" placeholder="Search topics" value="${esc(filt.q)}" aria-label="Search topics">
+     <div class="seg" role="group" aria-label="Tier">${[['core','Core'],['stretch','Stretch'],['skip','Skip'],['all','All']].map(([v,l])=>`<button data-tier="${v}" aria-pressed="${filt.tier===v}">${l}</button>`).join('')}</div>
+     <button class="btn" data-expand="${openTopics.size?'none':'all'}">${openTopics.size?'Collapse all':'Expand all'}</button></div>
+   ${TRACKS.map(tr=>{
+     const ts=list.filter(t=>t.track===tr.id); if(!ts.length) return '';
+     const core=CORE.filter(t=>t.track===tr.id); const p=core.length?Math.round(core.reduce((a,t)=>a+topicPct(t.id),0)/core.length*100):0;
+     return `<section class="track"><div class="trackhead"><h3><i class="dot" style="background:${cvar(tr.color)}"></i>${esc(tr.name)}</h3><span class="sm">${core.length} core · ${p}% done</span></div>${ts.map(t=>topicCard(t)).join('')}</section>`;
+   }).join('')||'<p class="empty">No topics match.</p>'}`;
+}
+
+function viewCatchup(){
+  const md=missedDays(), t=todayISO();
+  if(t<DAYS[0].date) return `<h2><em>Catch up</em> on what slipped.</h2><p class="lede">Nothing to catch up yet. The sprint starts on ${fmtDate(DAYS[0].date)}. Anything left unfinished on a past day will show up here with a yellow dot.</p>`;
+  if(!md.length) return `<h2><em>Catch up</em> on what slipped.</h2>${missBanner()||'<p class="lede">Nothing missed so far.</p>'}`;
+  const n=md.reduce((a,x)=>a+x.items.length,0);
+  return `<h2><em>Catch up</em> on what slipped.</h2>
+   <p class="lede"><b>${n} unfinished item${n>1?'s':''}</b> from past days, oldest first. Clear them in buffer time (the 28–29 Nov weekend has 2 hours set aside). Don’t double up an evening to catch up.</p>
+   ${md.map(({d,items})=>`<div class="miss"><div class="mh"><h3>${fmtDate(d.date)} · ${esc(d.focus)}</h3><button class="btn sm" data-goto="${d.date}">Open day →</button></div>
+     <ul>${items.map(it=>`<li>${esc(it.label)}${it.kind==='topic'?` <span class="st">missing: ${it.left.join(', ')}</span>`:''}</li>`).join('')}</ul></div>`).join('')}`;
+}
+
+function viewExtras(){
+  return `<h2><em>Mocks</em> &amp; blog ideas.</h2>
+   <p class="lede">Mocks are part of the plan. Blogs are optional: write one only on a leave day when the study block is done and you still have energy.</p>
+   <h3 class="sec">Mock interviews (scheduled)</h3>
+   <div class="panel">${MOCKS.map(m=>taskRow(m.id,m.t,m.date+' Nov')).join('')}</div>
+   <h3 class="sec">Blog ideas (optional)</h3>
+   <p class="lede">These are not summaries of what you study. Each one uses something only you have: your work, your side project, your measurements, or your mock experience.</p>
+   <div class="panel">${BLOGS.map(([t,d],i)=>`<div class="idea">${taskRow('blogidea'+i,t,'')}<p>${esc(d)}</p></div>`).join('')}</div>`;
+}
+
+const ROUTES={today:viewToday,catchup:viewCatchup,roadmap:viewRoadmap,plan:viewPlan,topics:viewTopics,extras:viewExtras};
+function route(){const h=(location.hash||'').slice(1);return ROUTES[h]?h:'today'}
+function render(){
+  const r=route(), ae=document.activeElement, keepId=ae&&ae.id, selStart=ae&&ae.selectionStart;
+  document.querySelectorAll('nav.tabs a').forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')==='#'+r?'page':'false'));
+  $('#view').innerHTML=ROUTES[r]();
+  header();
+  if(keepId){const el=document.getElementById(keepId); if(el){el.focus(); try{if(selStart!=null)el.setSelectionRange(selStart,selStart)}catch(e){}}}
+}
+window.addEventListener('hashchange',()=>{render();window.scrollTo(0,0)});
+
+document.addEventListener('change',e=>{
+  const s=e.target.dataset.stage, tk=e.target.dataset.task;
+  if(s){const [id,k]=s.split(':'); tstate(id)[k]=e.target.checked; persist(); render();}
+  if(tk){S.tasks[tk]=e.target.checked; persist(); render();}
+});
+let typeT=null;
+document.addEventListener('input',e=>{
+  const n=e.target.dataset.note, l=e.target.dataset.link;
+  if(n){tstate(n).note=e.target.value; clearTimeout(typeT); typeT=setTimeout(persist,500);}
+  if(l){const v=e.target.value.trim(); if(!v||safeUrl(v)){tstate(l).link=v; clearTimeout(typeT); typeT=setTimeout(()=>{persist();render()},900);}}
+  if(e.target.id==='q'){filt.q=e.target.value; render();}
+});
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-stop]')) return;
+  const tg=e.target.closest('[data-toggle]');
+  if(tg){const id=tg.dataset.toggle; openTopics.has(id)?openTopics.delete(id):openTopics.add(id); render(); return;}
+  const dn=e.target.closest('[data-day]');
+  if(dn){const v=dn.dataset.day; selDay=v==='today'?defaultDay():(+v<0?PRE:DAYS[+v].date); render(); window.scrollTo(0,0); return;}
+  const go=e.target.closest('[data-goto]');
+  if(go){selDay=go.dataset.goto; if(route()==='today') render(); else location.hash='today'; return;}
+  const p=e.target.closest('[data-tier]');
+  if(p){filt.tier=p.dataset.tier; render(); return;}
+  const ex=e.target.closest('[data-expand]');
+  if(ex){ if(ex.dataset.expand==='all') TOPICS.filter(t=>filt.tier==='all'||t.tier===filt.tier).forEach(t=>openTopics.add(t.id)); else openTopics.clear(); render(); }
+});
+document.addEventListener('keydown',e=>{
+  const tg=e.target.closest&&e.target.closest('[data-toggle]');
+  if(tg&&e.target===tg&&(e.key==='Enter'||e.key===' ')){e.preventDefault();tg.click();}
+});
+render();
+</script>
+</body>
+</html>
